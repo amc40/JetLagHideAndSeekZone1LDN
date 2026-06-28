@@ -403,3 +403,8 @@ export const showTransitStops = persistentAtom<boolean>(
         decode: JSON.parse,
     },
 );
+
+export const mapOverlays = persistentAtom<string[]>("mapOverlays", [], {
+    encode: JSON.stringify,
+    decode: JSON.parse,
+});

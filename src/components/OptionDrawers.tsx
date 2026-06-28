@@ -33,6 +33,7 @@ import {
     leafletMapContext,
     mapGeoJSON,
     mapGeoLocation,
+    mapOverlays,
     pastebinApiKey,
     permanentOverlay,
     planningModeEnabled,
@@ -56,6 +57,7 @@ import {
 import { questionsSchema } from "@/maps/schema";
 
 import { LatitudeLongitude } from "./LatLngPicker";
+import { OVERLAY_CONFIG, type OverlayKey } from "./MapOverlayMarkers";
 import { Button } from "./ui/button";
 import { Checkbox } from "./ui/checkbox";
 import { Input } from "./ui/input";
@@ -90,6 +92,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
     const $alwaysUsePastebin = useStore(alwaysUsePastebin);
     const $followMe = useStore(followMe);
     const $showTransitStops = useStore(showTransitStops);
+    const $mapOverlays = useStore(mapOverlays);
     const $customInitPref = useStore(customInitPreference);
     const lastDefaultUnit = useRef($defaultUnit);
     const hasSyncedInitialUnit = useRef(false);
@@ -545,6 +548,45 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                     }
                                 />
                             </div>
+                            <Separator className="bg-slate-300 w-[280px]" />
+                            <Label>Map Overlays</Label>
+                            <div className="flex flex-col gap-2 w-full max-w-[280px]">
+                                {(
+                                    Object.entries(OVERLAY_CONFIG) as [
+                                        OverlayKey,
+                                        (typeof OVERLAY_CONFIG)[OverlayKey],
+                                    ][]
+                                ).map(([key, cfg]) => (
+                                    <div
+                                        key={key}
+                                        className="flex flex-row items-center justify-between gap-2"
+                                    >
+                                        <label className="text-base font-medium">
+                                            {cfg.label}
+                                        </label>
+                                        <Checkbox
+                                            checked={$mapOverlays.includes(key)}
+                                            onCheckedChange={() => {
+                                                if (
+                                                    $mapOverlays.includes(key)
+                                                ) {
+                                                    mapOverlays.set(
+                                                        $mapOverlays.filter(
+                                                            (k) => k !== key,
+                                                        ),
+                                                    );
+                                                } else {
+                                                    mapOverlays.set([
+                                                        ...$mapOverlays,
+                                                        key,
+                                                    ]);
+                                                }
+                                            }}
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                            <Separator className="bg-slate-300 w-[280px]" />
                             <div className="flex flex-row items-center gap-2">
                                 <label className="text-base font-medium">
                                     Animate map movements?
