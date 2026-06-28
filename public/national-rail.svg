@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!--
+    National Rail double-arrow symbol.
+    Two copies of a right-pointing arrow rotated ±45° around the centre
+    to form the standard ↗/↙ double-arrow logo, white on NR dark blue.
+  -->
+
+  <!-- dark-blue rounded-square background -->
+  <rect x="0" y="0" width="100" height="100" rx="18" ry="18"
+        fill="#003466" stroke="white" stroke-width="3"/>
+
+  <!-- arrow pointing ↗ (horizontal arrow rotated −45°) -->
+  <path fill="white" transform="rotate(-45,50,50)"
+    d="M18,44 L56,44 L56,30 L84,50 L56,70 L56,56 L18,56 Z"/>
+
+  <!-- arrow pointing ↙ (same arrow rotated 135°) -->
+  <path fill="white" transform="rotate(135,50,50)"
+    d="M18,44 L56,44 L56,30 L84,50 L56,70 L56,56 L18,56 Z"/>
+</svg>
