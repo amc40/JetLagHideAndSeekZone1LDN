@@ -39,6 +39,7 @@ import {
     polyGeoJSON,
     questions,
     save,
+    showTransitStops,
     showTutorial,
     thunderforestApiKey,
     triggerLocalRefresh,
@@ -88,6 +89,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
     const $pastebinApiKey = useStore(pastebinApiKey);
     const $alwaysUsePastebin = useStore(alwaysUsePastebin);
     const $followMe = useStore(followMe);
+    const $showTransitStops = useStore(showTransitStops);
     const $customInitPref = useStore(customInitPreference);
     const lastDefaultUnit = useRef($defaultUnit);
     const hasSyncedInitialUnit = useRef(false);
@@ -532,6 +534,17 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                 </Button>
                             </div>
                             <Separator className="bg-slate-300 w-[280px]" />
+                            <div className="flex flex-row items-center gap-2">
+                                <label className="text-2xl font-semibold font-poppins">
+                                    Show tube &amp; rail stops?
+                                </label>
+                                <Checkbox
+                                    checked={$showTransitStops}
+                                    onCheckedChange={() =>
+                                        showTransitStops.set(!$showTransitStops)
+                                    }
+                                />
+                            </div>
                             <div className="flex flex-row items-center gap-2">
                                 <label className="text-2xl font-semibold font-poppins">
                                     Animate map movements?

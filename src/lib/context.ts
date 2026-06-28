@@ -394,3 +394,12 @@ export const allowGooglePlusCodes = persistentAtom<boolean>(
         decode: JSON.parse,
     },
 );
+
+export const showTransitStops = persistentAtom<boolean>(
+    "showTransitStops",
+    true,
+    {
+        encode: JSON.stringify,
+        decode: JSON.parse,
+    },
+);
