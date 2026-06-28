@@ -57,7 +57,7 @@ import {
 import { questionsSchema } from "@/maps/schema";
 
 import { LatitudeLongitude } from "./LatLngPicker";
-import { OVERLAY_CONFIG, type OverlayKey } from "./MapOverlayMarkers";
+import { OVERLAY_CONFIG, type OverlayKey } from "./overlayConfig";
 import { Button } from "./ui/button";
 import { Checkbox } from "./ui/checkbox";
 import { Input } from "./ui/input";
