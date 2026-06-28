@@ -2,7 +2,11 @@ import { useStore } from "@nanostores/react";
 import * as L from "leaflet";
 import { useEffect, useRef, useState } from "react";
 
-import { leafletMapContext, mapGeoLocation, showTransitStops } from "@/lib/context";
+import {
+    leafletMapContext,
+    mapGeoLocation,
+    showTransitStops,
+} from "@/lib/context";
 import { findPlacesInZone } from "@/maps/api";
 
 type TransitStop = {
@@ -47,7 +51,19 @@ function makeMarker(stop: TransitStop): L.Marker {
     return marker;
 }
 
-function parseElements(elements: any[], type: "tube" | "rail"): TransitStop[] {
+type OverpassElement = {
+    type: string;
+    id: number;
+    lat?: number;
+    lon?: number;
+    center?: { lat: number; lon: number };
+    tags?: Record<string, string>;
+};
+
+function parseElements(
+    elements: OverpassElement[],
+    type: "tube" | "rail",
+): TransitStop[] {
     const seen = new Set<string>();
     const stops: TransitStop[] = [];
 
@@ -96,8 +112,14 @@ export const TransitStopMarkers = () => {
 
                 if (cancelled) return;
 
-                const tubeStops = parseElements(tubeData.elements ?? [], "tube");
-                const railStops = parseElements(railData.elements ?? [], "rail");
+                const tubeStops = parseElements(
+                    tubeData.elements ?? [],
+                    "tube",
+                );
+                const railStops = parseElements(
+                    railData.elements ?? [],
+                    "rail",
+                );
                 setStops([...tubeStops, ...railStops]);
             } catch (err) {
                 if (!cancelled)

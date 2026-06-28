@@ -44,11 +44,13 @@ When adding a new question type, update the Zod schema here first — the schema
 ### Map Pipeline (`src/maps/index.ts`, `src/components/Map.tsx`)
 
 Each time questions or the map location changes, `Map.tsx` runs this pipeline:
+
 1. **Determine boundaries** — calls `determineMapBoundaries()` which queries Overpass API for the OSM relation geometry
 2. **Apply questions** — calls `applyQuestionsToMapGeoData()`, which iterates questions and calls the per-question `adjustPer*` function
 3. **Render** — applies `holedMask()` to invert the surviving area into a grey overlay on the map
 
 Each question module in `src/maps/questions/` exports three functions:
+
 - `adjustPer*` — clips the map polygon based on the question answer
 - `hiderify*` — given a hider location, auto-computes what the question answer should be
 - `*PlanningPolygon` — returns the question's boundary line for planning mode display
