@@ -31,6 +31,7 @@ import {
     polyGeoJSON,
     questions,
 } from "@/lib/context";
+import { MAP_AREA_PRESETS } from "@/lib/map-presets";
 import { cn } from "@/lib/utils";
 import {
     CacheType,
@@ -310,6 +311,26 @@ export const PlacePicker = ({
                             ))}
                         </CommandGroup>
                     </CommandList>
+                    <Separator className="h-[0.5px]" />
+                    <div className="px-2 py-1 text-xs text-muted-foreground font-medium">
+                        Area presets
+                    </div>
+                    {MAP_AREA_PRESETS.map((preset) => (
+                        <Button
+                            key={preset.id}
+                            variant="outline"
+                            className="font-normal bg-slate-50 hover:bg-slate-200 mx-2 mb-1"
+                            onClick={() => {
+                                mapGeoJSON.set(preset.polygon);
+                                polyGeoJSON.set(preset.polygon);
+                                questions.set([]);
+                                clearCache(CacheType.ZONE_CACHE);
+                            }}
+                        >
+                            {preset.label}
+                        </Button>
+                    ))}
+                    <Separator className="h-[0.5px]" />
                     <Button
                         variant="outline"
                         className="font-normal bg-slate-50 hover:bg-slate-200"
