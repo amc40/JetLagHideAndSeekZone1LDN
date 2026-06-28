@@ -99,7 +99,7 @@ export const QuestionCard = ({
                         <div className="flex gap-2 pt-2 px-2 justify-center">
                             <Dialog>
                                 <DialogTrigger asChild>
-                                    <Button variant="outline" size="sm">
+                                    <Button variant="outline" size="icon">
                                         <VscShare />
                                     </Button>
                                 </DialogTrigger>
@@ -196,7 +196,7 @@ export const QuestionCard = ({
                                 <AlertDialogTrigger asChild>
                                     <Button
                                         variant="outline"
-                                        size="sm"
+                                        size="icon"
                                         disabled={$isLoading}
                                     >
                                         <VscTrash />
@@ -244,7 +244,7 @@ export const QuestionCard = ({
                             {locked !== undefined && (
                                 <Button
                                     variant="outline"
-                                    size="sm"
+                                    size="icon"
                                     onClick={() => setLocked!(!locked)}
                                     disabled={$isLoading}
                                 >
@@ -253,7 +253,7 @@ export const QuestionCard = ({
                             )}
                             <Button
                                 variant="outline"
-                                size="sm"
+                                size="icon"
                                 onClick={() => setHidden!(!hidden)}
                                 disabled={$isLoading}
                             >

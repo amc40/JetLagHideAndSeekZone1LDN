@@ -378,7 +378,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                 Options
                             </DrawerTitle>
                         </DrawerHeader>
-                        <div className="overflow-y-scroll max-h-[40vh] flex flex-col items-center gap-4 max-w-[1000px] px-12">
+                        <div className="overflow-y-scroll max-h-[65vh] flex flex-col items-center gap-4 max-w-[1000px] px-4 sm:px-12">
                             <div className="flex flex-row max-[330px]:flex-col gap-4">
                                 <Button
                                     onClick={() => {
@@ -535,7 +535,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                             </div>
                             <Separator className="bg-slate-300 w-[280px]" />
                             <div className="flex flex-row items-center gap-2">
-                                <label className="text-2xl font-semibold font-poppins">
+                                <label className="text-base font-medium">
                                     Show tube &amp; rail stops?
                                 </label>
                                 <Checkbox
@@ -546,7 +546,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                 />
                             </div>
                             <div className="flex flex-row items-center gap-2">
-                                <label className="text-2xl font-semibold font-poppins">
+                                <label className="text-base font-medium">
                                     Animate map movements?
                                 </label>
                                 <Checkbox
@@ -559,7 +559,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                 />
                             </div>
                             <div className="flex flex-row items-center gap-2">
-                                <label className="text-2xl font-semibold font-poppins">
+                                <label className="text-base font-medium">
                                     Force Pastebin for sharing?
                                 </label>
                                 <Checkbox
@@ -572,7 +572,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                 />
                             </div>
                             <div className="flex flex-row items-center gap-2">
-                                <label className="text-2xl font-semibold font-poppins">
+                                <label className="text-base font-medium">
                                     Enable planning mode?
                                 </label>
                                 <Checkbox
@@ -600,7 +600,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                 />
                             </div>
                             <div className="flex flex-row items-center gap-2">
-                                <label className="text-2xl font-semibold font-poppins">
+                                <label className="text-base font-medium">
                                     Auto save?
                                 </label>
                                 <Checkbox
@@ -611,7 +611,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                 />
                             </div>
                             <div className="flex flex-row items-center gap-2">
-                                <label className="text-2xl font-semibold font-poppins">
+                                <label className="text-base font-medium">
                                     Auto zoom?
                                 </label>
                                 <Checkbox
@@ -622,7 +622,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                 />
                             </div>
                             <div className="flex flex-row items-center gap-2">
-                                <label className="text-2xl font-semibold font-poppins">
+                                <label className="text-base font-medium">
                                     Follow Me (GPS)?
                                 </label>
                                 <Checkbox
@@ -633,7 +633,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                 />
                             </div>
                             <div className="flex flex-row items-center gap-2">
-                                <label className="text-2xl font-semibold font-poppins">
+                                <label className="text-base font-medium">
                                     Default to custom questions?
                                 </label>
                                 <Checkbox
@@ -646,7 +646,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                 />
                             </div>
                             <div className="flex flex-row items-center gap-2">
-                                <label className="text-2xl font-semibold font-poppins">
+                                <label className="text-base font-medium">
                                     Allow Google Plus codes?
                                 </label>
                                 <Checkbox
@@ -659,7 +659,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                 />
                             </div>
                             <div className="flex flex-row items-center gap-2">
-                                <label className="text-2xl font-semibold font-poppins">
+                                <label className="text-base font-medium">
                                     Hider mode?
                                 </label>
                                 <Checkbox
