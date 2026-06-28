@@ -5,7 +5,7 @@ import { atom } from "nanostores";
 import * as React from "react";
 import { TbMessage2Question } from "react-icons/tb";
 
-import { Button } from "@/components/ui/button";
+import { type Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Sheet, SheetContent } from "@/components/ui/sheet";

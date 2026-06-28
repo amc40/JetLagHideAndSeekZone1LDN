@@ -1,9 +1,9 @@
-import * as units from "@arcgis/core/core/units.js";
+import type * as units from "@arcgis/core/core/units.js";
 import * as geodesicBufferOperator from "@arcgis/core/geometry/operators/geodesicBufferOperator.js";
 import * as geodeticDistanceOperator from "@arcgis/core/geometry/operators/geodeticDistanceOperator.js";
 import Point from "@arcgis/core/geometry/Point.js";
 import * as geometryJsonUtils from "@arcgis/core/geometry/support/jsonUtils.js";
-import * as unionTypes from "@arcgis/core/unionTypes.js";
+import type * as unionTypes from "@arcgis/core/unionTypes.js";
 import { arcgisToGeoJSON, geojsonToArcGIS } from "@terraformer/arcgis";
 import * as turf from "@turf/turf";
 import type {

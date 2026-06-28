@@ -8,6 +8,8 @@
         "preview": "astro preview",
         "astro": "astro",
         "lint": "eslint --fix src && prettier . --write",
+        "lint:check": "eslint src && prettier . --check",
+        "typecheck": "astro check",
         "test": "vitest"
     },
     "dependencies": {
@@ -62,6 +64,7 @@
         "zod": "^3.25.28"
     },
     "devDependencies": {
+        "@astrojs/check": "^0.9.9",
         "@eslint/js": "^9.25.1",
         "@types/d3-geo": "^3.1.0",
         "@types/geojson": "^7946.0.16",
@@ -77,6 +80,7 @@
         "eslint-config-prettier": "^10.0.1",
         "eslint-plugin-import-alias": "^1.2.0",
         "eslint-plugin-react": "^7.37.4",
+        "eslint-plugin-react-hooks": "^7.1.1",
         "eslint-plugin-simple-import-sort": "^12.1.1",
         "globals": "^16.0.0",
         "prettier": "3.5.3",
