@@ -17,23 +17,29 @@ type TransitStop = {
     type: "tube" | "rail";
 };
 
-// Resolved at runtime so the Astro base path is included (same pattern used
-// for /coastline50.geojson elsewhere in the codebase).
-const BASE = import.meta.env.BASE_URL;
-const TUBE_ICON_URL = `${BASE}tube-roundel.svg`;
-const RAIL_ICON_URL = `${BASE}national-rail.svg`;
+const TUBE_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="26" height="26" style="display:block;filter:drop-shadow(0 1px 2px rgba(0,0,0,.55))">
+  <rect x="6" y="36" width="88" height="28" fill="#003087"/>
+  <path fill-rule="evenodd" fill="#E32017" d="M4,50 A46,46 0 1,0 96,50 A46,46 0 1,0 4,50 Z M24,50 A26,26 0 1,0 76,50 A26,26 0 1,0 24,50 Z"/>
+  <circle cx="50" cy="50" r="46" fill="none" stroke="white" stroke-width="3"/>
+</svg>`;
 
-function makeIcon(url: string): L.DivIcon {
+const RAIL_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="26" height="26" style="display:block;filter:drop-shadow(0 1px 2px rgba(0,0,0,.55))">
+  <rect x="0" y="0" width="100" height="100" rx="18" ry="18" fill="#003466" stroke="white" stroke-width="3"/>
+  <path fill="white" transform="rotate(-45,50,50)" d="M18,44 L56,44 L56,30 L84,50 L56,70 L56,56 L18,56 Z"/>
+  <path fill="white" transform="rotate(135,50,50)" d="M18,44 L56,44 L56,30 L84,50 L56,70 L56,56 L18,56 Z"/>
+</svg>`;
+
+function makeIcon(svg: string): L.DivIcon {
     return L.divIcon({
-        html: `<img src="${url}" width="26" height="26" style="display:block;filter:drop-shadow(0 1px 2px rgba(0,0,0,.55))"/>`,
+        html: svg,
         className: "",
         iconSize: [26, 26],
         iconAnchor: [13, 13],
     });
 }
 
-const TUBE_ICON = makeIcon(TUBE_ICON_URL);
-const RAIL_ICON = makeIcon(RAIL_ICON_URL);
+const TUBE_ICON = makeIcon(TUBE_SVG);
+const RAIL_ICON = makeIcon(RAIL_SVG);
 
 function makeMarker(stop: TransitStop): L.Marker {
     const icon = stop.type === "tube" ? TUBE_ICON : RAIL_ICON;
