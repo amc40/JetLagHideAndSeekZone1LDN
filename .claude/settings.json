@@ -1,0 +1,13 @@
+{
+    "permissions": {
+        "allow": [
+            "Bash(pnpm exec eslint *)",
+            "Bash(pnpm exec prettier *)",
+            "Bash(pnpm exec tsc *)",
+            "Bash(pnpm exec astro *)",
+            "Bash(pnpm run lint)",
+            "Bash(pnpm run lint:check)",
+            "Bash(pnpm run typecheck)"
+        ]
+    }
+}
