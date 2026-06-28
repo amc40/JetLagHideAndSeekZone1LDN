@@ -10,7 +10,8 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import { SidebarMenuButton } from "@/components/ui/sidebar-l";
+import { SidebarContext, SidebarMenuButton } from "@/components/ui/sidebar-l";
+import { useIsMobile } from "@/hooks/use-mobile";
 import {
     addQuestion,
     defaultCustomQuestions,
@@ -25,6 +26,12 @@ export const AddQuestionDialog = ({
 }) => {
     const $isLoading = useStore(isLoading);
     const [open, setOpen] = React.useState(false);
+    const isMobile = useIsMobile();
+
+    const closeAll = () => {
+        setOpen(false);
+        if (isMobile) SidebarContext.get().setOpenMobile(false);
+    };
 
     const runAddRadius = () => {
         const map = leafletMapContext.get();
@@ -147,7 +154,7 @@ export const AddQuestionDialog = ({
                 <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
                     <SidebarMenuButton
                         onClick={() => {
-                            if (runAddRadius()) setOpen(false);
+                            if (runAddRadius()) closeAll();
                         }}
                         disabled={$isLoading}
                     >
@@ -155,7 +162,7 @@ export const AddQuestionDialog = ({
                     </SidebarMenuButton>
                     <SidebarMenuButton
                         onClick={() => {
-                            if (runAddThermometer()) setOpen(false);
+                            if (runAddThermometer()) closeAll();
                         }}
                         disabled={$isLoading}
                     >
@@ -163,7 +170,7 @@ export const AddQuestionDialog = ({
                     </SidebarMenuButton>
                     <SidebarMenuButton
                         onClick={() => {
-                            if (runAddTentacles()) setOpen(false);
+                            if (runAddTentacles()) closeAll();
                         }}
                         disabled={$isLoading}
                     >
@@ -171,7 +178,7 @@ export const AddQuestionDialog = ({
                     </SidebarMenuButton>
                     <SidebarMenuButton
                         onClick={() => {
-                            if (runAddMatching()) setOpen(false);
+                            if (runAddMatching()) closeAll();
                         }}
                         disabled={$isLoading}
                     >
@@ -179,7 +186,7 @@ export const AddQuestionDialog = ({
                     </SidebarMenuButton>
                     <SidebarMenuButton
                         onClick={() => {
-                            if (runAddMeasuring()) setOpen(false);
+                            if (runAddMeasuring()) closeAll();
                         }}
                         disabled={$isLoading}
                     >
@@ -188,7 +195,7 @@ export const AddQuestionDialog = ({
                     <SidebarMenuButton
                         onClick={async () => {
                             const ok = await runPasteQuestion();
-                            if (ok) setOpen(false);
+                            if (ok) closeAll();
                         }}
                         disabled={$isLoading}
                     >
