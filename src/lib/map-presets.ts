@@ -11,9 +11,10 @@ import type { FeatureCollection, Polygon } from "geojson";
  * rather than cutting through them.
  *
  * Stations used as anchors include: Aldgate East, Angel, Baker Street,
- * Earl's Court, High Street Kensington, King's Cross St. Pancras, Notting
- * Hill Gate, Old Street, Tower Gateway, Vauxhall, Whitechapel, and all other
- * confirmed Zone 1 London Underground stations.
+ * Battersea Power Station, Bermondsey, Earl's Court, Haggerston, High Street
+ * Kensington, Hoxton, King's Cross St. Pancras, Notting Hill Gate, Old Street,
+ * Tower Gateway, Vauxhall, Whitechapel, and all other confirmed Zone 1 London
+ * Underground / Overground stations.
  *
  * Coordinates are [longitude, latitude] as required by GeoJSON.
  */
@@ -29,10 +30,14 @@ export const TFL_ZONE_1_POLYGON: FeatureCollection<Polygon> = {
                     [
                         [-0.207683, 51.509013], // W of Notting Hill Gate
                         [-0.203688, 51.488105], // SW of Earl's Court
+                        [-0.178, 51.487], // SW transition (keeps West Brompton Z2 outside)
+                        [-0.144, 51.471], // S of Battersea Power Station
                         [-0.123651, 51.479179], // S of Vauxhall
                         [-0.091816, 51.489695], // SE of Elephant & Castle
+                        [-0.053, 51.5], // E of Bermondsey
                         [-0.0633, 51.510388], // E of Tower Gateway / Aldgate
                         [-0.05036, 51.520589], // NE of Whitechapel
+                        [-0.067, 51.543], // NE of Hoxton / Haggerston
                         [-0.098744, 51.537774], // N of Angel
                         [-0.1211, 51.537586], // N of King's Cross
                         [-0.172798, 51.525804], // NW of Marylebone
