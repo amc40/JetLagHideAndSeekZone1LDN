@@ -1,5 +1,7 @@
 # Jet Lag The Game: Hide and Seek Map Generator
 
+**Live app:** https://amc40.github.io/JetLagHideAndSeekZone1LDN/
+
 A tool to trivially generate interactive maps for viewing hiding possibilities in Jet Lag The Game's Hide and Seek. So far, the following questions have been implemented (see https://github.com/taibeled/JetLagHideAndSeek/issues/9 for more):
 
 - Radius
