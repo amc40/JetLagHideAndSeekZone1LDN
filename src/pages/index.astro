@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/sidebar-r";
 import { QuestionSidebar } from "@/components/QuestionSidebar";
 import { ZoneSidebar } from "@/components/ZoneSidebar";
+import { MapLayersButton } from "@/components/MapLayersButton";
 import { OptionDrawers } from "@/components/OptionDrawers";
 import { TutorialDialog } from "@/components/TutorialDialog";
 ---
@@ -38,8 +39,12 @@ import { TutorialDialog } from "@/components/TutorialDialog";
                             <SidebarTriggerR client:load />
                         </div>
                         <div
-                            class="flex flex-shrink max-w-fit z-[1030] absolute left-4 right-0 m-auto group-[.fullscreen]:hidden"
+                            class="flex flex-col flex-shrink max-w-fit z-[1030] absolute left-4 right-0 m-auto items-center group-[.fullscreen]:hidden"
                         >
+                            <MapLayersButton
+                                client:only
+                                className="mt-4 overflow-hidden shadow-md"
+                            />
                             <PlacePicker
                                 client:only
                                 className="m-4 overflow-hidden"
