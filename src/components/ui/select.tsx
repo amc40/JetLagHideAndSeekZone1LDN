@@ -147,6 +147,14 @@ const SelectContent = React.forwardRef<
             )}
             position={position}
             collisionPadding={16}
+            // Radix Dialog's modal scroll lock (react-remove-scroll) cancels touchmove/wheel
+            // events on document once they bubble past this popup, since it's portalled outside
+            // the dialog's content and isn't registered as one of its allowed "shards". Stopping
+            // propagation here (the lock's listener is bubble-phase, not capture) keeps native
+            // touch scrolling working when the select is opened from within a modal sheet/dialog.
+            onTouchStart={(event) => event.stopPropagation()}
+            onTouchMove={(event) => event.stopPropagation()}
+            onWheel={(event) => event.stopPropagation()}
             {...props}
         >
             <SelectScrollUpButton />
