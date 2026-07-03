@@ -161,6 +161,14 @@ export const includeDefaultStations = persistentAtom<boolean>(
         decode: JSON.parse,
     },
 );
+export const curatedStationsLoaded = persistentAtom<boolean>(
+    "curatedStationsLoaded",
+    false,
+    {
+        encode: JSON.stringify,
+        decode: JSON.parse,
+    },
+);
 export const animateMapMovements = persistentAtom<boolean>(
     "animateMapMovements",
     false,

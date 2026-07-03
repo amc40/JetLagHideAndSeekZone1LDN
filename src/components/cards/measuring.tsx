@@ -1,10 +1,12 @@
 import { useStore } from "@nanostores/react";
 import { Label } from "@radix-ui/react-label";
 import * as React from "react";
+import { toast } from "react-toastify";
 
 import CustomInitDialog from "@/components/CustomInitDialog";
 import { LatitudeLongitude } from "@/components/LatLngPicker";
 import PresetsDialog from "@/components/PresetsDialog";
+import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select } from "@/components/ui/select";
 import {
@@ -23,6 +25,7 @@ import {
     triggerLocalRefresh,
 } from "@/lib/context";
 import { cn } from "@/lib/utils";
+import { fetchCuratedHospitals } from "@/maps/api";
 import { determineMeasuringBoundary } from "@/maps/questions/measuring";
 import {
     determineUnionizedStrings,
@@ -112,11 +115,27 @@ export const MeasuringQuestionComponent = ({
                             />
                             and use the buttons at the bottom left of the map.
                         </p>
-                        <div className="flex justify-center mb-2">
+                        <div className="flex justify-center gap-2 mb-2">
                             <PresetsDialog
                                 data={data}
                                 presetTypeHint={data.type}
                             />
+                            <Button
+                                size="sm"
+                                className="w-full"
+                                disabled={$isLoading}
+                                onClick={async () => {
+                                    const curated =
+                                        await fetchCuratedHospitals();
+                                    (data as any).geo = curated;
+                                    questionModified();
+                                    toast.success(
+                                        `Loaded ${curated.features?.length ?? 0} curated hospitals`,
+                                    );
+                                }}
+                            >
+                                Load Curated Hospitals
+                            </Button>
                         </div>
                     </>
                 );

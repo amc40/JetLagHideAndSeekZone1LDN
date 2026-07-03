@@ -10,7 +10,8 @@
         "lint": "eslint --fix src && prettier . --write",
         "lint:check": "eslint src && prettier . --check",
         "typecheck": "astro check",
-        "test": "vitest"
+        "test": "vitest",
+        "generate:pois": "node scripts/generate-curated-pois.mjs"
     },
     "dependencies": {
         "@arcgis/core": "^4.32.10",
