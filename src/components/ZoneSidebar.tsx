@@ -1186,6 +1186,7 @@ async function selectionProcess(
                         drag: false,
                         color: "black",
                         collapsed: false,
+                        hidden: false,
                     },
                     "Finding matching locations to hiding zone...",
                 );
