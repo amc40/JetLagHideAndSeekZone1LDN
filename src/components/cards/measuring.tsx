@@ -23,7 +23,6 @@ import {
     triggerLocalRefresh,
 } from "@/lib/context";
 import { cn } from "@/lib/utils";
-import { fetchCuratedHospitals } from "@/maps/api";
 import { determineMeasuringBoundary } from "@/maps/questions/measuring";
 import {
     determineUnionizedStrings,
@@ -53,22 +52,6 @@ export const MeasuringQuestionComponent = ({
     const $isLoading = useStore(isLoading);
     const $customInitPref = useStore(customInitPreference);
     const [customDialogOpen, setCustomDialogOpen] = React.useState(false);
-
-    React.useEffect(() => {
-        if (
-            data.type !== "custom-measure" ||
-            ((data as any).geo?.features?.length ?? 0) > 0
-        ) {
-            return;
-        }
-        fetchCuratedHospitals().then((curated) => {
-            if ((curated.features?.length ?? 0) === 0) return;
-            (data as any).geo = curated;
-            questionModified();
-        });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [data.type, (data as any).geo]);
-
     const label = `Measuring
     ${
         $questions

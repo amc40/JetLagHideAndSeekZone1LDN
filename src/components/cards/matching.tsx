@@ -24,7 +24,6 @@ import {
     triggerLocalRefresh,
 } from "@/lib/context";
 import { cn } from "@/lib/utils";
-import { fetchCuratedHospitals } from "@/maps/api";
 import {
     determineMatchingBoundary,
     findMatchingPlaces,
@@ -60,22 +59,6 @@ export const MatchingQuestionComponent = ({
     const [pendingCustomType, setPendingCustomType] = React.useState<
         "custom-zone" | "custom-points" | null
     >(null);
-
-    React.useEffect(() => {
-        if (
-            data.type !== "custom-points" ||
-            ((data as any).geo?.length ?? 0) > 0
-        ) {
-            return;
-        }
-        fetchCuratedHospitals().then((curated) => {
-            if ((curated.features?.length ?? 0) === 0) return;
-            (data as any).geo = curated.features;
-            questionModified();
-        });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [data.type, (data as any).geo]);
-
     const label = `Matching
     ${
         $questions

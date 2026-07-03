@@ -17,6 +17,7 @@ import {
     polyGeoJSON,
 } from "@/lib/context";
 import {
+    fetchCuratedHospitals,
     findAdminBoundary,
     findPlacesInZone,
     LOCATION_FIRST_TAG,
@@ -78,6 +79,15 @@ export const findMatchingPlaces = async (question: MatchingQuestion) => {
         case "consulate-full":
         case "park-full": {
             const location = question.type.split("-full")[0] as APILocations;
+
+            if (location === "hospital") {
+                const curated = await fetchCuratedHospitals();
+                if (curated.features?.length > 0) {
+                    return curated.features.map((f: any) =>
+                        turf.point(f.geometry.coordinates, f.properties),
+                    );
+                }
+            }
 
             const data = await findPlacesInZone(
                 `[${LOCATION_FIRST_TAG[location]}=${location}]`,
