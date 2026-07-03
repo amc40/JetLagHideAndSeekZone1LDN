@@ -49,17 +49,3 @@ export const TFL_ZONE_1_POLYGON: FeatureCollection<Polygon> = {
         },
     ],
 };
-
-export type MapPreset = {
-    id: string;
-    label: string;
-    polygon: FeatureCollection<Polygon>;
-};
-
-export const MAP_AREA_PRESETS: MapPreset[] = [
-    {
-        id: "tfl-zone-1",
-        label: "TfL Zone 1",
-        polygon: TFL_ZONE_1_POLYGON,
-    },
-];
