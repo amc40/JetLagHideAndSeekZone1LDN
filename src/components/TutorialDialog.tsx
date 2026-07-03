@@ -72,24 +72,25 @@ const tutorialSteps: TutorialStep[] = [
                 Before diving into specifics, here&apos;s the typical workflow:
                 <br />
                 <br />
-                <strong>1. Location Setup:</strong> Define your play area using
-                preset locations or custom polygon drawing
+                This tool is fixed to a single play area (TfL Zone 1), so
+                there&apos;s no location setup to do &mdash; just get straight
+                to adding questions.
                 <br />
                 <br />
-                <strong>2. Question Creation:</strong> Add and configure the 5
+                <strong>1. Question Creation:</strong> Add and configure the 5
                 question types (Radius, Thermometer, Tentacles, Matching,
                 Measuring)
                 <br />
                 <br />
-                <strong>3. Sharing:</strong> Share the questions and game
+                <strong>2. Sharing:</strong> Share the questions and game
                 boundaries with other players
                 <br />
                 <br />
-                <strong>4. Hider Mode:</strong> Let the hider automatically
+                <strong>3. Hider Mode:</strong> Let the hider automatically
                 answer questions based on their location
                 <br />
                 <br />
-                <strong>5. Zone Analysis:</strong> View potential hiding zones
+                <strong>4. Zone Analysis:</strong> View potential hiding zones
                 and their constraints
                 <br />
                 <br />
@@ -99,86 +100,23 @@ const tutorialSteps: TutorialStep[] = [
         position: "center",
     },
     {
-        title: "Location Setup: Place Picker",
+        title: "Play Area: Fixed to TfL Zone 1",
         content: (
             <>
-                The Place Picker allows you to define the game area based on
-                presets. Click the search box to begin exploring locations.
-                <br />
-                <br />
-                <strong>Supported Location Types:</strong>
-                <br />• Cities, towns, and neighborhoods
-                <br />• Administrative regions (countries, states, prefectures)
-                <br />• Geographic features (islands, parks)
-            </>
-        ),
-        targetSelector: '[data-tutorial-id="place-picker"]',
-        position: "bottom",
-    },
-    {
-        title: "Location Management: Add, Subtract, Remove",
-        content: (
-            <>
-                Once you search for locations, this menu shows powerful
-                management options:
-                <br />
-                <br />
-                <strong>Adding Locations (+ button):</strong> Expands your play
-                area by including the selected region
-                <br />
-                <br />
-                <strong>Subtracting Locations (- button):</strong> Creates
-                &ldquo;holes&rdquo; in your play area by excluding specific
-                regions. Perfect for removing water bodies, restricted areas, or
-                creating complex boundaries.
-                <br />
-                <br />
-                <strong>Removing Locations (X button):</strong> Completely
-                removes the location from your game
+                This fork of the tool is fixed to a single play area &mdash; TfL
+                Zone 1 &mdash; so there&apos;s no need to search for or draw a
+                boundary.
                 <br />
                 <br />
                 <strong>
                     &ldquo;Clear Questions &amp; Cache&rdquo; button:
                 </strong>{" "}
-                Resets all questions and clears cached data when changing
-                locations significantly
-                <br />
-                <br />
-                <strong>
-                    &ldquo;Reuse Preset Locations&rdquo; button:
-                </strong>{" "}
-                Appears when custom polygons exist, allowing you to return to
-                the preset location mode
+                Resets all questions and clears cached data, useful for starting
+                a fresh round without leaving the app.
             </>
         ),
-        targetSelector: '[data-tutorial-id="place-picker-content"]',
+        targetSelector: '[data-tutorial-id="place-picker"]',
         position: "bottom",
-    },
-    {
-        title: "Advanced Location Setup: Custom Polygon Drawing",
-        content: (
-            <>
-                For custom play areas, the Polygon Tool allows you to draw:
-                <br />
-                <br />
-                <strong>Polygon Tool:</strong> Draw custom boundaries that
-                perfectly match your intended play area. Great for irregular
-                shapes or when preset locations don&apos;t quite fit your needs.
-                <br />
-                <br />
-                <strong>Drawing Tips:</strong>
-                <br />• Click to start, continue clicking to add points
-                <br />• Click the first point again to close the polygon
-                <br />• Use multiple polygons to create complex areas
-                <br />
-                <br />
-                <strong>Use Cases:</strong> University campuses, specific
-                neighborhoods, custom game boundaries, or areas that cross
-                multiple administrative regions.
-            </>
-        ),
-        targetSelector: ".leaflet-draw-draw-polygon",
-        position: "top",
     },
     {
         title: "Opening the Question Sidebar",
@@ -749,8 +687,6 @@ const tutorialSteps: TutorialStep[] = [
                 <br />
                 <br />
                 <strong>Quick Start Checklist:</strong>
-                <br />✓ Set up your game area using Place Picker or custom
-                polygons
                 <br />✓ Add and configure questions using the five main types
                 <br />✓ Test your setup with Planning Mode if desired
                 <br />✓ Configure options for optimal performance and experience

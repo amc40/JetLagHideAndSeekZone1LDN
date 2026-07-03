@@ -3,6 +3,7 @@ import type { FeatureCollection, MultiPolygon, Polygon } from "geojson";
 import type { Map } from "leaflet";
 import { atom, computed, onSet } from "nanostores";
 
+import { TFL_ZONE_1_POLYGON } from "@/lib/map-presets";
 import type {
     AdditionalMapGeoLocations,
     CustomStation,
@@ -23,20 +24,20 @@ export const mapGeoLocation = persistentAtom<OpenStreetMap>(
     "mapGeoLocation",
     {
         geometry: {
-            coordinates: [36.5748441, 139.2394179],
+            coordinates: [51.5074, -0.1278],
             type: "Point",
         },
         type: "Feature",
         properties: {
             osm_type: "R",
-            osm_id: 382313,
-            extent: [45.7112046, 122.7141754, 20.2145811, 154.205541],
-            country: "Japan",
+            osm_id: 65606,
+            extent: [51.6919, -0.5104, 51.2868, 0.334],
+            country: "United Kingdom",
             osm_key: "place",
-            countrycode: "JP",
-            osm_value: "country",
-            name: "Japan",
-            type: "country",
+            countrycode: "GB",
+            osm_value: "city",
+            name: "London",
+            type: "city",
         },
     },
     {
@@ -65,7 +66,7 @@ export const mapGeoJSON = atom<FeatureCollection<
 > | null>(null);
 export const polyGeoJSON = persistentAtom<FeatureCollection<
     Polygon | MultiPolygon
-> | null>("polyGeoJSON", null, {
+> | null>("polyGeoJSON", TFL_ZONE_1_POLYGON, {
     encode: JSON.stringify,
     decode: JSON.parse,
 });
