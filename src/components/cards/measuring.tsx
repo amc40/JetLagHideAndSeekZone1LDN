@@ -1,12 +1,10 @@
 import { useStore } from "@nanostores/react";
 import { Label } from "@radix-ui/react-label";
 import * as React from "react";
-import { toast } from "react-toastify";
 
 import CustomInitDialog from "@/components/CustomInitDialog";
 import { LatitudeLongitude } from "@/components/LatLngPicker";
 import PresetsDialog from "@/components/PresetsDialog";
-import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select } from "@/components/ui/select";
 import {
@@ -55,6 +53,22 @@ export const MeasuringQuestionComponent = ({
     const $isLoading = useStore(isLoading);
     const $customInitPref = useStore(customInitPreference);
     const [customDialogOpen, setCustomDialogOpen] = React.useState(false);
+
+    React.useEffect(() => {
+        if (
+            data.type !== "custom-measure" ||
+            ((data as any).geo?.features?.length ?? 0) > 0
+        ) {
+            return;
+        }
+        fetchCuratedHospitals().then((curated) => {
+            if ((curated.features?.length ?? 0) === 0) return;
+            (data as any).geo = curated;
+            questionModified();
+        });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [data.type, (data as any).geo]);
+
     const label = `Measuring
     ${
         $questions
@@ -120,22 +134,6 @@ export const MeasuringQuestionComponent = ({
                                 data={data}
                                 presetTypeHint={data.type}
                             />
-                            <Button
-                                size="sm"
-                                className="w-full"
-                                disabled={$isLoading}
-                                onClick={async () => {
-                                    const curated =
-                                        await fetchCuratedHospitals();
-                                    (data as any).geo = curated;
-                                    questionModified();
-                                    toast.success(
-                                        `Loaded ${curated.features?.length ?? 0} curated hospitals`,
-                                    );
-                                }}
-                            >
-                                Load Curated Hospitals
-                            </Button>
                         </div>
                     </>
                 );

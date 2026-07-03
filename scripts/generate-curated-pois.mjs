@@ -35,6 +35,13 @@ const CATEGORIES = [
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+function slugify(name) {
+    return name
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/(^-|-$)/g, "");
+}
+
 async function queryOverpass(query) {
     const encodedQuery = encodeURIComponent(query);
     try {
@@ -55,10 +62,26 @@ async function queryOverpass(query) {
     return fallbackResponse.json();
 }
 
+// Entries with known {lat, lon} (e.g. sourced from a GPX/Wikipedia export)
+// skip Overpass entirely. Entries with {osmType, osmId} are resolved via
+// Overpass to find their coordinates.
 async function resolveEntry(entry) {
+    if (typeof entry.lat === "number" && typeof entry.lon === "number") {
+        return {
+            type: "Feature",
+            geometry: { type: "Point", coordinates: [entry.lon, entry.lat] },
+            properties: {
+                id: `curated/${slugify(entry.name)}`,
+                name: entry.name,
+            },
+        };
+    }
+
     const osmType = OSM_TYPE_QUERY_NAME[entry.osmType];
     if (!osmType) {
-        throw new Error(`Unknown osmType "${entry.osmType}"`);
+        throw new Error(
+            `Entry "${entry.name ?? "unknown"}" needs either {lat, lon} or a valid {osmType, osmId}`,
+        );
     }
 
     const query = `[out:json];${osmType}(${entry.osmId});out center tags;`;
@@ -71,7 +94,7 @@ async function resolveEntry(entry) {
     if (typeof lat !== "number" || typeof lon !== "number") return null;
 
     const tags = element.tags ?? {};
-    const name = tags["name:en"] ?? tags.name;
+    const name = entry.name ?? tags["name:en"] ?? tags.name;
 
     return {
         type: "Feature",
@@ -93,7 +116,9 @@ async function generateCategory({ name, source, output }) {
 
     const features = [];
     for (const entry of entries) {
-        const label = `${entry.osmType}/${entry.osmId}`;
+        const isDirectCoordinate =
+            typeof entry.lat === "number" && typeof entry.lon === "number";
+        const label = entry.name ?? `${entry.osmType}/${entry.osmId}`;
         try {
             const feature = await resolveEntry(entry);
             if (!feature) {
@@ -107,7 +132,7 @@ async function generateCategory({ name, source, output }) {
             console.warn(`[${name}] Failed to resolve ${label}: ${e.message}`);
         }
         // Be polite to the public Overpass instance between requests.
-        await sleep(500);
+        if (!isDirectCoordinate) await sleep(500);
     }
 
     const featureCollection = { type: "FeatureCollection", features };

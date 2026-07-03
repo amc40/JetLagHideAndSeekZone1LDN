@@ -5,7 +5,6 @@ import { toast } from "react-toastify";
 import CustomInitDialog from "@/components/CustomInitDialog";
 import { LatitudeLongitude } from "@/components/LatLngPicker";
 import PresetsDialog from "@/components/PresetsDialog";
-import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
@@ -61,6 +60,22 @@ export const MatchingQuestionComponent = ({
     const [pendingCustomType, setPendingCustomType] = React.useState<
         "custom-zone" | "custom-points" | null
     >(null);
+
+    React.useEffect(() => {
+        if (
+            data.type !== "custom-points" ||
+            ((data as any).geo?.length ?? 0) > 0
+        ) {
+            return;
+        }
+        fetchCuratedHospitals().then((curated) => {
+            if ((curated.features?.length ?? 0) === 0) return;
+            (data as any).geo = curated.features;
+            questionModified();
+        });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [data.type, (data as any).geo]);
+
     const label = `Matching
     ${
         $questions
@@ -174,25 +189,6 @@ export const MatchingQuestionComponent = ({
                                 data={data}
                                 presetTypeHint={data.type}
                             />
-                            {data.type === "custom-points" && (
-                                <Button
-                                    size="sm"
-                                    className="w-full"
-                                    disabled={$isLoading}
-                                    onClick={async () => {
-                                        const curated =
-                                            await fetchCuratedHospitals();
-                                        (data as any).geo =
-                                            curated.features ?? [];
-                                        questionModified();
-                                        toast.success(
-                                            `Loaded ${curated.features?.length ?? 0} curated hospitals`,
-                                        );
-                                    }}
-                                >
-                                    Load Curated Hospitals
-                                </Button>
-                            )}
                         </div>
                     </>
                 );
