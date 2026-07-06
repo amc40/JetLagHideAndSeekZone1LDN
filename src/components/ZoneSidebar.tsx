@@ -20,6 +20,7 @@ import {
 import {
     animateMapMovements,
     autoZoom,
+    curatedStationsLoaded as curatedStationsLoadedAtom,
     customStations as customStationsAtom,
     disabledStations,
     displayHidingZones,
@@ -40,6 +41,8 @@ import {
 import { cn } from "@/lib/utils";
 import {
     BLANK_GEOJSON,
+    type CustomStation,
+    fetchCuratedStations,
     findPlacesInZone,
     findPlacesSpecificInZone,
     findTentacleLocations,
@@ -99,6 +102,7 @@ export const ZoneSidebar = () => {
     const mergeDuplicates = useStore(mergeDuplicatesAtom);
     const includeDefaultStations = useStore(includeDefaultStationsAtom);
     const $customStations = useStore(customStationsAtom);
+    const $curatedStationsLoaded = useStore(curatedStationsLoadedAtom);
     const [hidingZoneModeStationID, setHidingZoneModeStationID] =
         useState<string>("");
     const [stationSearch, setStationSearch] = useState<string>("");
@@ -106,6 +110,36 @@ export const ZoneSidebar = () => {
     const setStations = trainStations.set;
     const sidebarRef = useRef<HTMLDivElement>(null);
     const [importUrl, setImportUrl] = useState("");
+
+    const loadCuratedStations = async () => {
+        try {
+            const data = await fetchCuratedStations();
+            const parsed: CustomStation[] = (data.features ?? []).map(
+                (f: any) => ({
+                    id:
+                        f.properties?.id ??
+                        `${f.geometry.coordinates[1]},${f.geometry.coordinates[0]}`,
+                    name: f.properties?.name,
+                    lat: f.geometry.coordinates[1],
+                    lng: f.geometry.coordinates[0],
+                }),
+            );
+            if (parsed.length > 0) {
+                customStationsAtom.set(parsed);
+                useCustomStationsAtom.set(true);
+                toast.success(`Loaded ${parsed.length} curated stations`);
+            }
+        } catch (e: any) {
+            toast.error(`Failed to load curated stations: ${e.message || e}`);
+        }
+    };
+
+    useEffect(() => {
+        if ($curatedStationsLoaded) return;
+        loadCuratedStations().finally(() =>
+            curatedStationsLoadedAtom.set(true),
+        );
+    }, [$curatedStationsLoaded]);
 
     const removeHidingZones = () => {
         if (!map) return;
@@ -567,6 +601,19 @@ export const ZoneSidebar = () => {
                             </SidebarMenuItem>
                             {useCustomStations && (
                                 <>
+                                    <SidebarMenuItem
+                                        className={MENU_ITEM_CLASSNAME}
+                                    >
+                                        <Button
+                                            className="w-full"
+                                            disabled={$isLoading}
+                                            onClick={() => {
+                                                loadCuratedStations();
+                                            }}
+                                        >
+                                            Reload Curated Stations
+                                        </Button>
+                                    </SidebarMenuItem>
                                     <SidebarMenuItem
                                         className={MENU_ITEM_CLASSNAME}
                                     >

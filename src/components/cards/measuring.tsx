@@ -112,7 +112,7 @@ export const MeasuringQuestionComponent = ({
                             />
                             and use the buttons at the bottom left of the map.
                         </p>
-                        <div className="flex justify-center mb-2">
+                        <div className="flex justify-center gap-2 mb-2">
                             <PresetsDialog
                                 data={data}
                                 presetTypeHint={data.type}
