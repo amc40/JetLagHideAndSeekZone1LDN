@@ -185,6 +185,8 @@ export const Map = ({ className }: { className?: string }) => {
             }
         });
 
+        const playAreaBoundary = structuredClone(mapGeoData);
+
         try {
             mapGeoData = await applyQuestionsToMapGeoData(
                 $questions,
@@ -204,16 +206,38 @@ export const Map = ({ className }: { className?: string }) => {
             };
 
             map.eachLayer((layer: any) => {
-                if (layer.eliminationGeoJSON) {
+                if (layer.eliminationGeoJSON || layer.playAreaBoundaryGeoJSON) {
                     // Hopefully only geoJSON layers
                     map.removeLayer(layer);
                 }
             });
 
-            const g = L.geoJSON(mapGeoData);
+            const g = L.geoJSON(mapGeoData, {
+                style: {
+                    stroke: false,
+                    fillColor: "#1e293b",
+                    fillOpacity: 0.55,
+                },
+            });
             // @ts-expect-error This is a check such that only this type of layer is removed
             g.eliminationGeoJSON = true;
             g.addTo(map);
+
+            // Outline of the original play area, drawn on top of the
+            // elimination mask so it stays visually distinct from the
+            // (unstroked) impossible-zone fill above.
+            const boundary = L.geoJSON(playAreaBoundary, {
+                style: {
+                    fill: false,
+                    color: "#facc15",
+                    weight: 3,
+                    dashArray: "8 6",
+                    opacity: 0.9,
+                },
+            });
+            // @ts-expect-error This is a check such that only this type of layer is removed
+            boundary.playAreaBoundaryGeoJSON = true;
+            boundary.addTo(map);
 
             questionFinishedMapData.set(mapGeoData);
 
