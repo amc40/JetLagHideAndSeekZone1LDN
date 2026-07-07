@@ -1,6 +1,9 @@
 # build output
 dist/
 
+# generated at build/dev time from @arcgis/core, see scripts/copy-arcgis-assets.mjs
+public/arcgis-assets/
+
 # generated types
 .astro/
 
