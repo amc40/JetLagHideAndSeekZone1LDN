@@ -6,7 +6,7 @@ import { registerSW } from "virtual:pwa-register";
 // By default @arcgis/core fetches its geodesic engine assets (WASM, workers,
 // locales) from Esri's CDN at runtime, which doesn't work offline. Serve them
 // from this origin instead - see scripts/copy-arcgis-assets.mjs.
-esriConfig.assetsPath = `${import.meta.env.BASE_URL}arcgis-assets`;
+esriConfig.assetsPath = `${import.meta.env.BASE_URL}/arcgis-assets`;
 
 registerSW({
     immediate: true,
