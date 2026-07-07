@@ -1,4 +1,357 @@
 {
     "type": "FeatureCollection",
-    "features": []
+    "features": [
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.2176095, 51.5222211]
+            },
+            "properties": {
+                "id": "way/31636962",
+                "name": "St Charles' Hospital"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1742846, 51.5174818]
+            },
+            "properties": {
+                "id": "way/45388015",
+                "name": "St Mary's Hospital"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1529101, 51.522486]
+            },
+            "properties": {
+                "id": "way/80888181",
+                "name": "The Princess Grace Hospital"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1504175, 51.5209342]
+            },
+            "properties": {
+                "id": "way/80888190",
+                "name": "King Edward VII's Hospital"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1443613, 51.5230212]
+            },
+            "properties": {
+                "id": "way/80888195",
+                "name": "The Portland Hospital"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1725464, 51.4905731]
+            },
+            "properties": {
+                "id": "way/85472885",
+                "name": "The Royal Marsden Hospital"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1493761, 51.5182542]
+            },
+            "properties": {
+                "id": "way/110476079",
+                "name": "The London Welbeck Hospital"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1359502, 51.4921664]
+            },
+            "properties": {
+                "id": "way/112682015",
+                "name": "Gordon Hospital"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1183943, 51.4983235]
+            },
+            "properties": {
+                "id": "way/116629214",
+                "name": "Evelina London Children's Hospital"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1187323, 51.4991013]
+            },
+            "properties": {
+                "id": "way/122227536",
+                "name": "St Thomas' Hospital"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.148755, 51.4993942]
+            },
+            "properties": {
+                "id": "way/122299506",
+                "name": "Cleveland Clinic London"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1000771, 51.5175315]
+            },
+            "properties": {
+                "id": "way/170732745",
+                "name": "St Bartholomew's Hospital"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.093654, 51.4684289]
+            },
+            "properties": {
+                "id": "way/277432734",
+                "name": "King's College Hospital"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.0860403, 51.5061317]
+            },
+            "properties": {
+                "id": "way/413948227",
+                "name": "London Bridge Hospital"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.0755805, 51.5277306]
+            },
+            "properties": {
+                "id": "way/497718283",
+                "name": "Mildmay Mission Hospital"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1204028, 51.5224739]
+            },
+            "properties": {
+                "id": "way/548533106",
+                "name": "Great Ormond Street Hospital for Children"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1652215, 51.5218142]
+            },
+            "properties": {
+                "id": "way/688880323",
+                "name": "Nightingale Hospital"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1749786, 51.5332691]
+            },
+            "properties": {
+                "id": "way/699934188",
+                "name": "Hospital of St John and St Elizabeth"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.0868297, 51.5032347]
+            },
+            "properties": {
+                "id": "way/707322577",
+                "name": "Guy's Hospital"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1814395, 51.4843905]
+            },
+            "properties": {
+                "id": "way/881918254",
+                "name": "Chelsea and Westminster Hospital"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1345308, 51.5225494]
+            },
+            "properties": {
+                "id": "way/1113340300",
+                "name": "Royal National ENT and Eastman Dental Hospitals"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1224733, 51.5221919]
+            },
+            "properties": {
+                "id": "way/1390491265",
+                "name": "National Hospital for Neurology and Neurosurgery"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1214747, 51.5217696]
+            },
+            "properties": {
+                "id": "way/1390491266",
+                "name": "Royal London Hospital for Integrated Medicine"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1499741, 51.5229039]
+            },
+            "properties": {
+                "id": "relation/10286924",
+                "name": "London Clinic"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1313957, 51.5362791]
+            },
+            "properties": {
+                "id": "way/43290805",
+                "name": "St. Pancras Hospital"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.170971, 51.4891664]
+            },
+            "properties": {
+                "id": "way/85472872",
+                "name": "Royal Brompton Hospital"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.150183, 51.4864231]
+            },
+            "properties": {
+                "id": "way/111343934",
+                "name": "Lister Hospital"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.2197632, 51.486919]
+            },
+            "properties": {
+                "id": "way/188617701",
+                "name": "Charing Cross Hospital"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.0902151, 51.5272631]
+            },
+            "properties": {
+                "id": "way/402012627",
+                "name": "Moorfields Eye Hospital (City Road campus)"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1364433, 51.5248695]
+            },
+            "properties": {
+                "id": "way/440410278",
+                "name": "University College Hospital"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1911413, 51.4952203]
+            },
+            "properties": {
+                "id": "way/821710065",
+                "name": "Cromwell Hospital"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.0902554, 51.4690387]
+            },
+            "properties": {
+                "id": "relation/8286235",
+                "name": "Maudsley Hospital"
+            }
+        }
+    ]
 }

@@ -42,17 +42,41 @@ function slugify(name) {
         .replace(/(^-|-$)/g, "");
 }
 
+// overpass-api.de's Apache config returns 406 for requests with no
+// User-Agent header, which Node's fetch doesn't send by default.
+// "Connection: close" avoids Node's fetch keep-alive pool, which was
+// observed to silently hang on reused connections in this environment.
+const REQUEST_HEADERS = {
+    "User-Agent": "JetLagHideAndSeekZone1LDN-poi-generator/1.0",
+    Connection: "close",
+};
+
 async function queryOverpass(query) {
     const encodedQuery = encodeURIComponent(query);
-    try {
-        const response = await fetch(`${OVERPASS_API}?data=${encodedQuery}`);
-        if (response.ok) return response.json();
-    } catch {
-        // Fall through to the fallback host
+    // overpass-api.de enforces a small per-client concurrent-slot budget and
+    // answers over-budget requests with 429; back off and retry the primary
+    // host a couple of times before giving up on it, since the fallback host
+    // has been observed to be unreliable in this environment.
+    for (let attempt = 0; attempt < 3; attempt++) {
+        try {
+            const response = await fetch(
+                `${OVERPASS_API}?data=${encodedQuery}`,
+                {
+                    headers: REQUEST_HEADERS,
+                    signal: AbortSignal.timeout(20_000),
+                },
+            );
+            if (response.ok) return response.json();
+            if (response.status !== 429) break;
+        } catch {
+            break;
+        }
+        await sleep(5000 * (attempt + 1));
     }
 
     const fallbackResponse = await fetch(
         `${OVERPASS_API_FALLBACK}?data=${encodedQuery}`,
+        { headers: REQUEST_HEADERS, signal: AbortSignal.timeout(20_000) },
     );
     if (!fallbackResponse.ok) {
         throw new Error(
