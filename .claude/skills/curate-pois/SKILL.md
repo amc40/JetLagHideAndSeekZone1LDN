@@ -28,6 +28,8 @@ node scripts/fetch-poi-candidates.mjs '<tag filter>' '<south,west,north,east>'
 
 This is a read-only helper (see the script for details) — it queries Overpass directly and prints a JSON array of `{osmType, osmId, name, lat, lon, tags}` to stdout. It does not touch any curated file. Network access is required; if it fails, tell the user rather than guessing at data.
 
+**Known gotcha**: `overpass-api.de` returns `406 Not Acceptable` for requests with no `User-Agent` header — which is what Node's built-in `fetch` sends by default (curl works fine because it always sets one). The script already sets an explicit `User-Agent`, so this shouldn't resurface unless that header is ever removed. If you see a 406 from the primary host (not the fallback), check that header first before assuming the API is down. The fallback host (`overpass.private.coffee`) has also been seen returning `429`/timing out under normal use — treat a fallback failure as inconclusive, not proof the primary is broken.
+
 ## 3. Apply judgment — build Recommended vs Excluded
 
 Go through every candidate yourself and reason about it, don't just forward the list. For each one, decide: keep, drop, or unsure — and write one clear sentence of rationale either way. Look for:
