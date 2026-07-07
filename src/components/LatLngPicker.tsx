@@ -267,11 +267,20 @@ const LatLngEditForm = ({
 
                                     setLoading(true);
 
-                                    const geo = await geocode(
-                                        location,
-                                        "en",
-                                        false,
-                                    );
+                                    let geo;
+                                    try {
+                                        geo = await geocode(
+                                            location,
+                                            "en",
+                                            false,
+                                        );
+                                    } catch {
+                                        toast.error(
+                                            "Could not resolve location for short code (are you offline?)",
+                                        );
+                                        setLoading(false);
+                                        return;
+                                    }
 
                                     if (geo.length === 0) {
                                         toast.error(

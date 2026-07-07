@@ -3,8 +3,9 @@
     "type": "module",
     "version": "0.0.1",
     "scripts": {
-        "dev": "astro dev",
-        "build": "astro build",
+        "copy:arcgis-assets": "node scripts/copy-arcgis-assets.mjs",
+        "dev": "pnpm run copy:arcgis-assets && astro dev",
+        "build": "pnpm run copy:arcgis-assets && astro build",
         "preview": "astro preview",
         "astro": "astro",
         "lint": "eslint --fix src && prettier . --write",
