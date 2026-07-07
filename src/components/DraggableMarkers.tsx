@@ -55,8 +55,8 @@ const ColoredMarker = ({
                 icon={
                     color
                         ? new Icon({
-                              iconUrl: `${import.meta.env.BASE_URL}marker-icon-2x-${color}.png`,
-                              shadowUrl: `${import.meta.env.BASE_URL}marker-shadow.png`,
+                              iconUrl: `${import.meta.env.BASE_URL}/marker-icon-2x-${color}.png`,
+                              shadowUrl: `${import.meta.env.BASE_URL}/marker-shadow.png`,
                               iconSize: [25, 41],
                               iconAnchor: [12, 41],
                               popupAnchor: [1, -34],
