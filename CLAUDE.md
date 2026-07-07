@@ -69,6 +69,11 @@ The project uses **`@arcgis/core`** for geodesically accurate buffers (as oppose
 - **Geocoder** — Photon/Komoot API for place-name search in `PlacePicker`
 - **`coastline50.geojson`** in `/public/` — bundled coastline data served locally
 
+**Node-side Overpass scripts** (`scripts/fetch-poi-candidates.mjs`, `scripts/generate-curated-pois.mjs`, used by the `curate-pois` skill) talk to `overpass-api.de` directly from Node rather than a browser, which surfaces two gotchas that don't affect the in-browser app:
+
+- `overpass-api.de`'s Apache config returns `406 Not Acceptable` for requests with no `User-Agent` header — Node's `fetch` sends none by default (browsers always do). Both scripts set an explicit `User-Agent` to work around this.
+- When running inside Claude Code's remote sandboxed environment, Node's built-in `fetch` does not read the `HTTPS_PROXY` env var by default, so it bypasses the environment's proxy and connects directly — which was observed to cause intermittent multi-second hangs/timeouts to `overpass-api.de`. Run these scripts with `NODE_USE_ENV_PROXY=1` (Node ≥22.21) in that environment to route through the proxy reliably.
+
 ### Adding a New Question Type
 
 1. Add the Zod schema variant in `src/maps/schema.ts` and export the type

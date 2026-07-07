@@ -23,7 +23,11 @@ if (!tagFilter || !bbox) {
 const query = `[out:json][timeout:60];nwr${tagFilter}(${bbox});out center tags;`;
 
 async function queryOverpass(url) {
-    const response = await fetch(`${url}?data=${encodeURIComponent(query)}`);
+    const response = await fetch(`${url}?data=${encodeURIComponent(query)}`, {
+        // overpass-api.de's Apache config returns 406 for requests with no
+        // User-Agent header, which Node's fetch doesn't send by default.
+        headers: { "User-Agent": "JetLagHideAndSeekZone1LDN-poi-fetcher/1.0" },
+    });
     if (!response.ok) {
         throw new Error(`${response.status} ${response.statusText}`);
     }
