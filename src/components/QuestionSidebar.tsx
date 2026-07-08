@@ -47,60 +47,16 @@ export const QuestionSidebar = () => {
                     <SidebarCloseIcon />
                 </button>
             </div>
-            <SidebarContent>
-                {$questions.map((question) => {
-                    switch (question.id) {
-                        case "radius":
-                            return (
-                                <RadiusQuestionComponent
-                                    data={question.data}
-                                    key={question.key}
-                                    questionKey={question.key}
-                                />
-                            );
-                        case "thermometer":
-                            return (
-                                <ThermometerQuestionComponent
-                                    data={question.data}
-                                    key={question.key}
-                                    questionKey={question.key}
-                                />
-                            );
-                        case "tentacles":
-                            return (
-                                <TentacleQuestionComponent
-                                    data={question.data}
-                                    key={question.key}
-                                    questionKey={question.key}
-                                />
-                            );
-                        case "matching":
-                            return (
-                                <MatchingQuestionComponent
-                                    data={question.data}
-                                    key={question.key}
-                                    questionKey={question.key}
-                                />
-                            );
-                        case "measuring":
-                            return (
-                                <MeasuringQuestionComponent
-                                    data={question.data}
-                                    key={question.key}
-                                    questionKey={question.key}
-                                />
-                            );
-                        default:
-                            return null;
-                    }
-                })}
-            </SidebarContent>
             <SidebarGroup>
                 <SidebarGroupContent>
                     <SidebarMenu data-tutorial-id="add-questions-buttons">
                         <SidebarMenuItem>
                             <AddQuestionDialog>
-                                <SidebarMenuButton disabled={$isLoading}>
+                                <SidebarMenuButton
+                                    size="lg"
+                                    disabled={$isLoading}
+                                    className="bg-primary text-primary-foreground font-semibold justify-center hover:bg-primary/90 hover:text-primary-foreground"
+                                >
                                     Add Question
                                 </SidebarMenuButton>
                             </AddQuestionDialog>
@@ -119,6 +75,61 @@ export const QuestionSidebar = () => {
                     </SidebarMenu>
                 </SidebarGroupContent>
             </SidebarGroup>
+            <SidebarContent>
+                {$questions.length === 0 ? (
+                    <p className="mx-4 mt-4 text-sm text-muted-foreground">
+                        No questions yet — tap <strong>Add Question</strong>{" "}
+                        above or long-press anywhere on the map.
+                    </p>
+                ) : (
+                    $questions.map((question) => {
+                        switch (question.id) {
+                            case "radius":
+                                return (
+                                    <RadiusQuestionComponent
+                                        data={question.data}
+                                        key={question.key}
+                                        questionKey={question.key}
+                                    />
+                                );
+                            case "thermometer":
+                                return (
+                                    <ThermometerQuestionComponent
+                                        data={question.data}
+                                        key={question.key}
+                                        questionKey={question.key}
+                                    />
+                                );
+                            case "tentacles":
+                                return (
+                                    <TentacleQuestionComponent
+                                        data={question.data}
+                                        key={question.key}
+                                        questionKey={question.key}
+                                    />
+                                );
+                            case "matching":
+                                return (
+                                    <MatchingQuestionComponent
+                                        data={question.data}
+                                        key={question.key}
+                                        questionKey={question.key}
+                                    />
+                                );
+                            case "measuring":
+                                return (
+                                    <MeasuringQuestionComponent
+                                        data={question.data}
+                                        key={question.key}
+                                        questionKey={question.key}
+                                    />
+                                );
+                            default:
+                                return null;
+                        }
+                    })
+                )}
+            </SidebarContent>
         </Sidebar>
     );
 };
