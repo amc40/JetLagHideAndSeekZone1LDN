@@ -13,6 +13,7 @@ import {
 } from "@/lib/context";
 import {
     fetchCoastline,
+    fetchCuratedCinemas,
     fetchCuratedHospitals,
     findPlacesInZone,
     findPlacesSpecificInZone,
@@ -191,8 +192,10 @@ export const determineMeasuringBoundary = async (
         case "park-full": {
             const location = question.type.split("-full")[0] as APILocations;
 
-            if (location === "hospital") {
-                const curated = await fetchCuratedHospitals();
+            if (location === "hospital" || location === "cinema") {
+                const curated = await (location === "hospital"
+                    ? fetchCuratedHospitals()
+                    : fetchCuratedCinemas());
                 if (curated.features?.length > 0) {
                     return [
                         turf.combine(turf.featureCollection(curated.features))

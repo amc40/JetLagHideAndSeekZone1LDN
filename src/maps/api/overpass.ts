@@ -185,6 +185,16 @@ export const fetchCuratedHospitals = async () => {
     return data;
 };
 
+export const fetchCuratedCinemas = async () => {
+    const response = await cacheFetch(
+        import.meta.env.BASE_URL + "/curated-cinemas.geojson",
+        "Loading curated cinemas...",
+        CacheType.PERMANENT_CACHE,
+    );
+    const data = await response.json();
+    return data;
+};
+
 export const trainLineNodeFinder = async (node: string): Promise<number[]> => {
     const nodeId = node.split("/")[1];
     const tagQuery = `

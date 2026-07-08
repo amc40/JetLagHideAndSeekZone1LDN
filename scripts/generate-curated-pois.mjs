@@ -31,6 +31,13 @@ const CATEGORIES = [
             new URL("../public/curated-hospitals.geojson", import.meta.url),
         ),
     },
+    {
+        name: "cinemas",
+        source: new URL("../src/data/curated-cinemas.mjs", import.meta.url),
+        output: fileURLToPath(
+            new URL("../public/curated-cinemas.geojson", import.meta.url),
+        ),
+    },
 ];
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
