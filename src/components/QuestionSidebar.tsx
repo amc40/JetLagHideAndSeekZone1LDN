@@ -47,6 +47,30 @@ export const QuestionSidebar = () => {
                     <SidebarCloseIcon />
                 </button>
             </div>
+            <SidebarGroup>
+                <SidebarGroupContent>
+                    <SidebarMenu data-tutorial-id="add-questions-buttons">
+                        <SidebarMenuItem>
+                            <AddQuestionDialog>
+                                <SidebarMenuButton disabled={$isLoading}>
+                                    Add Question
+                                </SidebarMenuButton>
+                            </AddQuestionDialog>
+                        </SidebarMenuItem>
+                        {!$autoSave && (
+                            <SidebarMenuItem>
+                                <SidebarMenuButton
+                                    className="bg-blue-600 p-2 rounded-md font-semibold font-poppins transition-shadow duration-500"
+                                    onClick={save}
+                                    disabled={$isLoading}
+                                >
+                                    Save
+                                </SidebarMenuButton>
+                            </SidebarMenuItem>
+                        )}
+                    </SidebarMenu>
+                </SidebarGroupContent>
+            </SidebarGroup>
             <SidebarContent>
                 {$questions.map((question) => {
                     switch (question.id) {
@@ -95,30 +119,6 @@ export const QuestionSidebar = () => {
                     }
                 })}
             </SidebarContent>
-            <SidebarGroup>
-                <SidebarGroupContent>
-                    <SidebarMenu data-tutorial-id="add-questions-buttons">
-                        <SidebarMenuItem>
-                            <AddQuestionDialog>
-                                <SidebarMenuButton disabled={$isLoading}>
-                                    Add Question
-                                </SidebarMenuButton>
-                            </AddQuestionDialog>
-                        </SidebarMenuItem>
-                        {!$autoSave && (
-                            <SidebarMenuItem>
-                                <SidebarMenuButton
-                                    className="bg-blue-600 p-2 rounded-md font-semibold font-poppins transition-shadow duration-500"
-                                    onClick={save}
-                                    disabled={$isLoading}
-                                >
-                                    Save
-                                </SidebarMenuButton>
-                            </SidebarMenuItem>
-                        )}
-                    </SidebarMenu>
-                </SidebarGroupContent>
-            </SidebarGroup>
         </Sidebar>
     );
 };
