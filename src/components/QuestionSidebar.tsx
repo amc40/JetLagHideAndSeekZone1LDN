@@ -35,10 +35,15 @@ export const QuestionSidebar = () => {
     const $isLoading = useStore(isLoading);
 
     return (
-        <Sidebar>
+        <Sidebar
+            title="Questions"
+            description="Add and edit hide-and-seek questions to narrow down the hiding zone."
+        >
             <div className="flex items-center justify-between">
                 <h2 className="ml-4 mt-4 font-poppins text-2xl">Questions</h2>
                 <button
+                    type="button"
+                    aria-label="Close Questions panel"
                     className="p-2 mr-1 visible md:hidden cursor-pointer"
                     onClick={() => {
                         SidebarContext.get().setOpenMobile(false);
@@ -52,7 +57,11 @@ export const QuestionSidebar = () => {
                     <SidebarMenu data-tutorial-id="add-questions-buttons">
                         <SidebarMenuItem>
                             <AddQuestionDialog>
-                                <SidebarMenuButton disabled={$isLoading}>
+                                <SidebarMenuButton
+                                    size="lg"
+                                    disabled={$isLoading}
+                                    className="bg-primary text-primary-foreground font-semibold justify-center hover:bg-primary/90 hover:text-primary-foreground"
+                                >
                                     Add Question
                                 </SidebarMenuButton>
                             </AddQuestionDialog>
@@ -72,52 +81,59 @@ export const QuestionSidebar = () => {
                 </SidebarGroupContent>
             </SidebarGroup>
             <SidebarContent>
-                {$questions.map((question) => {
-                    switch (question.id) {
-                        case "radius":
-                            return (
-                                <RadiusQuestionComponent
-                                    data={question.data}
-                                    key={question.key}
-                                    questionKey={question.key}
-                                />
-                            );
-                        case "thermometer":
-                            return (
-                                <ThermometerQuestionComponent
-                                    data={question.data}
-                                    key={question.key}
-                                    questionKey={question.key}
-                                />
-                            );
-                        case "tentacles":
-                            return (
-                                <TentacleQuestionComponent
-                                    data={question.data}
-                                    key={question.key}
-                                    questionKey={question.key}
-                                />
-                            );
-                        case "matching":
-                            return (
-                                <MatchingQuestionComponent
-                                    data={question.data}
-                                    key={question.key}
-                                    questionKey={question.key}
-                                />
-                            );
-                        case "measuring":
-                            return (
-                                <MeasuringQuestionComponent
-                                    data={question.data}
-                                    key={question.key}
-                                    questionKey={question.key}
-                                />
-                            );
-                        default:
-                            return null;
-                    }
-                })}
+                {$questions.length === 0 ? (
+                    <p className="mx-4 mt-4 text-sm text-muted-foreground">
+                        No questions yet — tap <strong>Add Question</strong>{" "}
+                        above or long-press anywhere on the map.
+                    </p>
+                ) : (
+                    $questions.map((question) => {
+                        switch (question.id) {
+                            case "radius":
+                                return (
+                                    <RadiusQuestionComponent
+                                        data={question.data}
+                                        key={question.key}
+                                        questionKey={question.key}
+                                    />
+                                );
+                            case "thermometer":
+                                return (
+                                    <ThermometerQuestionComponent
+                                        data={question.data}
+                                        key={question.key}
+                                        questionKey={question.key}
+                                    />
+                                );
+                            case "tentacles":
+                                return (
+                                    <TentacleQuestionComponent
+                                        data={question.data}
+                                        key={question.key}
+                                        questionKey={question.key}
+                                    />
+                                );
+                            case "matching":
+                                return (
+                                    <MatchingQuestionComponent
+                                        data={question.data}
+                                        key={question.key}
+                                        questionKey={question.key}
+                                    />
+                                );
+                            case "measuring":
+                                return (
+                                    <MeasuringQuestionComponent
+                                        data={question.data}
+                                        key={question.key}
+                                        questionKey={question.key}
+                                    />
+                                );
+                            default:
+                                return null;
+                        }
+                    })
+                )}
             </SidebarContent>
         </Sidebar>
     );

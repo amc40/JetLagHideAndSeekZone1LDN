@@ -176,6 +176,8 @@ const Sidebar = React.forwardRef<
         side?: "left" | "right";
         variant?: "sidebar" | "floating" | "inset";
         collapsible?: "offcanvas" | "icon" | "none";
+        title: string;
+        description?: string;
     }
 >(
     (
@@ -185,6 +187,8 @@ const Sidebar = React.forwardRef<
             collapsible = "offcanvas",
             className,
             children,
+            title,
+            description,
             ...props
         },
         ref,
@@ -243,6 +247,12 @@ const Sidebar = React.forwardRef<
                                 } as React.CSSProperties
                             }
                         >
+                            <DrawerPrimitive.Title className="sr-only">
+                                {title}
+                            </DrawerPrimitive.Title>
+                            <DrawerPrimitive.Description className="sr-only">
+                                {description ?? title}
+                            </DrawerPrimitive.Description>
                             <div
                                 aria-hidden="true"
                                 className="mx-auto mt-2 h-1.5 w-10 shrink-0 rounded-full bg-sidebar-foreground/20"
@@ -306,7 +316,7 @@ Sidebar.displayName = "Sidebar";
 const SidebarTrigger = React.forwardRef<
     React.ElementRef<typeof Button>,
     React.ComponentProps<typeof Button>
->(({ className, onClick, ...props }, ref) => {
+>(({ className, onClick, "aria-label": ariaLabel, ...props }, ref) => {
     const { toggleSidebar } = useStore(SidebarContext);
 
     return (
@@ -314,6 +324,7 @@ const SidebarTrigger = React.forwardRef<
             ref={ref}
             data-sidebar="trigger"
             size="icon"
+            aria-label={ariaLabel ?? "Toggle Questions panel"}
             className={cn(
                 "bg-white hover:bg-[#f4f4f4] text-black rounded-sm border-2 border-black border-opacity-30 cursor-pointer py-1 px-2",
                 "flex items-center gap-1",
