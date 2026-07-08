@@ -4,6 +4,10 @@ import { useRef, useState } from "react";
 import { VscChevronDown, VscShare, VscTrash } from "react-icons/vsc";
 
 import {
+    MoreActionsMenu,
+    MoreActionsMenuItem,
+} from "@/components/MoreActionsMenu";
+import {
     AlertDialog,
     AlertDialogAction,
     AlertDialogCancel,
@@ -97,168 +101,192 @@ export const QuestionCard = ({
                     >
                         <SidebarMenu>{children}</SidebarMenu>
                         <div className="flex gap-2 pt-2 px-2 justify-center">
-                            <Dialog>
-                                <DialogTrigger asChild>
-                                    <Button variant="outline" size="icon">
-                                        <VscShare />
-                                    </Button>
-                                </DialogTrigger>
-                                <DialogContent>
-                                    <DialogHeader>
-                                        <DialogTitle className="text-2xl">
-                                            Share this Question!
-                                        </DialogTitle>
-                                        <DialogDescription>
-                                            Below you can access the JSON
-                                            representing the question. Send this
-                                            to another player for them to copy.
-                                            They can then click &ldquo;Paste
-                                            Question&rdquo; at the bottom of the
-                                            &ldquo;Questions&rdquo; sidebar.
-                                        </DialogDescription>
-                                    </DialogHeader>
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        className="mb-2 sm:mb-0 transition-colors"
-                                        ref={copyButtonRef}
-                                        onClick={() => {
-                                            navigator.clipboard
-                                                .writeText(
-                                                    JSON.stringify(
-                                                        $questions.find(
-                                                            (q) =>
-                                                                q.key ===
-                                                                questionKey,
-                                                        ),
-                                                        null,
-                                                        4,
-                                                    ),
-                                                )
-                                                .then(() => {
-                                                    if (copyButtonRef.current) {
-                                                        copyButtonRef.current.textContent =
-                                                            "Copied!";
-                                                        copyButtonRef.current.classList.add(
-                                                            "bg-green-500",
-                                                        );
-                                                        setTimeout(() => {
-                                                            if (
-                                                                copyButtonRef.current
-                                                            ) {
-                                                                copyButtonRef.current.textContent =
-                                                                    "Copy to Clipboard";
-                                                                copyButtonRef.current.classList.remove(
-                                                                    "bg-green-500",
-                                                                );
-                                                            }
-                                                        }, 2000);
-                                                    }
-                                                })
-                                                .catch(() => {
-                                                    if (copyButtonRef.current) {
-                                                        copyButtonRef.current.textContent =
-                                                            "Failed to Copy";
-                                                        copyButtonRef.current.classList.add(
-                                                            "bg-red-500",
-                                                        );
-                                                        setTimeout(() => {
-                                                            if (
-                                                                copyButtonRef.current
-                                                            ) {
-                                                                copyButtonRef.current.textContent =
-                                                                    "Copy to Clipboard";
-                                                                copyButtonRef.current.classList.remove(
-                                                                    "bg-red-500",
-                                                                );
-                                                            }
-                                                        }, 2000);
-                                                    }
-                                                });
-                                        }}
-                                    >
-                                        Copy to Clipboard
-                                    </Button>
-                                    <textarea
-                                        className="w-full h-[300px] bg-slate-900 text-white rounded-md p-2"
-                                        readOnly
-                                        value={JSON.stringify(
-                                            $questions.find(
-                                                (q) => q.key === questionKey,
-                                            ),
-                                            null,
-                                            4,
-                                        )}
-                                    ></textarea>
-                                </DialogContent>
-                            </Dialog>
-                            <AlertDialog>
-                                <AlertDialogTrigger asChild>
-                                    <Button
-                                        variant="outline"
-                                        size="icon"
-                                        disabled={$isLoading}
-                                    >
-                                        <VscTrash />
-                                    </Button>
-                                </AlertDialogTrigger>
-                                <AlertDialogContent>
-                                    <AlertDialogHeader>
-                                        <AlertDialogTitle>
-                                            Are you absolutely sure?
-                                        </AlertDialogTitle>
-                                        <AlertDialogDescription>
-                                            This action cannot be undone. This
-                                            will permanently delete the
-                                            question.
-                                        </AlertDialogDescription>
-                                    </AlertDialogHeader>
-                                    <AlertDialogFooter>
-                                        <AlertDialogCancel>
-                                            Cancel
-                                        </AlertDialogCancel>
-                                        <AlertDialogAction
-                                            onClick={() => {
-                                                questions.set([]);
-                                            }}
-                                        >
-                                            Delete All Questions
-                                        </AlertDialogAction>
-                                        <AlertDialogAction
-                                            onClick={() => {
-                                                questions.set(
-                                                    $questions.filter(
-                                                        (q) =>
-                                                            q.key !==
-                                                            questionKey,
-                                                    ),
-                                                );
-                                            }}
-                                            className="mb-2 sm:mb-0"
-                                        >
-                                            Delete Question
-                                        </AlertDialogAction>
-                                    </AlertDialogFooter>
-                                </AlertDialogContent>
-                            </AlertDialog>
                             {locked !== undefined && (
                                 <Button
                                     variant="outline"
                                     size="icon"
                                     onClick={() => setLocked!(!locked)}
                                     disabled={$isLoading}
+                                    title={
+                                        locked
+                                            ? "Unlock question"
+                                            : "Lock question"
+                                    }
+                                    aria-label={
+                                        locked
+                                            ? "Unlock question"
+                                            : "Lock question"
+                                    }
                                 >
                                     {locked ? <LockIcon /> : <UnlockIcon />}
                                 </Button>
                             )}
-                            <Button
-                                variant="outline"
-                                size="icon"
-                                onClick={() => setHidden!(!hidden)}
+                            <MoreActionsMenu
                                 disabled={$isLoading}
+                                label="More question actions"
                             >
-                                {hidden ? <EyeOffIcon /> : <EyeIcon />}
-                            </Button>
+                                <MoreActionsMenuItem
+                                    icon={
+                                        hidden ? (
+                                            <EyeOffIcon className="size-4" />
+                                        ) : (
+                                            <EyeIcon className="size-4" />
+                                        )
+                                    }
+                                    onClick={() => setHidden!(!hidden)}
+                                    disabled={$isLoading}
+                                >
+                                    {hidden ? "Show question" : "Hide question"}
+                                </MoreActionsMenuItem>
+                                <Dialog>
+                                    <DialogTrigger asChild>
+                                        <Button
+                                            variant="ghost"
+                                            className="w-full justify-start gap-2 px-2"
+                                        >
+                                            <VscShare className="size-4" />
+                                            Share question JSON
+                                        </Button>
+                                    </DialogTrigger>
+                                    <DialogContent>
+                                        <DialogHeader>
+                                            <DialogTitle className="text-2xl">
+                                                Share this Question!
+                                            </DialogTitle>
+                                            <DialogDescription>
+                                                Below you can access the JSON
+                                                representing the question. Send
+                                                this to another player for them
+                                                to copy. They can then click
+                                                &ldquo;Paste Question&rdquo; at
+                                                the bottom of the
+                                                &ldquo;Questions&rdquo; sidebar.
+                                            </DialogDescription>
+                                        </DialogHeader>
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            className="mb-2 sm:mb-0 transition-colors"
+                                            ref={copyButtonRef}
+                                            onClick={() => {
+                                                navigator.clipboard
+                                                    .writeText(
+                                                        JSON.stringify(
+                                                            $questions.find(
+                                                                (q) =>
+                                                                    q.key ===
+                                                                    questionKey,
+                                                            ),
+                                                            null,
+                                                            4,
+                                                        ),
+                                                    )
+                                                    .then(() => {
+                                                        if (
+                                                            copyButtonRef.current
+                                                        ) {
+                                                            copyButtonRef.current.textContent =
+                                                                "Copied!";
+                                                            copyButtonRef.current.classList.add(
+                                                                "bg-green-500",
+                                                            );
+                                                            setTimeout(() => {
+                                                                if (
+                                                                    copyButtonRef.current
+                                                                ) {
+                                                                    copyButtonRef.current.textContent =
+                                                                        "Copy to Clipboard";
+                                                                    copyButtonRef.current.classList.remove(
+                                                                        "bg-green-500",
+                                                                    );
+                                                                }
+                                                            }, 2000);
+                                                        }
+                                                    })
+                                                    .catch(() => {
+                                                        if (
+                                                            copyButtonRef.current
+                                                        ) {
+                                                            copyButtonRef.current.textContent =
+                                                                "Failed to Copy";
+                                                            copyButtonRef.current.classList.add(
+                                                                "bg-red-500",
+                                                            );
+                                                            setTimeout(() => {
+                                                                if (
+                                                                    copyButtonRef.current
+                                                                ) {
+                                                                    copyButtonRef.current.textContent =
+                                                                        "Copy to Clipboard";
+                                                                    copyButtonRef.current.classList.remove(
+                                                                        "bg-red-500",
+                                                                    );
+                                                                }
+                                                            }, 2000);
+                                                        }
+                                                    });
+                                            }}
+                                        >
+                                            Copy to Clipboard
+                                        </Button>
+                                        <textarea
+                                            className="w-full h-[300px] bg-slate-900 text-white rounded-md p-2"
+                                            readOnly
+                                            value={JSON.stringify(
+                                                $questions.find(
+                                                    (q) =>
+                                                        q.key === questionKey,
+                                                ),
+                                                null,
+                                                4,
+                                            )}
+                                        ></textarea>
+                                    </DialogContent>
+                                </Dialog>
+                                <AlertDialog>
+                                    <AlertDialogTrigger asChild>
+                                        <Button
+                                            variant="ghost"
+                                            disabled={$isLoading}
+                                            className="w-full justify-start gap-2 px-2 text-destructive hover:text-destructive hover:bg-destructive/10"
+                                        >
+                                            <VscTrash className="size-4" />
+                                            Delete question
+                                        </Button>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent>
+                                        <AlertDialogHeader>
+                                            <AlertDialogTitle>
+                                                Are you absolutely sure?
+                                            </AlertDialogTitle>
+                                            <AlertDialogDescription>
+                                                This action cannot be undone.
+                                                This will permanently delete the
+                                                question.
+                                            </AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter>
+                                            <AlertDialogCancel>
+                                                Cancel
+                                            </AlertDialogCancel>
+                                            <AlertDialogAction
+                                                onClick={() => {
+                                                    questions.set(
+                                                        $questions.filter(
+                                                            (q) =>
+                                                                q.key !==
+                                                                questionKey,
+                                                        ),
+                                                    );
+                                                }}
+                                                className="mb-2 sm:mb-0"
+                                            >
+                                                Delete Question
+                                            </AlertDialogAction>
+                                        </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                </AlertDialog>
+                            </MoreActionsMenu>
                         </div>
                     </SidebarGroupContent>
                 </div>
