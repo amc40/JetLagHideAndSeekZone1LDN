@@ -1,5 +1,5 @@
 import { useStore } from "@nanostores/react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { toast } from "react-toastify";
 
 import {
@@ -7,8 +7,8 @@ import {
     DrawerContent,
     DrawerHeader,
     DrawerTitle,
-    DrawerTrigger,
 } from "@/components/ui/drawer";
+import { useIsMobile } from "@/hooks/use-mobile";
 import {
     additionalMapGeoLocations,
     allowGooglePlusCodes,
@@ -32,6 +32,7 @@ import {
     leafletMapContext,
     mapGeoJSON,
     mapGeoLocation,
+    optionsDrawerOpen,
     pastebinApiKey,
     permanentOverlay,
     planningModeEnabled,
@@ -43,13 +44,11 @@ import {
     useCustomStations,
 } from "@/lib/context";
 import {
-    cn,
-    compress,
-    decompress,
-    fetchFromPastebin,
-    shareOrFallback,
-    uploadToPastebin,
-} from "@/lib/utils";
+    HIDING_ZONE_COMPRESSED_URL_PARAM,
+    PASTEBIN_URL_PARAM,
+    shareHidingZone,
+} from "@/lib/shareHidingZone";
+import { cn, decompress, fetchFromPastebin } from "@/lib/utils";
 import { questionsSchema } from "@/maps/schema";
 
 import { LatitudeLongitude } from "./LatLngPicker";
@@ -67,8 +66,6 @@ import {
 import { UnitSelect } from "./UnitSelect";
 
 const HIDING_ZONE_URL_PARAM = "hz";
-const HIDING_ZONE_COMPRESSED_URL_PARAM = "hzc";
-const PASTEBIN_URL_PARAM = "pb";
 
 export const OptionDrawers = ({ className }: { className?: string }) => {
     useStore(triggerLocalRefresh);
@@ -85,9 +82,10 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
     const $alwaysUsePastebin = useStore(alwaysUsePastebin);
     const $followMe = useStore(followMe);
     const $customInitPref = useStore(customInitPreference);
+    const $isOptionsOpen = useStore(optionsDrawerOpen);
+    const isMobile = useIsMobile();
     const lastDefaultUnit = useRef($defaultUnit);
     const hasSyncedInitialUnit = useRef(false);
-    const [isOptionsOpen, setOptionsOpen] = useState(false);
 
     useEffect(() => {
         const currentDefault = $defaultUnit;
@@ -273,98 +271,45 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
     };
 
     return (
-        <div
-            className={cn(
-                "flex justify-end gap-2 max-[412px]:!mb-4 max-[340px]:flex-col",
-                className,
-            )}
-        >
-            <Button
-                className="shadow-md"
-                onClick={async () => {
-                    const hidingZoneString = JSON.stringify($hidingZone);
-                    let compressedData;
-                    try {
-                        compressedData = await compress(hidingZoneString);
-                    } catch (error) {
-                        console.error("Compression failed:", error);
-                        toast.error(`Failed to prepare data for sharing`);
-                        return;
-                    }
-
-                    const baseUrl = `${window.location.protocol}//${window.location.host}${window.location.pathname}`;
-                    let shareUrl = `${baseUrl}?${HIDING_ZONE_COMPRESSED_URL_PARAM}=${compressedData}`;
-
-                    if ($alwaysUsePastebin || shareUrl.length > 2000) {
-                        if (!$pastebinApiKey) {
-                            toast.error(
-                                "Data is too large for a URL or Pastebin is forced. Please enter a Pastebin API key in Options to share via Pastebin.",
-                            );
-                            return;
-                        }
-                        try {
-                            toast.info("Data is being shared via Pastebin...");
-                            const pastebinUrl = await uploadToPastebin(
+        <>
+            {!isMobile && (
+                <div
+                    className={cn(
+                        "flex justify-end gap-2 max-[412px]:!mb-4 max-[340px]:flex-col",
+                        className,
+                    )}
+                >
+                    <Button
+                        className="shadow-md"
+                        onClick={() =>
+                            shareHidingZone(
+                                $hidingZone,
+                                $alwaysUsePastebin,
                                 $pastebinApiKey,
-                                hidingZoneString,
-                            );
-                            const pasteId = pastebinUrl.substring(
-                                pastebinUrl.lastIndexOf("/") + 1,
-                            );
-                            shareUrl = `${baseUrl}?${PASTEBIN_URL_PARAM}=${pasteId}`;
-                            toast.success(
-                                "Successfully uploaded to Pastebin! URL is ready to be shared.",
-                            );
-                        } catch (error) {
-                            console.error("Pastebin upload failed:", error);
-                            toast.error(
-                                `Pastebin upload failed. Please check your API key and try again.`,
-                            );
-                            return;
+                            )
                         }
-                    }
-
-                    // Show platform native share sheet if possible
-                    await shareOrFallback(shareUrl).then((result) => {
-                        console.log(`result ${result}`);
-                        if (result === false) {
-                            return toast.error(
-                                `Clipboard not supported. Try manually copying/pasting: ${shareUrl}`,
-                                { className: "p-0 w-[1000px]" },
-                            );
-                        }
-
-                        if (result === "clipboard") {
-                            toast.success(
-                                "Hiding zone URL copied to clipboard",
-                                {
-                                    autoClose: 2000,
-                                },
-                            );
-                        }
-                    });
-                }}
-                data-tutorial-id="share-questions-button"
-            >
-                Share
-            </Button>
-            <Button
-                className="w-24 shadow-md"
-                onClick={() => {
-                    showTutorial.set(true);
-                }}
-            >
-                Tutorial
-            </Button>
-            <Drawer open={isOptionsOpen} onOpenChange={setOptionsOpen}>
-                <DrawerTrigger className="w-24" asChild>
+                        data-tutorial-id="share-questions-button"
+                    >
+                        Share
+                    </Button>
+                    <Button
+                        className="w-24 shadow-md"
+                        onClick={() => {
+                            showTutorial.set(true);
+                        }}
+                    >
+                        Tutorial
+                    </Button>
                     <Button
                         className="w-24 shadow-md"
                         data-tutorial-id="option-questions-button"
+                        onClick={() => optionsDrawerOpen.set(true)}
                     >
                         Options
                     </Button>
-                </DrawerTrigger>
+                </div>
+            )}
+            <Drawer open={$isOptionsOpen} onOpenChange={optionsDrawerOpen.set}>
                 <DrawerContent>
                     <div className="flex flex-col items-center gap-4 mb-4">
                         <DrawerHeader>
@@ -669,6 +614,6 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                     </div>
                 </DrawerContent>
             </Drawer>
-        </div>
+        </>
     );
 };
