@@ -40,16 +40,19 @@ import { TutorialDialog } from "@/components/TutorialDialog";
                             <SidebarTriggerR client:load />
                         </div>
                         <div
-                            class="flex flex-col flex-shrink max-w-fit z-[1030] absolute left-4 right-0 m-auto items-center group-[.fullscreen]:hidden"
+                            class="flex flex-col flex-shrink max-w-fit z-[1030] absolute left-4 right-0 m-auto items-center pointer-events-none group-[.fullscreen]:hidden"
                         >
-                            <OfflineIndicator client:load className="mt-4" />
+                            <OfflineIndicator
+                                client:load
+                                className="mt-4 pointer-events-auto"
+                            />
                             <MapLayersButton
                                 client:only
-                                className="mt-4 overflow-hidden shadow-md"
+                                className="mt-4 overflow-hidden shadow-md pointer-events-auto"
                             />
                             <PlacePicker
                                 client:only
-                                className="m-4 overflow-hidden"
+                                className="m-4 overflow-hidden pointer-events-auto"
                             />
                         </div>
                         <div
