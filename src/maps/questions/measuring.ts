@@ -13,6 +13,7 @@ import {
 } from "@/lib/context";
 import {
     fetchCoastline,
+    fetchCuratedConsulates,
     fetchCuratedHospitals,
     findPlacesInZone,
     findPlacesSpecificInZone,
@@ -193,6 +194,16 @@ export const determineMeasuringBoundary = async (
 
             if (location === "hospital") {
                 const curated = await fetchCuratedHospitals();
+                if (curated.features?.length > 0) {
+                    return [
+                        turf.combine(turf.featureCollection(curated.features))
+                            .features[0],
+                    ];
+                }
+            }
+
+            if (location === "consulate") {
+                const curated = await fetchCuratedConsulates();
                 if (curated.features?.length > 0) {
                     return [
                         turf.combine(turf.featureCollection(curated.features))
