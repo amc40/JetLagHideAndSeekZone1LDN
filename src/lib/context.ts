@@ -386,6 +386,10 @@ export const showTutorial = persistentAtom<boolean>("showTutorials", true, {
 });
 export const tutorialStep = atom<number>(0);
 
+// Lets the mobile bottom app bar's overflow menu open the same Options
+// drawer that the desktop button row opens.
+export const optionsDrawerOpen = atom<boolean>(false);
+
 export const customInitPreference = persistentAtom<"ask" | "blank" | "prefill">(
     "customInitPreference",
     "ask",
