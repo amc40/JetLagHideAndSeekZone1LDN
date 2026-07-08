@@ -99,7 +99,11 @@ export const QuestionCard = ({
                         <div className="flex gap-2 pt-2 px-2 justify-center">
                             <Dialog>
                                 <DialogTrigger asChild>
-                                    <Button variant="outline" size="icon">
+                                    <Button
+                                        variant="outline"
+                                        size="icon"
+                                        aria-label="Share question"
+                                    >
                                         <VscShare />
                                     </Button>
                                 </DialogTrigger>
@@ -198,6 +202,7 @@ export const QuestionCard = ({
                                         variant="outline"
                                         size="icon"
                                         disabled={$isLoading}
+                                        aria-label="Delete question"
                                     >
                                         <VscTrash />
                                     </Button>
@@ -247,6 +252,11 @@ export const QuestionCard = ({
                                     size="icon"
                                     onClick={() => setLocked!(!locked)}
                                     disabled={$isLoading}
+                                    aria-label={
+                                        locked
+                                            ? "Unlock question"
+                                            : "Lock question"
+                                    }
                                 >
                                     {locked ? <LockIcon /> : <UnlockIcon />}
                                 </Button>
@@ -256,6 +266,9 @@ export const QuestionCard = ({
                                 size="icon"
                                 onClick={() => setHidden!(!hidden)}
                                 disabled={$isLoading}
+                                aria-label={
+                                    hidden ? "Show question" : "Hide question"
+                                }
                             >
                                 {hidden ? <EyeOffIcon /> : <EyeIcon />}
                             </Button>

@@ -35,10 +35,15 @@ export const QuestionSidebar = () => {
     const $isLoading = useStore(isLoading);
 
     return (
-        <Sidebar>
+        <Sidebar
+            title="Questions"
+            description="Add and edit hide-and-seek questions to narrow down the hiding zone."
+        >
             <div className="flex items-center justify-between">
                 <h2 className="ml-4 mt-4 font-poppins text-2xl">Questions</h2>
                 <button
+                    type="button"
+                    aria-label="Close Questions panel"
                     className="p-2 mr-1 visible md:hidden cursor-pointer"
                     onClick={() => {
                         SidebarContext.get().setOpenMobile(false);

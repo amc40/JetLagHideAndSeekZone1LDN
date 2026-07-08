@@ -536,15 +536,23 @@ export const ZoneSidebar = () => {
     ]);
 
     return (
-        <Sidebar side="right">
+        <Sidebar
+            side="right"
+            title="Hiding Zone"
+            description="View and configure the computed hiding zone and train stations."
+        >
             <div className="flex items-center justify-between">
                 <h2 className="ml-4 mt-4 font-poppins text-2xl">Hiding Zone</h2>
-                <SidebarCloseIcon
-                    className="mr-2 visible md:hidden scale-x-[-1]"
+                <button
+                    type="button"
+                    aria-label="Close Hiding Zone panel"
+                    className="p-2 mr-1 visible md:hidden cursor-pointer"
                     onClick={() => {
                         SidebarContext.get().setOpenMobile(false);
                     }}
-                />
+                >
+                    <SidebarCloseIcon className="scale-x-[-1]" />
+                </button>
             </div>
             <SidebarContent ref={sidebarRef}>
                 <ScrollToTop element={sidebarRef} minHeight={500} />
