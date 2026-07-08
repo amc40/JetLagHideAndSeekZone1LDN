@@ -1057,7 +1057,7 @@ export const TutorialDialog = () => {
                     ref={dialogRef}
                     className={cn(
                         "fixed z-[10000] grid w-full gap-4 border bg-background p-4 md:p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 sm:rounded-lg",
-                        "!max-h-[50vh] overflow-y-auto tutorial-dialog",
+                        "!max-h-[50vh] flex flex-col overflow-hidden tutorial-dialog",
                         // Only apply default center positioning for non-targeted steps
                         !currentTutorialStep.targetSelector &&
                             "left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] !max-h-[90vh]",
@@ -1070,38 +1070,40 @@ export const TutorialDialog = () => {
                     }}
                     data-tutorial-active={$showTutorial}
                 >
-                    <AlertDialogHeader className="space-y-4">
-                        <div className="flex items-center justify-between">
-                            <AlertDialogTitle className="text-2xl font-bold text-left">
-                                {currentTutorialStep.title}
-                            </AlertDialogTitle>
-                        </div>
+                    <div className="flex-1 min-h-0 overflow-y-auto space-y-4">
+                        <AlertDialogHeader className="space-y-4">
+                            <div className="flex items-center justify-between">
+                                <AlertDialogTitle className="text-2xl font-bold text-left">
+                                    {currentTutorialStep.title}
+                                </AlertDialogTitle>
+                            </div>
 
-                        <div className="flex space-x-2">
-                            {tutorialSteps.map((_, index) => (
-                                <div
-                                    key={index}
-                                    className={`h-2 rounded-full flex-1 ${
-                                        index <= $tutorialStep
-                                            ? "bg-blue-500"
-                                            : "bg-gray-300"
-                                    }`}
-                                />
-                            ))}
-                        </div>
-                    </AlertDialogHeader>
+                            <div className="flex space-x-2">
+                                {tutorialSteps.map((_, index) => (
+                                    <div
+                                        key={index}
+                                        className={`h-2 rounded-full flex-1 ${
+                                            index <= $tutorialStep
+                                                ? "bg-blue-500"
+                                                : "bg-gray-300"
+                                        }`}
+                                    />
+                                ))}
+                            </div>
+                        </AlertDialogHeader>
 
-                    {(currentTutorialStep.isDescription ?? true) ? (
-                        <AlertDialogDescription className="text-base leading-relaxed whitespace-pre-line">
-                            {currentTutorialStep.content}
-                        </AlertDialogDescription>
-                    ) : (
-                        <div className="text-base leading-relaxed whitespace-pre-line text-muted-foreground">
-                            {currentTutorialStep.content}
-                        </div>
-                    )}
+                        {(currentTutorialStep.isDescription ?? true) ? (
+                            <AlertDialogDescription className="text-base leading-relaxed whitespace-pre-line">
+                                {currentTutorialStep.content}
+                            </AlertDialogDescription>
+                        ) : (
+                            <div className="text-base leading-relaxed whitespace-pre-line text-muted-foreground">
+                                {currentTutorialStep.content}
+                            </div>
+                        )}
+                    </div>
 
-                    <div className="flex flex-col gap-y-2 justify-between items-center pt-4">
+                    <div className="flex flex-col gap-y-2 justify-between items-center pt-4 shrink-0">
                         <div className="flex items-center space-x-2">
                             <Button
                                 variant="outline"
