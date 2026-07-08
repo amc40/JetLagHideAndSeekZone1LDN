@@ -16,6 +16,17 @@
             "type": "Feature",
             "geometry": {
                 "type": "Point",
+                "coordinates": [-0.1313957, 51.5362791]
+            },
+            "properties": {
+                "id": "way/43290805",
+                "name": "St. Pancras Hospital"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
                 "coordinates": [-0.1742846, 51.5174818]
             },
             "properties": {
@@ -60,6 +71,17 @@
             "type": "Feature",
             "geometry": {
                 "type": "Point",
+                "coordinates": [-0.170971, 51.4891664]
+            },
+            "properties": {
+                "id": "way/85472872",
+                "name": "Royal Brompton Hospital"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
                 "coordinates": [-0.1725464, 51.4905731]
             },
             "properties": {
@@ -76,6 +98,17 @@
             "properties": {
                 "id": "way/110476079",
                 "name": "The London Welbeck Hospital"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.150183, 51.4864231]
+            },
+            "properties": {
+                "id": "way/111343934",
+                "name": "Lister Hospital"
             }
         },
         {
@@ -137,6 +170,17 @@
             "type": "Feature",
             "geometry": {
                 "type": "Point",
+                "coordinates": [-0.2197632, 51.486919]
+            },
+            "properties": {
+                "id": "way/188617701",
+                "name": "Charing Cross Hospital"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
                 "coordinates": [-0.093654, 51.4684289]
             },
             "properties": {
@@ -148,11 +192,33 @@
             "type": "Feature",
             "geometry": {
                 "type": "Point",
+                "coordinates": [-0.0902151, 51.5272631]
+            },
+            "properties": {
+                "id": "way/402012627",
+                "name": "Moorfields Eye Hospital (City Road campus)"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
                 "coordinates": [-0.0860403, 51.5061317]
             },
             "properties": {
                 "id": "way/413948227",
                 "name": "London Bridge Hospital"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1364433, 51.5248695]
+            },
+            "properties": {
+                "id": "way/440410278",
+                "name": "University College Hospital"
             }
         },
         {
@@ -214,6 +280,17 @@
             "type": "Feature",
             "geometry": {
                 "type": "Point",
+                "coordinates": [-0.1911413, 51.4952203]
+            },
+            "properties": {
+                "id": "way/821710065",
+                "name": "Cromwell Hospital"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
                 "coordinates": [-0.1814395, 51.4843905]
             },
             "properties": {
@@ -263,83 +340,6 @@
             "properties": {
                 "id": "relation/10286924",
                 "name": "London Clinic"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-0.1313957, 51.5362791]
-            },
-            "properties": {
-                "id": "way/43290805",
-                "name": "St. Pancras Hospital"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-0.170971, 51.4891664]
-            },
-            "properties": {
-                "id": "way/85472872",
-                "name": "Royal Brompton Hospital"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-0.150183, 51.4864231]
-            },
-            "properties": {
-                "id": "way/111343934",
-                "name": "Lister Hospital"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-0.2197632, 51.486919]
-            },
-            "properties": {
-                "id": "way/188617701",
-                "name": "Charing Cross Hospital"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-0.0902151, 51.5272631]
-            },
-            "properties": {
-                "id": "way/402012627",
-                "name": "Moorfields Eye Hospital (City Road campus)"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-0.1364433, 51.5248695]
-            },
-            "properties": {
-                "id": "way/440410278",
-                "name": "University College Hospital"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-0.1911413, 51.4952203]
-            },
-            "properties": {
-                "id": "way/821710065",
-                "name": "Cromwell Hospital"
             }
         },
         {
