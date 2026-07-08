@@ -1,6 +1,18 @@
 import { useStore } from "@nanostores/react";
-import { SidebarCloseIcon } from "lucide-react";
+import { SidebarCloseIcon, Trash2Icon } from "lucide-react";
 
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
 import {
     Sidebar,
     SidebarContent,
@@ -41,16 +53,59 @@ export const QuestionSidebar = () => {
         >
             <div className="flex items-center justify-between">
                 <h2 className="ml-4 mt-4 font-poppins text-2xl">Questions</h2>
-                <button
-                    type="button"
-                    aria-label="Close Questions panel"
-                    className="p-2 mr-1 visible md:hidden cursor-pointer"
-                    onClick={() => {
-                        SidebarContext.get().setOpenMobile(false);
-                    }}
-                >
-                    <SidebarCloseIcon />
-                </button>
+                <div className="flex items-center gap-1 mr-1">
+                    {$questions.length > 0 && (
+                        <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    disabled={$isLoading}
+                                    title="Delete all questions"
+                                    aria-label="Delete all questions"
+                                >
+                                    <Trash2Icon />
+                                </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                                <AlertDialogHeader>
+                                    <AlertDialogTitle>
+                                        Delete all questions?
+                                    </AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                        This action cannot be undone. This will
+                                        permanently delete all{" "}
+                                        {$questions.length} question
+                                        {$questions.length === 1 ? "" : "s"}.
+                                    </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                    <AlertDialogCancel>
+                                        Cancel
+                                    </AlertDialogCancel>
+                                    <AlertDialogAction
+                                        onClick={() => {
+                                            questions.set([]);
+                                        }}
+                                        className="mb-2 sm:mb-0"
+                                    >
+                                        Delete All Questions
+                                    </AlertDialogAction>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>
+                    )}
+                    <button
+                        type="button"
+                        aria-label="Close Questions panel"
+                        className="p-2 visible md:hidden cursor-pointer"
+                        onClick={() => {
+                            SidebarContext.get().setOpenMobile(false);
+                        }}
+                    >
+                        <SidebarCloseIcon />
+                    </button>
+                </div>
             </div>
             <SidebarGroup>
                 <SidebarGroupContent>
