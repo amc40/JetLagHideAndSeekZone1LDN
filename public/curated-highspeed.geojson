@@ -1,0 +1,16 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.12527778, 51.53]
+            },
+            "properties": {
+                "id": "curated/st-pancras-railway-station",
+                "name": "St Pancras railway station"
+            }
+        }
+    ]
+}

@@ -1,5 +1,5 @@
 import * as turf from "@turf/turf";
-import type { Feature, MultiPolygon, Point } from "geojson";
+import type { Feature, MultiPolygon } from "geojson";
 import _ from "lodash";
 import { toast } from "react-toastify";
 
@@ -12,6 +12,7 @@ import {
 } from "@/lib/context";
 import {
     fetchCoastline,
+    fetchCuratedHighspeed,
     fetchCuratedHospitals,
     findPlacesInZone,
     findPlacesSpecificInZone,
@@ -26,11 +27,6 @@ import type {
     HomeGameMeasuringQuestions,
     MeasuringQuestion,
 } from "@/maps/schema";
-
-// HS1's only station within London fare zone 1 is St Pancras International,
-// so "High-Speed Rail" distance is measured against that single curated
-// point instead of a live Overpass query for high-speed rail lines.
-const ST_PANCRAS_HS1_STATION: Feature<Point> = turf.point([-0.12527778, 51.53]);
 
 const bboxExtension = (
     bBox: [number, number, number, number],
@@ -59,8 +55,13 @@ export const determineMeasuringBoundary = async (
     const bBox = turf.bbox(mapGeoJSON.get()!);
 
     switch (question.type) {
-        case "highspeed-measure-shinkansen":
-            return [ST_PANCRAS_HS1_STATION];
+        case "highspeed-measure-shinkansen": {
+            const curated = await fetchCuratedHighspeed();
+            return [
+                turf.combine(turf.featureCollection(curated.features))
+                    .features[0],
+            ];
+        }
         case "coastline": {
             const coastline = turf.lineToPolygon(
                 await fetchCoastline(),
