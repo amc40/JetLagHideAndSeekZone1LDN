@@ -23,6 +23,33 @@ div.leaflet-control-attribution.leaflet-control {
     z-index: 751;
 }
 
+/* Touch targets below the 44px platform minimum (Apple HIG / Android), see
+   docs/mobile-ux-audit.md §1.3. Applied unconditionally rather than gated
+   on `.leaflet-touch` — that class relies on Leaflet's touch
+   feature-detection, which doesn't reliably engage even on real touch
+   viewports (this is why the audit measured 30x30 controls in the first
+   place). Zoom and easyPrint icons are centred (text glyph / fixed-size
+   background-image), so enlarging the button box doesn't require
+   recalculating any sprite offsets. Excludes .leaflet-draw-toolbar, whose
+   icons are positioned via fixed sprite offsets that would go out of
+   alignment if the box grew. Kept outside of @layer base: Tailwind purges
+   custom @layer selectors that never appear as literal strings in scanned
+   source files, which these third-party Leaflet classes never do. */
+.leaflet-bar:not(.leaflet-draw-toolbar) a {
+    width: 44px !important;
+    height: 44px !important;
+    line-height: 44px !important;
+}
+
+/* leaflet-draw's icons are positioned via fixed sprite offsets, so the
+   button box can't just be widened without the icon going off-centre.
+   Scale the whole toolbar uniformly instead, which enlarges the tap
+   target while keeping every icon aligned. */
+.leaflet-draw-toolbar {
+    transform-origin: bottom left;
+    transform: scale(1.47);
+}
+
 @layer base {
     html {
         @apply text-slate-50;

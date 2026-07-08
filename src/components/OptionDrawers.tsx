@@ -485,10 +485,10 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                 </Button>
                             </div>
                             <Separator className="bg-slate-300 w-[280px]" />
-                            <div className="flex flex-row items-center gap-2">
-                                <label className="text-base font-medium">
+                            <label className="flex w-full min-h-11 flex-row items-center justify-between gap-2 cursor-pointer">
+                                <span className="text-base font-medium">
                                     Animate map movements?
-                                </label>
+                                </span>
                                 <Checkbox
                                     checked={$animateMapMovements}
                                     onCheckedChange={() => {
@@ -497,11 +497,11 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                         );
                                     }}
                                 />
-                            </div>
-                            <div className="flex flex-row items-center gap-2">
-                                <label className="text-base font-medium">
+                            </label>
+                            <label className="flex w-full min-h-11 flex-row items-center justify-between gap-2 cursor-pointer">
+                                <span className="text-base font-medium">
                                     Force Pastebin for sharing?
-                                </label>
+                                </span>
                                 <Checkbox
                                     checked={$alwaysUsePastebin}
                                     onCheckedChange={() =>
@@ -510,11 +510,11 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                         )
                                     }
                                 />
-                            </div>
-                            <div className="flex flex-row items-center gap-2">
-                                <label className="text-base font-medium">
+                            </label>
+                            <label className="flex w-full min-h-11 flex-row items-center justify-between gap-2 cursor-pointer">
+                                <span className="text-base font-medium">
                                     Enable planning mode?
-                                </label>
+                                </span>
                                 <Checkbox
                                     checked={$planningMode}
                                     onCheckedChange={() => {
@@ -538,44 +538,44 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                         planningModeEnabled.set(!$planningMode);
                                     }}
                                 />
-                            </div>
-                            <div className="flex flex-row items-center gap-2">
-                                <label className="text-base font-medium">
+                            </label>
+                            <label className="flex w-full min-h-11 flex-row items-center justify-between gap-2 cursor-pointer">
+                                <span className="text-base font-medium">
                                     Auto save?
-                                </label>
+                                </span>
                                 <Checkbox
                                     checked={$autoSave}
                                     onCheckedChange={() =>
                                         autoSave.set(!$autoSave)
                                     }
                                 />
-                            </div>
-                            <div className="flex flex-row items-center gap-2">
-                                <label className="text-base font-medium">
+                            </label>
+                            <label className="flex w-full min-h-11 flex-row items-center justify-between gap-2 cursor-pointer">
+                                <span className="text-base font-medium">
                                     Auto zoom?
-                                </label>
+                                </span>
                                 <Checkbox
                                     checked={$autoZoom}
                                     onCheckedChange={() =>
                                         autoZoom.set(!$autoZoom)
                                     }
                                 />
-                            </div>
-                            <div className="flex flex-row items-center gap-2">
-                                <label className="text-base font-medium">
+                            </label>
+                            <label className="flex w-full min-h-11 flex-row items-center justify-between gap-2 cursor-pointer">
+                                <span className="text-base font-medium">
                                     Follow Me (GPS)?
-                                </label>
+                                </span>
                                 <Checkbox
                                     checked={$followMe}
                                     onCheckedChange={() =>
                                         followMe.set(!$followMe)
                                     }
                                 />
-                            </div>
-                            <div className="flex flex-row items-center gap-2">
-                                <label className="text-base font-medium">
+                            </label>
+                            <label className="flex w-full min-h-11 flex-row items-center justify-between gap-2 cursor-pointer">
+                                <span className="text-base font-medium">
                                     Default to custom questions?
-                                </label>
+                                </span>
                                 <Checkbox
                                     checked={$defaultCustomQuestions}
                                     onCheckedChange={() =>
@@ -584,11 +584,11 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                         )
                                     }
                                 />
-                            </div>
-                            <div className="flex flex-row items-center gap-2">
-                                <label className="text-base font-medium">
+                            </label>
+                            <label className="flex w-full min-h-11 flex-row items-center justify-between gap-2 cursor-pointer">
+                                <span className="text-base font-medium">
                                     Allow Google Plus codes?
-                                </label>
+                                </span>
                                 <Checkbox
                                     checked={$allowGooglePlusCodes}
                                     onCheckedChange={() =>
@@ -597,11 +597,11 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                         )
                                     }
                                 />
-                            </div>
-                            <div className="flex flex-row items-center gap-2">
-                                <label className="text-base font-medium">
+                            </label>
+                            <label className="flex w-full min-h-11 flex-row items-center justify-between gap-2 cursor-pointer">
+                                <span className="text-base font-medium">
                                     Hider mode?
-                                </label>
+                                </span>
                                 <Checkbox
                                     checked={!!$hiderMode}
                                     onCheckedChange={() => {
@@ -627,7 +627,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                         }
                                     }}
                                 />
-                            </div>
+                            </label>
                             {$hiderMode !== false && (
                                 <SidebarMenu>
                                     <LatitudeLongitude
