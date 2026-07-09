@@ -136,8 +136,15 @@ div.leaflet-control-attribution.leaflet-control {
         --sidebar-ring: 217.2 91.2% 59.8%;
     }
 
+    /* Desktop-only sidebar triggers (DesktopSidebarTriggers.tsx) sit at
+       top-2 and are 44px tall (min-h-11), so they occupy y:8-52. 60px
+       clears them with an 8px gap. Kept the same at every breakpoint —
+       on mobile those triggers don't exist (they live in the bottom
+       action bar instead), but using one value rather than a
+       narrower/wider pair per breakpoint means resizing across `md`
+       doesn't snap the control to a different height. */
     main:not(.fullscreen) .leaflet-top .leaflet-control {
-        @apply !mt-[104px] md:!mt-[40px];
+        @apply !mt-[60px];
     }
 
     .selected-card-background-temporary {
