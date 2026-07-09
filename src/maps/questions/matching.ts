@@ -19,6 +19,7 @@ import {
 import {
     fetchCuratedConsulates,
     fetchCuratedHospitals,
+    fetchCuratedMuseums,
     fetchCuratedParks,
     findAdminBoundary,
     findPlacesInZone,
@@ -82,11 +83,17 @@ export const findMatchingPlaces = async (question: MatchingQuestion) => {
         case "park-full": {
             const location = question.type.split("-full")[0] as APILocations;
 
-            if (location === "hospital" || location === "park") {
+            if (
+                location === "hospital" ||
+                location === "park" ||
+                location === "museum"
+            ) {
                 const curated =
                     location === "hospital"
                         ? await fetchCuratedHospitals()
-                        : await fetchCuratedParks();
+                        : location === "park"
+                          ? await fetchCuratedParks()
+                          : await fetchCuratedMuseums();
                 if (curated.features?.length > 0) {
                     return curated.features.map((f: any) =>
                         turf.point(f.geometry.coordinates, f.properties),

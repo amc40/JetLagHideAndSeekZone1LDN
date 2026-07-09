@@ -1,7 +1,6 @@
 import * as turf from "@turf/turf";
 import type { Feature, MultiPolygon } from "geojson";
 import _ from "lodash";
-import osmtogeojson from "osmtogeojson";
 import { toast } from "react-toastify";
 
 import {
@@ -14,7 +13,9 @@ import {
 import {
     fetchCoastline,
     fetchCuratedConsulates,
+    fetchCuratedHighspeed,
     fetchCuratedHospitals,
+    fetchCuratedMuseums,
     fetchCuratedParks,
     findPlacesInZone,
     findPlacesSpecificInZone,
@@ -23,46 +24,12 @@ import {
     prettifyLocation,
     QuestionSpecificLocation,
 } from "@/maps/api";
-import {
-    arcBufferToPoint,
-    connectToSeparateLines,
-    groupObjects,
-    holedMask,
-    modifyMapData,
-} from "@/maps/geo-utils";
+import { arcBufferToPoint, holedMask, modifyMapData } from "@/maps/geo-utils";
 import type {
     APILocations,
     HomeGameMeasuringQuestions,
     MeasuringQuestion,
 } from "@/maps/schema";
-
-const highSpeedBase = _.memoize(
-    (features: Feature[]) => {
-        const grouped = groupObjects(features);
-
-        const neighbored = grouped
-            .map((group) => {
-                return turf.multiLineString(
-                    connectToSeparateLines(
-                        group
-                            .filter((x) => turf.getType(x) === "LineString")
-                            .map((x) => x.geometry.coordinates),
-                    ),
-                );
-            })
-            .filter((x) => x.geometry.coordinates.length > 0);
-
-        return turf.combine(
-            turf.buffer(
-                turf.simplify(turf.featureCollection(neighbored), {
-                    tolerance: 0.001,
-                }),
-                0.001,
-            )!,
-        ).features[0];
-    },
-    (features) => `${JSON.stringify(features.map((x) => x.geometry))}`,
-);
 
 const bboxExtension = (
     bBox: [number, number, number, number],
@@ -92,16 +59,11 @@ export const determineMeasuringBoundary = async (
 
     switch (question.type) {
         case "highspeed-measure-shinkansen": {
-            const features = osmtogeojson(
-                await findPlacesInZone(
-                    "[highspeed=yes]",
-                    "Finding high-speed lines...",
-                    "nwr",
-                    "geom",
-                ),
-            ).features;
-
-            return [highSpeedBase(features)];
+            const curated = await fetchCuratedHighspeed();
+            return [
+                turf.combine(turf.featureCollection(curated.features))
+                    .features[0],
+            ];
         }
         case "coastline": {
             const coastline = turf.lineToPolygon(
@@ -193,11 +155,17 @@ export const determineMeasuringBoundary = async (
         case "park-full": {
             const location = question.type.split("-full")[0] as APILocations;
 
-            if (location === "hospital" || location === "park") {
+            if (
+                location === "hospital" ||
+                location === "park" ||
+                location === "museum"
+            ) {
                 const curated =
                     location === "hospital"
                         ? await fetchCuratedHospitals()
-                        : await fetchCuratedParks();
+                        : location === "park"
+                          ? await fetchCuratedParks()
+                          : await fetchCuratedMuseums();
                 if (curated.features?.length > 0) {
                     return [
                         turf.combine(turf.featureCollection(curated.features))

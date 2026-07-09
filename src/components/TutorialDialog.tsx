@@ -453,8 +453,8 @@ const tutorialSteps: TutorialStep[] = [
                 nearest airport with IATA code
                 <br />• <strong>Major Cities:</strong> Distance to cities with
                 1M+ population
-                <br />• <strong>High-Speed Rail:</strong> Distance to high-speed
-                rail lines (like Shinkansen)
+                <br />• <strong>High-Speed Rail:</strong> Distance to St Pancras
+                (HS1&apos;s only Zone 1 station)
                 <br />
                 <br />
                 <strong>Full Game Variations:</strong>
@@ -650,8 +650,8 @@ const tutorialSteps: TutorialStep[] = [
                 <strong>Transportation Data:</strong>
                 <br />• Train stations: Good coverage in developed regions
                 <br />• Commercial airports: Limited to those with IATA codes
-                <br />• High-speed rail: Covers major systems (Shinkansen, TGV,
-                etc.)
+                <br />• High-speed rail: Fixed to St Pancras, HS1&apos;s only
+                Zone 1 station
                 <br />• Business data (McDonald&apos;s, 7-Eleven) depends on
                 local mapping
                 <br />
