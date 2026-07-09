@@ -6,6 +6,7 @@ import _ from "lodash";
 import { SidebarCloseIcon } from "lucide-react";
 import osmtogeojson from "osmtogeojson";
 import { useEffect, useRef, useState } from "react";
+import { VscChevronDown } from "react-icons/vsc";
 import { toast } from "react-toastify";
 
 import {
@@ -79,13 +80,27 @@ import { Label } from "./ui/label";
 import { MultiSelect } from "./ui/multi-select";
 import { ScrollToTop } from "./ui/scroll-to-top";
 import { MENU_ITEM_CLASSNAME } from "./ui/sidebar-l";
+import { ToggleGroup, ToggleGroupItem } from "./ui/toggle-group";
 import { UnitSelect } from "./UnitSelect";
 
 function _previewText(count: number) {
     return `${count} custom station${count === 1 ? "" : "s"} imported`;
 }
 
-let buttonJustClicked = false;
+// Above this, the "can drastically slow down your device" warning is worth
+// surfacing; below it (e.g. this fork's curated ~82-station default list)
+// it's just permanent noise.
+const SLOW_STATION_COUNT_THRESHOLD = 150;
+
+const DISPLAY_STYLE_OPTIONS: {
+    value: "no-display" | "stations" | "zones" | "no-overlap";
+    label: string;
+}[] = [
+    { value: "no-display", label: "No Display" },
+    { value: "stations", label: "All Stations" },
+    { value: "zones", label: "All Zones" },
+    { value: "no-overlap", label: "No Overlap" },
+];
 
 export const ZoneSidebar = () => {
     const $displayHidingZones = useStore(displayHidingZones);
@@ -110,6 +125,7 @@ export const ZoneSidebar = () => {
     const setStations = trainStations.set;
     const sidebarRef = useRef<HTMLDivElement>(null);
     const [importUrl, setImportUrl] = useState("");
+    const [setupOpen, setSetupOpen] = useState(false);
 
     const loadCuratedStations = async () => {
         try {
@@ -572,319 +588,20 @@ export const ZoneSidebar = () => {
                                     />
                                 </label>
                             </SidebarMenuItem>
-                            <SidebarMenuItem
-                                className={cn(
-                                    MENU_ITEM_CLASSNAME,
-                                    "text-orange-500",
+                            {$displayHidingZones &&
+                                stations.length >
+                                    SLOW_STATION_COUNT_THRESHOLD && (
+                                    <SidebarMenuItem
+                                        className={cn(
+                                            MENU_ITEM_CLASSNAME,
+                                            "text-orange-500",
+                                        )}
+                                    >
+                                        Warning: {stations.length} stations is a
+                                        lot to display at once and can
+                                        drastically slow down your device.
+                                    </SidebarMenuItem>
                                 )}
-                            >
-                                Warning: This feature can drastically slow down
-                                your device.
-                            </SidebarMenuItem>
-                            <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
-                                <label className="flex flex-row min-h-11 items-center justify-between w-full gap-2 cursor-pointer">
-                                    <span className="font-semibold font-poppins">
-                                        Use custom station list?
-                                    </span>
-                                    <Checkbox
-                                        checked={useCustomStations}
-                                        onCheckedChange={(v) =>
-                                            useCustomStationsAtom.set(!!v)
-                                        }
-                                        disabled={$isLoading}
-                                    />
-                                </label>
-                            </SidebarMenuItem>
-                            <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
-                                <label className="flex flex-row min-h-11 items-center justify-between w-full gap-2 cursor-pointer">
-                                    <span className="font-semibold font-poppins">
-                                        Merge duplicated stations?
-                                    </span>
-                                    <Checkbox
-                                        checked={mergeDuplicates}
-                                        onCheckedChange={(v) =>
-                                            mergeDuplicatesAtom.set(!!v)
-                                        }
-                                        disabled={$isLoading}
-                                    />
-                                </label>
-                            </SidebarMenuItem>
-                            {useCustomStations && (
-                                <>
-                                    <SidebarMenuItem
-                                        className={MENU_ITEM_CLASSNAME}
-                                    >
-                                        <Button
-                                            className="w-full"
-                                            disabled={$isLoading}
-                                            onClick={() => {
-                                                loadCuratedStations();
-                                            }}
-                                        >
-                                            Reload Curated Stations
-                                        </Button>
-                                    </SidebarMenuItem>
-                                    <SidebarMenuItem
-                                        className={MENU_ITEM_CLASSNAME}
-                                    >
-                                        <div className="flex flex-col gap-2 w-full">
-                                            <Label className="font-semibold font-poppins leading-5">
-                                                Import stations from URL (CSV,
-                                                GeoJSON, KML). This must be a
-                                                raw file link.
-                                            </Label>
-                                            <div className="flex gap-2">
-                                                <Input
-                                                    placeholder="https://..."
-                                                    value={importUrl}
-                                                    onChange={(e) =>
-                                                        setImportUrl(
-                                                            e.target.value,
-                                                        )
-                                                    }
-                                                    disabled={$isLoading}
-                                                />
-                                                <button
-                                                    className="bg-blue-600 text-white px-3 rounded-md"
-                                                    disabled={$isLoading}
-                                                    onClick={async () => {
-                                                        if (!importUrl) return;
-                                                        try {
-                                                            const res =
-                                                                await fetch(
-                                                                    importUrl,
-                                                                );
-                                                            const contentType =
-                                                                res.headers.get(
-                                                                    "content-type",
-                                                                ) || undefined;
-                                                            const text =
-                                                                await res.text();
-                                                            const parsed =
-                                                                parseCustomStationsFromText(
-                                                                    text,
-                                                                    contentType ||
-                                                                        undefined,
-                                                                );
-                                                            if (
-                                                                parsed.length ===
-                                                                0
-                                                            ) {
-                                                                toast.error(
-                                                                    "No stations found in provided URL",
-                                                                );
-                                                                return;
-                                                            }
-                                                            customStationsAtom.set(
-                                                                parsed,
-                                                            );
-                                                            toast.success(
-                                                                `Imported ${parsed.length} stations`,
-                                                            );
-                                                        } catch (e: any) {
-                                                            toast.error(
-                                                                `Failed to import from URL: ${e.message || e}`,
-                                                            );
-                                                        }
-                                                    }}
-                                                >
-                                                    Import
-                                                </button>
-                                            </div>
-                                            <div>
-                                                <Input
-                                                    type="file"
-                                                    multiple
-                                                    accept=".csv,.json,.geojson,.kml,application/json,application/vnd.google-earth.kml+xml,text/csv,application/vnd.google-apps.kml+xml,application/xml,text/xml"
-                                                    onInput={async (e) => {
-                                                        const files = (
-                                                            e.target as HTMLInputElement
-                                                        ).files;
-                                                        if (
-                                                            !files ||
-                                                            files.length === 0
-                                                        )
-                                                            return;
-                                                        try {
-                                                            const all: any[] =
-                                                                [];
-                                                            for (const file of Array.from(
-                                                                files,
-                                                            )) {
-                                                                const text =
-                                                                    await file.text();
-                                                                const parsed =
-                                                                    parseCustomStationsFromText(
-                                                                        text,
-                                                                        file.type,
-                                                                    );
-                                                                all.push(
-                                                                    ...parsed,
-                                                                );
-                                                            }
-                                                            if (
-                                                                all.length === 0
-                                                            ) {
-                                                                toast.error(
-                                                                    "No stations found in uploaded files",
-                                                                );
-                                                                return;
-                                                            }
-                                                            const byKey =
-                                                                new Map<
-                                                                    string,
-                                                                    any
-                                                                >();
-                                                            for (const s of all) {
-                                                                const key =
-                                                                    s.id &&
-                                                                    s.id.includes(
-                                                                        "/",
-                                                                    )
-                                                                        ? `id:${s.id}`
-                                                                        : `pt:${s.lat},${s.lng}`;
-                                                                if (
-                                                                    !byKey.has(
-                                                                        key,
-                                                                    )
-                                                                )
-                                                                    byKey.set(
-                                                                        key,
-                                                                        s,
-                                                                    );
-                                                            }
-                                                            const unique =
-                                                                Array.from(
-                                                                    byKey.values(),
-                                                                );
-                                                            customStationsAtom.set(
-                                                                unique,
-                                                            );
-                                                            toast.success(
-                                                                `Imported ${unique.length} stations`,
-                                                            );
-                                                        } catch (e: any) {
-                                                            toast.error(
-                                                                `Failed to import files: ${e.message || e}`,
-                                                            );
-                                                        }
-                                                    }}
-                                                />
-                                            </div>
-                                            <label className="flex flex-row min-h-11 items-center justify-between w-full gap-2 cursor-pointer">
-                                                <span className="font-semibold font-poppins">
-                                                    Include default stations
-                                                    with custom list?
-                                                </span>
-                                                <Checkbox
-                                                    checked={
-                                                        includeDefaultStations
-                                                    }
-                                                    onCheckedChange={(v) =>
-                                                        includeDefaultStationsAtom.set(
-                                                            !!v,
-                                                        )
-                                                    }
-                                                    disabled={$isLoading}
-                                                />
-                                            </label>
-                                            {$customStations.length > 0 && (
-                                                <div className="text-sm text-gray-300">
-                                                    {_previewText(
-                                                        $customStations.length,
-                                                    )}
-                                                </div>
-                                            )}
-                                            {$customStations.length > 0 && (
-                                                <div className="flex gap-2">
-                                                    <Button
-                                                        className="w-full"
-                                                        onClick={() =>
-                                                            customStationsAtom.set(
-                                                                [],
-                                                            )
-                                                        }
-                                                    >
-                                                        Clear Imported
-                                                    </Button>
-                                                </div>
-                                            )}
-                                        </div>
-                                    </SidebarMenuItem>
-                                </>
-                            )}
-                            <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
-                                <MultiSelect
-                                    options={[
-                                        {
-                                            label: "Railway Stations",
-                                            value: "[railway=station]",
-                                        },
-                                        {
-                                            label: "Railway Halts",
-                                            value: "[railway=halt]",
-                                        },
-                                        {
-                                            label: "Railway Stops",
-                                            value: "[railway=stop]",
-                                        },
-                                        {
-                                            label: "Tram Stops",
-                                            value: "[railway=tram_stop]",
-                                        },
-                                        {
-                                            label: "Bus Stops",
-                                            value: "[highway=bus_stop]",
-                                        },
-                                        {
-                                            label: "Ferry Terminals",
-                                            value: "[amenity=ferry_terminal]",
-                                        },
-                                        {
-                                            label: "Ferry Platforms (public transport)",
-                                            value: "[public_transport=platform][platform=ferry]",
-                                        },
-                                        {
-                                            label: "Funicular Stations",
-                                            value: "[railway=funicular]",
-                                        },
-                                        {
-                                            label: "Aerialway Stations",
-                                            value: "[aerialway=station]",
-                                        },
-                                        {
-                                            label: "Railway Stations Excluding Subways",
-                                            value: "[railway=station][subway!=yes]",
-                                        },
-                                        {
-                                            label: "Subway Stations",
-                                            value: "[railway=station][subway=yes]",
-                                        },
-                                        {
-                                            label: "Light Rail Stations",
-                                            value: "[railway=station][light_rail=yes]",
-                                        },
-                                        {
-                                            label: "Light Rail Halts",
-                                            value: "[railway=halt][light_rail=yes]",
-                                        },
-                                    ]}
-                                    onValueChange={
-                                        displayHidingZonesOptions.set
-                                    }
-                                    defaultValue={$displayHidingZonesOptions}
-                                    placeholder="Select allowed places"
-                                    animation={2}
-                                    maxCount={3}
-                                    modalPopover
-                                    className="!bg-popover bg-opacity-100"
-                                    disabled={
-                                        $isLoading ||
-                                        (useCustomStations &&
-                                            !includeDefaultStations)
-                                    }
-                                />
-                            </SidebarMenuItem>
                             <SidebarMenuItem>
                                 <Label className="font-semibold font-poppins ml-2">
                                     Hiding Zone Radius
@@ -916,55 +633,62 @@ export const ZoneSidebar = () => {
                                 </div>
                             </SidebarMenuItem>
                             {$displayHidingZones && stations.length > 0 && (
-                                <SidebarMenuItem
-                                    className="bg-popover hover:bg-accent relative flex cursor-pointer gap-2 select-none items-center rounded-sm px-2 py-2.5 text-sm outline-none data-[disabled=true]:pointer-events-none data-[selected='true']:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0"
-                                    onClick={() => {
-                                        setHidingZoneModeStationID("");
-                                        displayHidingZonesStyle.set(
-                                            "no-display",
-                                        );
-                                    }}
-                                    disabled={$isLoading}
-                                >
-                                    No Display
-                                </SidebarMenuItem>
-                            )}
-                            {$displayHidingZones && stations.length > 0 && (
-                                <SidebarMenuItem
-                                    className="bg-popover hover:bg-accent relative flex cursor-pointer gap-2 select-none items-center rounded-sm px-2 py-2.5 text-sm outline-none data-[disabled=true]:pointer-events-none data-[selected='true']:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0"
-                                    onClick={() => {
-                                        setHidingZoneModeStationID("");
-                                        displayHidingZonesStyle.set("stations");
-                                    }}
-                                    disabled={$isLoading}
-                                >
-                                    All Stations
-                                </SidebarMenuItem>
-                            )}
-                            {$displayHidingZones && stations.length > 0 && (
-                                <SidebarMenuItem
-                                    className="bg-popover hover:bg-accent relative flex cursor-pointer gap-2 select-none items-center rounded-sm px-2 py-2.5 text-sm outline-none data-[disabled=true]:pointer-events-none data-[selected='true']:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0"
-                                    onClick={() => {
-                                        setHidingZoneModeStationID("");
-                                        displayHidingZonesStyle.set("zones");
-                                    }}
-                                    disabled={$isLoading}
-                                >
-                                    All Zones
-                                </SidebarMenuItem>
-                            )}
-                            {$displayHidingZones && stations.length > 0 && (
-                                <SidebarMenuItem
-                                    className="bg-popover hover:bg-accent relative flex cursor-pointer gap-2 select-none items-center rounded-sm px-2 py-2.5 text-sm outline-none data-[disabled=true]:pointer-events-none data-[selected='true']:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0"
-                                    onClick={() => {
-                                        setHidingZoneModeStationID("");
-                                        displayHidingZonesStyle.set(
-                                            "no-overlap",
-                                        );
-                                    }}
-                                    disabled={$isLoading}
-                                >
-                                    No Overlap
+                                <SidebarMenuItem>
+                                    <Label className="font-semibold font-poppins ml-2">
+                                        Display style
+                                    </Label>
+                                    <div
+                                        className={cn(
+                                            MENU_ITEM_CLASSNAME,
+                                            "flex-col items-stretch gap-2",
+                                        )}
+                                    >
+                                        <ToggleGroup
+                                            type="single"
+                                            variant="outline"
+                                            className="flex-wrap justify-start"
+                                            value={$displayHidingZonesStyle}
+                                            disabled={$isLoading}
+                                            onValueChange={(value) => {
+                                                if (!value) return;
+                                                setHidingZoneModeStationID("");
+                                                displayHidingZonesStyle.set(
+                                                    value as typeof $displayHidingZonesStyle,
+                                                );
+                                            }}
+                                        >
+                                            {DISPLAY_STYLE_OPTIONS.map(
+                                                (option) => (
+                                                    <ToggleGroupItem
+                                                        key={option.value}
+                                                        value={option.value}
+                                                        aria-label={
+                                                            option.label
+                                                        }
+                                                        className="text-xs px-2"
+                                                    >
+                                                        {option.label}
+                                                    </ToggleGroupItem>
+                                                ),
+                                            )}
+                                        </ToggleGroup>
+                                        <Button
+                                            variant="destructive"
+                                            size="sm"
+                                            onClick={() => {
+                                                disabledStations.set(
+                                                    stations.map(
+                                                        (x) =>
+                                                            x.properties
+                                                                .properties.id,
+                                                    ),
+                                                );
+                                            }}
+                                            disabled={$isLoading}
+                                        >
+                                            Disable All Stations
+                                        </Button>
+                                    </div>
                                 </SidebarMenuItem>
                             )}
                             {$displayHidingZones && hidingZoneModeStationID && (
@@ -1021,22 +745,6 @@ export const ZoneSidebar = () => {
                                     </SidebarMenuItem>
                                 )}
                             {$displayHidingZones && (
-                                <SidebarMenuItem
-                                    className="bg-popover hover:bg-accent relative flex cursor-pointer gap-2 select-none items-center rounded-sm px-2 py-2.5 text-sm outline-none data-[disabled=true]:pointer-events-none data-[selected='true']:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0"
-                                    onClick={() => {
-                                        disabledStations.set(
-                                            stations.map(
-                                                (x) =>
-                                                    x.properties.properties.id,
-                                            ),
-                                        );
-                                    }}
-                                    disabled={$isLoading}
-                                >
-                                    Disable All
-                                </SidebarMenuItem>
-                            )}
-                            {$displayHidingZones && (
                                 <Command
                                     key={
                                         isStationSearchActive
@@ -1056,102 +764,445 @@ export const ZoneSidebar = () => {
                                             No hiding zones found.
                                         </CommandEmpty>
                                         <CommandGroup>
-                                            {stations.map((station) => (
-                                                <CommandItem
-                                                    key={
-                                                        station.properties
-                                                            .properties.id
-                                                    }
-                                                    data-station-id={
-                                                        station.properties
-                                                            .properties.id
-                                                    }
-                                                    className={cn(
-                                                        $disabledStations.includes(
-                                                            station.properties
-                                                                .properties.id,
-                                                        ) && "line-through",
-                                                    )}
-                                                    onSelect={async () => {
-                                                        if (!map) return;
-
-                                                        setTimeout(() => {
-                                                            if (
-                                                                buttonJustClicked
-                                                            ) {
-                                                                buttonJustClicked =
-                                                                    false;
-                                                                return;
-                                                            }
-
-                                                            if (
-                                                                $disabledStations.includes(
-                                                                    station
-                                                                        .properties
-                                                                        .properties
-                                                                        .id,
-                                                                )
-                                                            ) {
-                                                                disabledStations.set(
-                                                                    [
-                                                                        ...$disabledStations.filter(
-                                                                            (
-                                                                                x,
-                                                                            ) =>
-                                                                                x !==
-                                                                                station
-                                                                                    .properties
-                                                                                    .properties
-                                                                                    .id,
-                                                                        ),
-                                                                    ],
-                                                                );
-                                                            } else {
-                                                                disabledStations.set(
-                                                                    [
-                                                                        ...$disabledStations,
-                                                                        station
-                                                                            .properties
-                                                                            .properties
-                                                                            .id,
-                                                                    ],
-                                                                );
-                                                            }
-
-                                                            setStations([
-                                                                ...stations,
-                                                            ]);
-                                                        }, 100);
-                                                    }}
-                                                    disabled={$isLoading}
-                                                >
-                                                    {extractStationLabel(
+                                            {stations.map((station) => {
+                                                const id =
+                                                    station.properties
+                                                        .properties.id;
+                                                const label =
+                                                    extractStationLabel(
                                                         station.properties,
-                                                    )}
-                                                    <button
-                                                        onClick={async () => {
+                                                    );
+                                                const isDisabled =
+                                                    $disabledStations.includes(
+                                                        id,
+                                                    );
+                                                return (
+                                                    <CommandItem
+                                                        key={id}
+                                                        data-station-id={id}
+                                                        className="flex items-center justify-between gap-2"
+                                                        onSelect={() => {
                                                             if (!map) return;
-
-                                                            buttonJustClicked =
-                                                                true;
-
                                                             setHidingZoneModeStationID(
-                                                                station
-                                                                    .properties
-                                                                    .properties
-                                                                    .id,
+                                                                id,
                                                             );
                                                         }}
-                                                        className="bg-slate-600 rounded-md flex items-center justify-center min-h-11 min-w-11 px-3"
                                                         disabled={$isLoading}
                                                     >
-                                                        View
-                                                    </button>
-                                                </CommandItem>
-                                            ))}
+                                                        <span
+                                                            className={cn(
+                                                                isDisabled &&
+                                                                    "line-through text-muted-foreground",
+                                                            )}
+                                                        >
+                                                            {label}
+                                                        </span>
+                                                        <label
+                                                            className="flex items-center gap-1.5 shrink-0 min-h-11 pl-2 cursor-pointer"
+                                                            onClick={(e) =>
+                                                                e.stopPropagation()
+                                                            }
+                                                        >
+                                                            <span className="text-xs text-muted-foreground">
+                                                                Disable
+                                                            </span>
+                                                            <Checkbox
+                                                                checked={
+                                                                    isDisabled
+                                                                }
+                                                                aria-label={`Disable ${label}`}
+                                                                onCheckedChange={(
+                                                                    checked,
+                                                                ) => {
+                                                                    disabledStations.set(
+                                                                        checked
+                                                                            ? [
+                                                                                  ...$disabledStations,
+                                                                                  id,
+                                                                              ]
+                                                                            : $disabledStations.filter(
+                                                                                  (
+                                                                                      x,
+                                                                                  ) =>
+                                                                                      x !==
+                                                                                      id,
+                                                                              ),
+                                                                    );
+                                                                    setStations(
+                                                                        [
+                                                                            ...stations,
+                                                                        ],
+                                                                    );
+                                                                }}
+                                                                disabled={
+                                                                    $isLoading
+                                                                }
+                                                            />
+                                                        </label>
+                                                    </CommandItem>
+                                                );
+                                            })}
                                         </CommandGroup>
                                     </CommandList>
                                 </Command>
+                            )}
+                            <SidebarMenuItem>
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        setSetupOpen((prev) => !prev)
+                                    }
+                                    aria-expanded={setupOpen}
+                                    className={cn(
+                                        MENU_ITEM_CLASSNAME,
+                                        "justify-between font-semibold font-poppins",
+                                    )}
+                                >
+                                    Setup: custom stations &amp; station types
+                                    <VscChevronDown
+                                        className={cn(
+                                            "transition-transform duration-300",
+                                            !setupOpen && "-rotate-90",
+                                        )}
+                                    />
+                                </button>
+                            </SidebarMenuItem>
+                            {setupOpen && (
+                                <>
+                                    <SidebarMenuItem
+                                        className={MENU_ITEM_CLASSNAME}
+                                    >
+                                        <label className="flex flex-row min-h-11 items-center justify-between w-full gap-2 cursor-pointer">
+                                            <span className="font-semibold font-poppins">
+                                                Use custom station list?
+                                            </span>
+                                            <Checkbox
+                                                checked={useCustomStations}
+                                                onCheckedChange={(v) =>
+                                                    useCustomStationsAtom.set(
+                                                        !!v,
+                                                    )
+                                                }
+                                                disabled={$isLoading}
+                                            />
+                                        </label>
+                                    </SidebarMenuItem>
+                                    <SidebarMenuItem
+                                        className={MENU_ITEM_CLASSNAME}
+                                    >
+                                        <label className="flex flex-row min-h-11 items-center justify-between w-full gap-2 cursor-pointer">
+                                            <span className="font-semibold font-poppins">
+                                                Merge duplicated stations?
+                                            </span>
+                                            <Checkbox
+                                                checked={mergeDuplicates}
+                                                onCheckedChange={(v) =>
+                                                    mergeDuplicatesAtom.set(!!v)
+                                                }
+                                                disabled={$isLoading}
+                                            />
+                                        </label>
+                                    </SidebarMenuItem>
+                                    {useCustomStations && (
+                                        <>
+                                            <SidebarMenuItem
+                                                className={MENU_ITEM_CLASSNAME}
+                                            >
+                                                <Button
+                                                    className="w-full"
+                                                    disabled={$isLoading}
+                                                    onClick={() => {
+                                                        loadCuratedStations();
+                                                    }}
+                                                >
+                                                    Reload Curated Stations
+                                                </Button>
+                                            </SidebarMenuItem>
+                                            <SidebarMenuItem
+                                                className={MENU_ITEM_CLASSNAME}
+                                            >
+                                                <div className="flex flex-col gap-2 w-full">
+                                                    <Label className="font-semibold font-poppins leading-5">
+                                                        Import stations from URL
+                                                        (CSV, GeoJSON, KML).
+                                                        This must be a raw file
+                                                        link.
+                                                    </Label>
+                                                    <div className="flex gap-2">
+                                                        <Input
+                                                            placeholder="https://..."
+                                                            value={importUrl}
+                                                            onChange={(e) =>
+                                                                setImportUrl(
+                                                                    e.target
+                                                                        .value,
+                                                                )
+                                                            }
+                                                            disabled={
+                                                                $isLoading
+                                                            }
+                                                        />
+                                                        <button
+                                                            className="bg-blue-600 text-white px-3 rounded-md"
+                                                            disabled={
+                                                                $isLoading
+                                                            }
+                                                            onClick={async () => {
+                                                                if (!importUrl)
+                                                                    return;
+                                                                try {
+                                                                    const res =
+                                                                        await fetch(
+                                                                            importUrl,
+                                                                        );
+                                                                    const contentType =
+                                                                        res.headers.get(
+                                                                            "content-type",
+                                                                        ) ||
+                                                                        undefined;
+                                                                    const text =
+                                                                        await res.text();
+                                                                    const parsed =
+                                                                        parseCustomStationsFromText(
+                                                                            text,
+                                                                            contentType ||
+                                                                                undefined,
+                                                                        );
+                                                                    if (
+                                                                        parsed.length ===
+                                                                        0
+                                                                    ) {
+                                                                        toast.error(
+                                                                            "No stations found in provided URL",
+                                                                        );
+                                                                        return;
+                                                                    }
+                                                                    customStationsAtom.set(
+                                                                        parsed,
+                                                                    );
+                                                                    toast.success(
+                                                                        `Imported ${parsed.length} stations`,
+                                                                    );
+                                                                } catch (e: any) {
+                                                                    toast.error(
+                                                                        `Failed to import from URL: ${e.message || e}`,
+                                                                    );
+                                                                }
+                                                            }}
+                                                        >
+                                                            Import
+                                                        </button>
+                                                    </div>
+                                                    <div>
+                                                        <Input
+                                                            type="file"
+                                                            multiple
+                                                            accept=".csv,.json,.geojson,.kml,application/json,application/vnd.google-earth.kml+xml,text/csv,application/vnd.google-apps.kml+xml,application/xml,text/xml"
+                                                            onInput={async (
+                                                                e,
+                                                            ) => {
+                                                                const files = (
+                                                                    e.target as HTMLInputElement
+                                                                ).files;
+                                                                if (
+                                                                    !files ||
+                                                                    files.length ===
+                                                                        0
+                                                                )
+                                                                    return;
+                                                                try {
+                                                                    const all: any[] =
+                                                                        [];
+                                                                    for (const file of Array.from(
+                                                                        files,
+                                                                    )) {
+                                                                        const text =
+                                                                            await file.text();
+                                                                        const parsed =
+                                                                            parseCustomStationsFromText(
+                                                                                text,
+                                                                                file.type,
+                                                                            );
+                                                                        all.push(
+                                                                            ...parsed,
+                                                                        );
+                                                                    }
+                                                                    if (
+                                                                        all.length ===
+                                                                        0
+                                                                    ) {
+                                                                        toast.error(
+                                                                            "No stations found in uploaded files",
+                                                                        );
+                                                                        return;
+                                                                    }
+                                                                    const byKey =
+                                                                        new Map<
+                                                                            string,
+                                                                            any
+                                                                        >();
+                                                                    for (const s of all) {
+                                                                        const key =
+                                                                            s.id &&
+                                                                            s.id.includes(
+                                                                                "/",
+                                                                            )
+                                                                                ? `id:${s.id}`
+                                                                                : `pt:${s.lat},${s.lng}`;
+                                                                        if (
+                                                                            !byKey.has(
+                                                                                key,
+                                                                            )
+                                                                        )
+                                                                            byKey.set(
+                                                                                key,
+                                                                                s,
+                                                                            );
+                                                                    }
+                                                                    const unique =
+                                                                        Array.from(
+                                                                            byKey.values(),
+                                                                        );
+                                                                    customStationsAtom.set(
+                                                                        unique,
+                                                                    );
+                                                                    toast.success(
+                                                                        `Imported ${unique.length} stations`,
+                                                                    );
+                                                                } catch (e: any) {
+                                                                    toast.error(
+                                                                        `Failed to import files: ${e.message || e}`,
+                                                                    );
+                                                                }
+                                                            }}
+                                                        />
+                                                    </div>
+                                                    <label className="flex flex-row min-h-11 items-center justify-between w-full gap-2 cursor-pointer">
+                                                        <span className="font-semibold font-poppins">
+                                                            Include default
+                                                            stations with custom
+                                                            list?
+                                                        </span>
+                                                        <Checkbox
+                                                            checked={
+                                                                includeDefaultStations
+                                                            }
+                                                            onCheckedChange={(
+                                                                v,
+                                                            ) =>
+                                                                includeDefaultStationsAtom.set(
+                                                                    !!v,
+                                                                )
+                                                            }
+                                                            disabled={
+                                                                $isLoading
+                                                            }
+                                                        />
+                                                    </label>
+                                                    {$customStations.length >
+                                                        0 && (
+                                                        <div className="text-sm text-gray-300">
+                                                            {_previewText(
+                                                                $customStations.length,
+                                                            )}
+                                                        </div>
+                                                    )}
+                                                    {$customStations.length >
+                                                        0 && (
+                                                        <div className="flex gap-2">
+                                                            <Button
+                                                                className="w-full"
+                                                                onClick={() =>
+                                                                    customStationsAtom.set(
+                                                                        [],
+                                                                    )
+                                                                }
+                                                            >
+                                                                Clear Imported
+                                                            </Button>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </SidebarMenuItem>
+                                        </>
+                                    )}
+                                    <SidebarMenuItem
+                                        className={MENU_ITEM_CLASSNAME}
+                                    >
+                                        <MultiSelect
+                                            options={[
+                                                {
+                                                    label: "Railway Stations",
+                                                    value: "[railway=station]",
+                                                },
+                                                {
+                                                    label: "Railway Halts",
+                                                    value: "[railway=halt]",
+                                                },
+                                                {
+                                                    label: "Railway Stops",
+                                                    value: "[railway=stop]",
+                                                },
+                                                {
+                                                    label: "Tram Stops",
+                                                    value: "[railway=tram_stop]",
+                                                },
+                                                {
+                                                    label: "Bus Stops",
+                                                    value: "[highway=bus_stop]",
+                                                },
+                                                {
+                                                    label: "Ferry Terminals",
+                                                    value: "[amenity=ferry_terminal]",
+                                                },
+                                                {
+                                                    label: "Ferry Platforms (public transport)",
+                                                    value: "[public_transport=platform][platform=ferry]",
+                                                },
+                                                {
+                                                    label: "Funicular Stations",
+                                                    value: "[railway=funicular]",
+                                                },
+                                                {
+                                                    label: "Aerialway Stations",
+                                                    value: "[aerialway=station]",
+                                                },
+                                                {
+                                                    label: "Railway Stations Excluding Subways",
+                                                    value: "[railway=station][subway!=yes]",
+                                                },
+                                                {
+                                                    label: "Subway Stations",
+                                                    value: "[railway=station][subway=yes]",
+                                                },
+                                                {
+                                                    label: "Light Rail Stations",
+                                                    value: "[railway=station][light_rail=yes]",
+                                                },
+                                                {
+                                                    label: "Light Rail Halts",
+                                                    value: "[railway=halt][light_rail=yes]",
+                                                },
+                                            ]}
+                                            onValueChange={
+                                                displayHidingZonesOptions.set
+                                            }
+                                            defaultValue={
+                                                $displayHidingZonesOptions
+                                            }
+                                            placeholder="Select allowed places"
+                                            animation={2}
+                                            maxCount={3}
+                                            modalPopover
+                                            className="!bg-popover bg-opacity-100"
+                                            disabled={
+                                                $isLoading ||
+                                                (useCustomStations &&
+                                                    !includeDefaultStations)
+                                            }
+                                        />
+                                    </SidebarMenuItem>
+                                </>
                             )}
                         </SidebarMenu>
                     </SidebarGroupContent>
