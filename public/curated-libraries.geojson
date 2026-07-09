@@ -1,0 +1,621 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1156142, 51.5210756]
+            },
+            "properties": {
+                "id": "node/13799212",
+                "name": "Holborn Library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.0800915, 51.5301768]
+            },
+            "properties": {
+                "id": "node/252524762",
+                "name": "Shoreditch Library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1724301, 51.5336505]
+            },
+            "properties": {
+                "id": "node/293741403",
+                "name": "St. John's Wood Library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1882974, 51.4900365]
+            },
+            "properties": {
+                "id": "node/300425890",
+                "name": "Brompton Library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1064782, 51.5154661]
+            },
+            "properties": {
+                "id": "node/350370447",
+                "name": "Shoe Lane Library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1189539, 51.537135]
+            },
+            "properties": {
+                "id": "node/434565670",
+                "name": "Lewis Carroll Children's Library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1479538, 51.4927856]
+            },
+            "properties": {
+                "id": "node/618694098",
+                "name": "Victoria Library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.2026887, 51.477164]
+            },
+            "properties": {
+                "id": "node/718989172",
+                "name": "Fulham Library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.137889, 51.487979]
+            },
+            "properties": {
+                "id": "node/275402349",
+                "name": "Pimlico Library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1685063, 51.4873496]
+            },
+            "properties": {
+                "id": "node/1210268273",
+                "name": "Chelsea Library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.0730494, 51.477948]
+            },
+            "properties": {
+                "id": "node/1446667514",
+                "name": "The Feminist Library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.0941693, 51.5199273]
+            },
+            "properties": {
+                "id": "node/2018778545",
+                "name": "Barbican Library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1346948, 51.4944304]
+            },
+            "properties": {
+                "id": "node/2324932999",
+                "name": "RHS Lindley Library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1377417, 51.534345]
+            },
+            "properties": {
+                "id": "node/2345394803",
+                "name": "Camden Town Library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.0925982, 51.5161758]
+            },
+            "properties": {
+                "id": "node/2672118121",
+                "name": "Guildhall Library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1339659, 51.5259772]
+            },
+            "properties": {
+                "id": "node/2982634154",
+                "name": "The Wellcome Library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1051991, 51.5134457]
+            },
+            "properties": {
+                "id": "node/3239271376",
+                "name": "St Bride Library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1266573, 51.5338565]
+            },
+            "properties": {
+                "id": "node/3823164826",
+                "name": "Pancras Square Library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1507229, 51.5188463]
+            },
+            "properties": {
+                "id": "node/6235003792",
+                "name": "Marylebone Library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1886781, 51.5175162]
+            },
+            "properties": {
+                "id": "node/7048842980",
+                "name": "Paddington Library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1974346, 51.5113479]
+            },
+            "properties": {
+                "id": "node/7126677078",
+                "name": "Notting Hill Gate Library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.2068063, 51.5238653]
+            },
+            "properties": {
+                "id": "node/7255009410",
+                "name": "Kensal Library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.0923936, 51.5017779]
+            },
+            "properties": {
+                "id": "node/9919427425",
+                "name": "John Harvard Library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.0860229, 51.4877397]
+            },
+            "properties": {
+                "id": "node/13446741958",
+                "name": "Una Marson Library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.0794107, 51.5264741]
+            },
+            "properties": {
+                "id": "node/1781389247",
+                "name": "Stuart Hall Library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1277087, 51.5300022]
+            },
+            "properties": {
+                "id": "way/4680891",
+                "name": "British Library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.06932, 51.4742816]
+            },
+            "properties": {
+                "id": "way/19798157",
+                "name": "Peckham Library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1911436, 51.5363825]
+            },
+            "properties": {
+                "id": "way/34832022",
+                "name": "Kilburn Library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.102943, 51.4823684]
+            },
+            "properties": {
+                "id": "way/38763432",
+                "name": "Brandon Library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1904854, 51.5247349]
+            },
+            "properties": {
+                "id": "way/58759623",
+                "name": "Maida Vale Library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.2054273, 51.5351148]
+            },
+            "properties": {
+                "id": "way/62111346",
+                "name": "Kilburn Library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.0987829, 51.5390428]
+            },
+            "properties": {
+                "id": "way/68422893",
+                "name": "South Library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1043746, 51.526375]
+            },
+            "properties": {
+                "id": "way/73320333",
+                "name": "Finsbury Library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1944214, 51.5014344]
+            },
+            "properties": {
+                "id": "way/75110977",
+                "name": "Kensington Central Library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1052762, 51.4713898]
+            },
+            "properties": {
+                "id": "way/88843138",
+                "name": "Minet Library and Lambeth Archives"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.127878, 51.5102476]
+            },
+            "properties": {
+                "id": "way/96237024",
+                "name": "Charing Cross Library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.2070957, 51.492559]
+            },
+            "properties": {
+                "id": "way/142410031",
+                "name": "Avonmore Library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1057402, 51.5230105]
+            },
+            "properties": {
+                "id": "way/163032679",
+                "name": "Marx Memorial Library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1156952, 51.5146619]
+            },
+            "properties": {
+                "id": "way/174793673",
+                "name": "British Library of Political and Economic Science"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1104409, 51.5151674]
+            },
+            "properties": {
+                "id": "way/174793675",
+                "name": "Maughan Library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1511336, 51.5093479]
+            },
+            "properties": {
+                "id": "way/224892997",
+                "name": "Mayfair Library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.136938, 51.5073215]
+            },
+            "properties": {
+                "id": "way/256633845",
+                "name": "London Library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.0767372, 51.5155607]
+            },
+            "properties": {
+                "id": "way/288278168",
+                "name": "Artizan Street Library and Community Centre"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1701261, 51.5230297]
+            },
+            "properties": {
+                "id": "way/360942512",
+                "name": "Church Street Library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.154525, 51.4743846]
+            },
+            "properties": {
+                "id": "way/431085581",
+                "name": "Battersea Park Library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.2107994, 51.5270593]
+            },
+            "properties": {
+                "id": "way/466432889",
+                "name": "Queen's Park Library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1301074, 51.4975767]
+            },
+            "properties": {
+                "id": "way/524539979",
+                "name": "Westminster Archives Centre"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1279966, 51.5216132]
+            },
+            "properties": {
+                "id": "way/557159382",
+                "name": "The Wiener Library for the Study of the Holocaust & Genocide"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.0638116, 51.4928723]
+            },
+            "properties": {
+                "id": "way/614265535",
+                "name": "Blue Anchor Library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.0919629, 51.4757527]
+            },
+            "properties": {
+                "id": "way/621224358",
+                "name": "Camberwell Library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.2092315, 51.5166797]
+            },
+            "properties": {
+                "id": "way/772671774",
+                "name": "North Kensington Library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1181685, 51.4976834]
+            },
+            "properties": {
+                "id": "way/998276956",
+                "name": "Lambeth Palace Library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1240215, 51.4792616]
+            },
+            "properties": {
+                "id": "way/1007093220",
+                "name": "South Lambeth Library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1566667, 51.5411213]
+            },
+            "properties": {
+                "id": "way/1016910899",
+                "name": "Primrose Hill Community Library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1162446, 51.5407525]
+            },
+            "properties": {
+                "id": "way/1075717263",
+                "name": "West Library"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1101789, 51.4888746]
+            },
+            "properties": {
+                "id": "way/1162589119",
+                "name": "Durning Library"
+            }
+        }
+    ]
+}

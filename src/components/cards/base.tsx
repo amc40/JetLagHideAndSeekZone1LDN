@@ -80,15 +80,20 @@ export const QuestionCard = ({
                 <div className="relative">
                     <button
                         onClick={toggleCollapse}
+                        aria-label={
+                            isCollapsed
+                                ? "Expand question"
+                                : "Collapse question"
+                        }
                         className={cn(
-                            "absolute top-2 left-2 text-white border rounded-md transition-all duration-500",
+                            "absolute top-0 left-0 flex items-center justify-center w-11 h-11 text-white transition-all duration-500",
                             isCollapsed && "-rotate-90",
                         )}
                     >
                         <VscChevronDown />
                     </button>
                     <SidebarGroupLabel
-                        className="ml-8 mr-8 cursor-pointer"
+                        className="h-11 ml-12 mr-2 cursor-pointer"
                         onClick={toggleCollapse}
                     >
                         {label} {sub && `(${sub})`}

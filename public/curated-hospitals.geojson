@@ -335,22 +335,22 @@
             "type": "Feature",
             "geometry": {
                 "type": "Point",
-                "coordinates": [-0.1499741, 51.5229039]
+                "coordinates": [-0.0902554, 51.4690387]
             },
             "properties": {
-                "id": "relation/10286924",
-                "name": "London Clinic"
+                "id": "relation/8286235",
+                "name": "Maudsley Hospital"
             }
         },
         {
             "type": "Feature",
             "geometry": {
                 "type": "Point",
-                "coordinates": [-0.0902554, 51.4690387]
+                "coordinates": [-0.1499741, 51.5229039]
             },
             "properties": {
-                "id": "relation/8286235",
-                "name": "Maudsley Hospital"
+                "id": "relation/10286924",
+                "name": "London Clinic"
             }
         }
     ]
