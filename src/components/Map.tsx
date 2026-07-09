@@ -37,7 +37,6 @@ import { clearCache, determineMapBoundaries } from "@/maps/api";
 import { DraggableMarkers } from "./DraggableMarkers";
 import { LeafletFullScreenButton } from "./LeafletFullScreenButton";
 import { MapOverlayMarkers } from "./MapOverlayMarkers";
-import { MapPrint } from "./MapPrint";
 import { PolygonDraw } from "./PolygonDraw";
 import { TransitStopMarkers } from "./TransitStopMarkers";
 
@@ -405,18 +404,6 @@ export const Map = ({ className }: { className?: string }) => {
                 </div>
                 <PolygonDraw />
                 <ScaleControl position="bottomleft" />
-                <MapPrint
-                    position="topright"
-                    sizeModes={["Current", "A4Portrait", "A4Landscape"]}
-                    hideControlContainer={false}
-                    hideClasses={[
-                        "leaflet-full-screen-specific-name",
-                        "leaflet-top",
-                        "leaflet-control-easyPrint",
-                        "leaflet-draw",
-                    ]}
-                    title="Print"
-                />
             </MapContainer>
         ),
         [map, $baseTileLayer, $thunderforestApiKey],
