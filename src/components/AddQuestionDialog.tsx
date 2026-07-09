@@ -71,14 +71,7 @@ export const AddQuestionDialog = ({
         const center = map.getCenter();
         addQuestion({
             id: "tentacles",
-            data: defaultCustomQuestions.get()
-                ? {
-                      lat: center.lat,
-                      lng: center.lng,
-                      locationType: "custom",
-                      places: [],
-                  }
-                : { lat: center.lat, lng: center.lng },
+            data: { lat: center.lat, lng: center.lng },
         });
         return true;
     };

@@ -3,8 +3,6 @@ import * as turf from "@turf/turf";
 import { Suspense, use } from "react";
 
 import { LatitudeLongitude } from "@/components/LatLngPicker";
-import PresetsDialog from "@/components/PresetsDialog";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import {
@@ -13,7 +11,6 @@ import {
 } from "@/components/ui/sidebar-l";
 import { UnitSelect } from "@/components/UnitSelect";
 import {
-    drawingQuestionKey,
     hiderMode,
     isLoading,
     questionModified,
@@ -24,10 +21,8 @@ import { cn, mapToObj } from "@/lib/utils";
 import { findTentacleLocations } from "@/maps/api";
 import {
     determineUnionizedStrings,
-    NO_GROUP,
     type TentacleQuestion,
     tentacleQuestionSchema,
-    type TraditionalTentacleQuestion,
 } from "@/maps/schema";
 
 import { QuestionCard } from "./base";
@@ -44,7 +39,6 @@ export const TentacleQuestionComponent = ({
     className?: string;
 }) => {
     const $questions = useStore(questions);
-    const $drawingQuestionKey = useStore(drawingQuestionKey);
     const $isLoading = useStore(isLoading);
     const label = `Tentacles
     ${
@@ -94,82 +88,28 @@ export const TentacleQuestionComponent = ({
             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
                 <Select
                     trigger="Location Type"
-                    options={Object.fromEntries(
-                        tentacleQuestionSchema.options
-                            .filter((x) => x.description === NO_GROUP)
-                            .flatMap((x) =>
-                                determineUnionizedStrings(x.shape.locationType),
-                            )
-                            .map((x) => [(x._def as any).value, x.description]),
-                    )}
                     groups={Object.fromEntries(
-                        tentacleQuestionSchema.options
-                            .filter((x) => x.description !== NO_GROUP)
-                            .map((x) => [
-                                x.description,
-                                Object.fromEntries(
-                                    determineUnionizedStrings(
-                                        x.shape.locationType,
-                                    ).map((x) => [
-                                        (x._def as any).value,
-                                        x.description,
-                                    ]),
-                                ),
-                            ]),
+                        tentacleQuestionSchema.options.map((x) => [
+                            x.description,
+                            Object.fromEntries(
+                                determineUnionizedStrings(
+                                    x.shape.locationType,
+                                ).map((x) => [
+                                    (x._def as any).value,
+                                    x.description,
+                                ]),
+                            ),
+                        ]),
                     )}
                     value={data.locationType}
-                    onValueChange={async (value) => {
-                        if (value === "custom") {
-                            const priorLocations = await findTentacleLocations(
-                                data as TraditionalTentacleQuestion,
-                            );
-
-                            data.locationType = "custom";
-                            data.places = priorLocations.features.map((x) => ({
-                                ...x,
-                                properties: {
-                                    ...x.properties,
-                                    name:
-                                        x.properties?.["name:en"] ??
-                                        x.properties?.name,
-                                },
-                            }));
-                            data.location = false;
-                        } else {
-                            data.location = false;
-                            data.locationType = value;
-                        }
+                    onValueChange={(value) => {
+                        data.location = false;
+                        data.locationType = value;
                         questionModified();
                     }}
                     disabled={!data.drag || $isLoading}
                 />
             </SidebarMenuItem>
-            {data.locationType === "custom" && data.drag && (
-                <>
-                    <p className="px-2 mb-1 text-center text-orange-500">
-                        To modify tentacle locations, enable it:
-                        <Checkbox
-                            className="mx-1 my-1"
-                            checked={$drawingQuestionKey === questionKey}
-                            onCheckedChange={(checked) => {
-                                if (checked) {
-                                    drawingQuestionKey.set(questionKey);
-                                } else {
-                                    drawingQuestionKey.set(-1);
-                                }
-                            }}
-                            disabled={!data.drag || $isLoading}
-                        />
-                        and use the buttons at the bottom left of the map.
-                    </p>
-                    <div className="flex justify-center mb-2">
-                        <PresetsDialog
-                            data={data}
-                            presetTypeHint="custom-tentacles"
-                        />
-                    </div>
-                </>
-            )}
             <LatitudeLongitude
                 latitude={data.lat}
                 longitude={data.lng}
@@ -208,13 +148,7 @@ export const TentacleQuestionComponent = ({
                 >
                     <TentacleLocationSelector
                         data={data}
-                        promise={
-                            data.locationType === "custom"
-                                ? Promise.resolve(
-                                      turf.featureCollection(data.places),
-                                  )
-                                : findTentacleLocations(data)
-                        }
+                        promise={findTentacleLocations(data)}
                         disabled={!data.drag || $isLoading}
                     />
                 </Suspense>
