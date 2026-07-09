@@ -16,6 +16,7 @@ import {
     fetchCuratedConsulates,
     fetchCuratedHighspeed,
     fetchCuratedHospitals,
+    fetchCuratedMuseums,
     findPlacesInZone,
     findPlacesSpecificInZone,
     LOCATION_FIRST_TAG,
@@ -154,10 +155,17 @@ export const determineMeasuringBoundary = async (
         case "park-full": {
             const location = question.type.split("-full")[0] as APILocations;
 
-            if (location === "hospital" || location === "cinema") {
-                const curated = await (location === "hospital"
-                    ? fetchCuratedHospitals()
-                    : fetchCuratedCinemas());
+            if (
+                location === "hospital" ||
+                location === "cinema" ||
+                location === "museum"
+            ) {
+                const curated =
+                    location === "hospital"
+                        ? await fetchCuratedHospitals()
+                        : location === "cinema"
+                          ? await fetchCuratedCinemas()
+                          : await fetchCuratedMuseums();
                 if (curated.features?.length > 0) {
                     return [
                         turf.combine(turf.featureCollection(curated.features))
