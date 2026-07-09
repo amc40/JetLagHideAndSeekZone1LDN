@@ -9,6 +9,10 @@ import { OpenLocationCode } from "open-location-code";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 
+import {
+    MoreActionsMenu,
+    MoreActionsMenuItem,
+} from "@/components/MoreActionsMenu";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useDebounce } from "@/hooks/useDebounce";
@@ -384,8 +388,8 @@ export const LatitudeLongitude = ({
 
                 <div
                     className={cn(
-                        !inlineEdit &&
-                            "flex justify-center gap-2 *:max-w-12 *:w-[20%]",
+                        "flex flex-wrap gap-2",
+                        !inlineEdit && "justify-center",
                     )}
                 >
                     {inlineEdit ? (
@@ -404,8 +408,10 @@ export const LatitudeLongitude = ({
                                     disabled={disabled}
                                     variant="outline"
                                     title="Edit coordinates"
+                                    className="gap-1.5"
                                 >
-                                    <EditIcon />
+                                    <EditIcon className="size-4" />
+                                    Edit
                                 </Button>
                             </DialogTrigger>
                             <DialogContent>
@@ -428,58 +434,58 @@ export const LatitudeLongitude = ({
                             </DialogContent>
                         </Dialog>
                     )}
-                    <div
-                        className={
-                            inlineEdit
-                                ? "flex justify-center gap-2"
-                                : "contents"
-                        }
-                    >
-                        <Button
-                            variant="outline"
-                            onClick={() => {
-                                if (!navigator || !navigator.geolocation)
-                                    return alert("Geolocation not supported");
+                    <Button
+                        variant="outline"
+                        className="gap-1.5"
+                        onClick={() => {
+                            if (!navigator || !navigator.geolocation)
+                                return alert("Geolocation not supported");
 
-                                isLoading.set(true);
+                            isLoading.set(true);
 
-                                toast.promise(
-                                    new Promise<GeolocationPosition>(
-                                        (resolve, reject) => {
-                                            navigator.geolocation.getCurrentPosition(
-                                                resolve,
-                                                reject,
-                                                {
-                                                    maximumAge: 0,
-                                                    enableHighAccuracy: true,
-                                                },
-                                            );
-                                        },
-                                    )
-                                        .then((position) => {
-                                            onChange(
-                                                position.coords.latitude,
-                                                position.coords.longitude,
-                                            );
-                                        })
-                                        .finally(() => {
-                                            isLoading.set(false);
-                                        }),
-                                    {
-                                        pending: "Fetching location",
-                                        success: "Location fetched",
-                                        error: "Could not fetch location",
+                            toast.promise(
+                                new Promise<GeolocationPosition>(
+                                    (resolve, reject) => {
+                                        navigator.geolocation.getCurrentPosition(
+                                            resolve,
+                                            reject,
+                                            {
+                                                maximumAge: 0,
+                                                enableHighAccuracy: true,
+                                            },
+                                        );
                                     },
-                                    { autoClose: 500 },
-                                );
-                            }}
+                                )
+                                    .then((position) => {
+                                        onChange(
+                                            position.coords.latitude,
+                                            position.coords.longitude,
+                                        );
+                                    })
+                                    .finally(() => {
+                                        isLoading.set(false);
+                                    }),
+                                {
+                                    pending: "Fetching location",
+                                    success: "Location fetched",
+                                    error: "Could not fetch location",
+                                },
+                                { autoClose: 500 },
+                            );
+                        }}
+                        disabled={disabled}
+                        title="Set to current location"
+                    >
+                        <LocateIcon className="size-4" />
+                        GPS
+                    </Button>
+                    <MoreActionsMenu
+                        disabled={disabled}
+                        label="More location actions"
+                    >
+                        <MoreActionsMenuItem
+                            icon={<ClipboardPasteIcon className="size-4" />}
                             disabled={disabled}
-                            title="Set to current location"
-                        >
-                            <LocateIcon />
-                        </Button>
-                        <Button
-                            variant="outline"
                             onClick={() => {
                                 if (!navigator || !navigator.clipboard) {
                                     toast.error(
@@ -522,13 +528,11 @@ export const LatitudeLongitude = ({
                                     { autoClose: 1000 },
                                 );
                             }}
-                            disabled={disabled}
-                            title="Paste coordinates from clipboard"
                         >
-                            <ClipboardPasteIcon />
-                        </Button>
-                        <Button
-                            variant="outline"
+                            Paste coordinates
+                        </MoreActionsMenuItem>
+                        <MoreActionsMenuItem
+                            icon={<ClipboardCopyIcon className="size-4" />}
                             onClick={() => {
                                 if (!navigator || !navigator.clipboard) {
                                     toast.error(
@@ -551,11 +555,10 @@ export const LatitudeLongitude = ({
                                     { autoClose: 1000 },
                                 );
                             }}
-                            title="Copy coordinates to clipboard"
                         >
-                            <ClipboardCopyIcon />
-                        </Button>
-                    </div>
+                            Copy coordinates
+                        </MoreActionsMenuItem>
+                    </MoreActionsMenu>
                 </div>
             </SidebarMenuItem>
             {children}

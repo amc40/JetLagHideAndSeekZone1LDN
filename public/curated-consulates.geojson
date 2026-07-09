@@ -1,0 +1,291 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1452546, 51.5200181]
+            },
+            "properties": {
+                "id": "node/577179316",
+                "name": "Consular Section of the Embassy of the People's Republic of China"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1453361, 51.520193]
+            },
+            "properties": {
+                "id": "node/577179328",
+                "name": "Colombian Consulate"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1643615, 51.5213056]
+            },
+            "properties": {
+                "id": "node/1623427129",
+                "name": "Embassy of The Republic of Latvia (Consular Section)"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1470432, 51.515034]
+            },
+            "properties": {
+                "id": "node/4833559722",
+                "name": "Consulate General of Brazil"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1048928, 51.5151914]
+            },
+            "properties": {
+                "id": "node/6425493668",
+                "name": "Italian Consulate General"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1796763, 51.4999853]
+            },
+            "properties": {
+                "id": "node/6602656103",
+                "name": "Bulgarian Consulate"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.2049852, 51.4973249]
+            },
+            "properties": {
+                "id": "node/7401591159",
+                "name": "Consulate of Romania"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1828294, 51.4978213]
+            },
+            "properties": {
+                "id": "node/7574255842",
+                "name": "Consular Section of Embassy of Iraq"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1545289, 51.5023364]
+            },
+            "properties": {
+                "id": "node/9463681465",
+                "name": "Consulate General of Peru"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1440019, 51.4906572]
+            },
+            "properties": {
+                "id": "node/13432148521",
+                "name": "Consulate-General of Albania"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.0697617, 51.5146797]
+            },
+            "properties": {
+                "id": "node/13990403325",
+                "name": "Consulate of Ecuador"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1914385, 51.5097034]
+            },
+            "properties": {
+                "id": "way/33202582",
+                "name": "Embassy of the Russian Federation"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1615593, 51.4922866]
+            },
+            "properties": {
+                "id": "way/112261875",
+                "name": "Spanish Consulate"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.188327, 51.5018997]
+            },
+            "properties": {
+                "id": "way/128290569",
+                "name": "Consular Section of Iranian Embassy"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1724497, 51.5171978]
+            },
+            "properties": {
+                "id": "way/155494946",
+                "name": "Consulate General Of The Kingdom Of Morocco"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1740574, 51.4999399]
+            },
+            "properties": {
+                "id": "way/158555475",
+                "name": "Embassy of the United Arab Emirates — Consulate Section"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.144415, 51.518108]
+            },
+            "properties": {
+                "id": "way/242160713",
+                "name": "Consulate-General of Portugal"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1379377, 51.523543]
+            },
+            "properties": {
+                "id": "way/294886281",
+                "name": "Venezuela Consular Section in London"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.2021991, 51.5123193]
+            },
+            "properties": {
+                "id": "way/356788438",
+                "name": "Consulate of Ukraine"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.108178, 51.5134117]
+            },
+            "properties": {
+                "id": "way/372474647",
+                "name": "Consular Section of the Embassy of the Republic of Poland"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1294849, 51.5183904]
+            },
+            "properties": {
+                "id": "way/423506752",
+                "name": "Consulate General of the Republic of Angola"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1752943, 51.4953327]
+            },
+            "properties": {
+                "id": "way/485840627",
+                "name": "Consulate General of France"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1586132, 51.4992728]
+            },
+            "properties": {
+                "id": "way/530784906",
+                "name": null
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1561165, 51.4980451]
+            },
+            "properties": {
+                "id": "way/553732921",
+                "name": "Consulate General Of Egypt"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1669768, 51.5007202]
+            },
+            "properties": {
+                "id": "way/638432089",
+                "name": "Consulate General of Turkey"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1925215, 51.5077653]
+            },
+            "properties": {
+                "id": "way/807711245",
+                "name": "The Lebanese Consulate"
+            }
+        }
+    ]
+}
