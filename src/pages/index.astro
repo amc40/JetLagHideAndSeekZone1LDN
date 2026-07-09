@@ -25,8 +25,12 @@ import { TutorialDialog } from "@/components/TutorialDialog";
                 >
                     <div class="w-full h-full relative">
                         <DesktopSidebarTriggers client:load />
+                        <!-- z-[10000] beats react-toastify's default z-index (9999), so the
+                             top-of-screen "loading" toast (Map.tsx refreshQuestions) can't
+                             cover Map Layers/Offline/Place Picker and block taps on mobile,
+                             where the toast container goes full-width across the top. -->
                         <div
-                            class="flex flex-col flex-shrink max-w-fit z-[1030] absolute left-4 right-0 m-auto items-center pointer-events-none group-[.fullscreen]:hidden"
+                            class="flex flex-col flex-shrink max-w-fit z-[10000] absolute left-4 right-0 m-auto items-center pointer-events-none group-[.fullscreen]:hidden"
                         >
                             <OfflineIndicator
                                 client:load
