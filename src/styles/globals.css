@@ -50,6 +50,17 @@ div.leaflet-control-attribution.leaflet-control {
     transform: scale(1.47);
 }
 
+/* Zoom in/out buttons are redundant on touch devices (pinch-to-zoom covers
+   it) and just eat map space, so hide them below the `md` breakpoint and
+   keep them for desktop mouse users. Kept outside of @layer base for the
+   same reason as the rules above: "leaflet-control-zoom" never appears as a
+   literal string in scanned source files, so Tailwind would purge it. */
+@media not all and (min-width: 768px) {
+    .leaflet-control-zoom {
+        display: none;
+    }
+}
+
 @layer base {
     html {
         @apply text-slate-50;
