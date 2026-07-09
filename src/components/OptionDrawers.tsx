@@ -332,273 +332,9 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                             </DrawerTitle>
                         </DrawerHeader>
                         <div className="overflow-y-scroll max-h-[65vh] flex flex-col items-center gap-4 max-w-[1000px] px-4 sm:px-12">
-                            <div className="flex flex-row max-[330px]:flex-col gap-4">
-                                <Button
-                                    onClick={() => {
-                                        if (!navigator || !navigator.clipboard)
-                                            return toast.error(
-                                                "Clipboard not supported",
-                                            );
-                                        navigator.clipboard.writeText(
-                                            JSON.stringify($hidingZone),
-                                        );
-                                        toast.success(
-                                            "Hiding zone copied successfully",
-                                            {
-                                                autoClose: 2000,
-                                            },
-                                        );
-                                    }}
-                                >
-                                    Copy Hiding Zone
-                                </Button>
-                                <Button
-                                    onClick={() => {
-                                        if (!navigator || !navigator.clipboard)
-                                            return toast.error(
-                                                "Clipboard not supported",
-                                            );
-                                        navigator.clipboard
-                                            .readText()
-                                            .then(loadHidingZone);
-                                    }}
-                                >
-                                    Paste Hiding Zone
-                                </Button>
-                            </div>
-                            <Separator className="bg-slate-300 w-[280px]" />
-                            <AlertDialog>
-                                <AlertDialogTrigger asChild>
-                                    <Button
-                                        variant="outline"
-                                        disabled={$isLoading}
-                                    >
-                                        Clear Questions &amp; Cache
-                                    </Button>
-                                </AlertDialogTrigger>
-                                <AlertDialogContent>
-                                    <AlertDialogHeader>
-                                        <AlertDialogTitle>
-                                            Clear questions &amp; cache?
-                                        </AlertDialogTitle>
-                                        <AlertDialogDescription>
-                                            This action cannot be undone. This
-                                            will permanently delete all
-                                            questions and clear cached zone
-                                            data, useful for starting a fresh
-                                            round.
-                                        </AlertDialogDescription>
-                                    </AlertDialogHeader>
-                                    <AlertDialogFooter>
-                                        <AlertDialogCancel>
-                                            Cancel
-                                        </AlertDialogCancel>
-                                        <AlertDialogAction
-                                            onClick={() => {
-                                                mapGeoJSON.set(null);
-                                                questions.set([]);
-                                                clearCache(
-                                                    CacheType.ZONE_CACHE,
-                                                );
-                                            }}
-                                            className="mb-2 sm:mb-0"
-                                        >
-                                            Clear Questions &amp; Cache
-                                        </AlertDialogAction>
-                                    </AlertDialogFooter>
-                                </AlertDialogContent>
-                            </AlertDialog>
-                            <Separator className="bg-slate-300 w-[280px]" />
-                            <Label>Default Unit</Label>
-                            <UnitSelect
-                                unit={$defaultUnit}
-                                onChange={defaultUnit.set}
-                            />
-                            <Separator className="bg-slate-300 w-[280px]" />
-                            <Label>New Custom Question Defaults</Label>
-                            <Select
-                                trigger="New custom default"
-                                options={{
-                                    ask: "Ask each time",
-                                    blank: "Start blank",
-                                    prefill: "Copy from current",
-                                }}
-                                value={$customInitPref}
-                                onValueChange={(v) =>
-                                    customInitPreference.set(v as any)
-                                }
-                            />
-                            <Separator className="bg-slate-300 w-[280px]" />
-                            <div className="flex flex-col items-center gap-2">
-                                <Label>Pastebin API Key</Label>
-                                <Input
-                                    type="text"
-                                    value={$pastebinApiKey}
-                                    id="pastebinApiKey"
-                                    onChange={(e) =>
-                                        pastebinApiKey.set(e.target.value)
-                                    }
-                                    placeholder="Enter your Pastebin API key"
-                                />
-                                <p className="text-xs text-gray-500">
-                                    Needed for sharing large game data. Create a
-                                    key{" "}
-                                    <a
-                                        href="https://pastebin.com/doc_api"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="text-blue-500 cursor-pointer"
-                                    >
-                                        here
-                                    </a>
-                                    .
-                                </p>
-                            </div>
-                            <Separator className="bg-slate-300 w-[280px]" />
-                            <Label>Permanent Map Overlay</Label>
-                            <div className="flex flex-row max-[330px]:flex-col gap-4">
-                                <Button
-                                    onClick={() => permanentOverlay.set(null)}
-                                >
-                                    Remove
-                                </Button>
-                                <Button
-                                    onClick={async () => {
-                                        if (!navigator || !navigator.clipboard)
-                                            return toast.error(
-                                                "Clipboard not supported",
-                                            );
-
-                                        try {
-                                            const clipboard =
-                                                await navigator.clipboard.readText();
-                                            const geojson =
-                                                JSON.parse(clipboard);
-                                            permanentOverlay.set(geojson);
-                                        } catch (e) {
-                                            toast.error(
-                                                `Invalid GeoJSON overlay: ${e}`,
-                                            );
-                                        }
-                                    }}
-                                >
-                                    Paste GeoJSON
-                                </Button>
-                            </div>
-                            <Separator className="bg-slate-300 w-[280px]" />
-                            <label className="flex w-full min-h-11 flex-row items-center justify-between gap-2 cursor-pointer">
-                                <span className="text-base font-medium">
-                                    Animate map movements?
-                                </span>
-                                <Checkbox
-                                    checked={$animateMapMovements}
-                                    onCheckedChange={() => {
-                                        animateMapMovements.set(
-                                            !$animateMapMovements,
-                                        );
-                                    }}
-                                />
-                            </label>
-                            <label className="flex w-full min-h-11 flex-row items-center justify-between gap-2 cursor-pointer">
-                                <span className="text-base font-medium">
-                                    Force Pastebin for sharing?
-                                </span>
-                                <Checkbox
-                                    checked={$alwaysUsePastebin}
-                                    onCheckedChange={() =>
-                                        alwaysUsePastebin.set(
-                                            !$alwaysUsePastebin,
-                                        )
-                                    }
-                                />
-                            </label>
-                            <label className="flex w-full min-h-11 flex-row items-center justify-between gap-2 cursor-pointer">
-                                <span className="text-base font-medium">
-                                    Enable planning mode?
-                                </span>
-                                <Checkbox
-                                    checked={$planningMode}
-                                    onCheckedChange={() => {
-                                        if ($planningMode === true) {
-                                            const map = leafletMapContext.get();
-
-                                            if (map) {
-                                                map.eachLayer((layer: any) => {
-                                                    if (
-                                                        layer.questionKey ||
-                                                        layer.questionKey === 0
-                                                    ) {
-                                                        map.removeLayer(layer);
-                                                    }
-                                                });
-                                            }
-                                        } else {
-                                            questions.set([...questions.get()]); // I think that this should always be auto-saved
-                                        }
-
-                                        planningModeEnabled.set(!$planningMode);
-                                    }}
-                                />
-                            </label>
-                            <label className="flex w-full min-h-11 flex-row items-center justify-between gap-2 cursor-pointer">
-                                <span className="text-base font-medium">
-                                    Auto save?
-                                </span>
-                                <Checkbox
-                                    checked={$autoSave}
-                                    onCheckedChange={() =>
-                                        autoSave.set(!$autoSave)
-                                    }
-                                />
-                            </label>
-                            <label className="flex w-full min-h-11 flex-row items-center justify-between gap-2 cursor-pointer">
-                                <span className="text-base font-medium">
-                                    Auto zoom?
-                                </span>
-                                <Checkbox
-                                    checked={$autoZoom}
-                                    onCheckedChange={() =>
-                                        autoZoom.set(!$autoZoom)
-                                    }
-                                />
-                            </label>
-                            <label className="flex w-full min-h-11 flex-row items-center justify-between gap-2 cursor-pointer">
-                                <span className="text-base font-medium">
-                                    Follow Me (GPS)?
-                                </span>
-                                <Checkbox
-                                    checked={$followMe}
-                                    onCheckedChange={() =>
-                                        followMe.set(!$followMe)
-                                    }
-                                />
-                            </label>
-                            <label className="flex w-full min-h-11 flex-row items-center justify-between gap-2 cursor-pointer">
-                                <span className="text-base font-medium">
-                                    Default to custom questions?
-                                </span>
-                                <Checkbox
-                                    checked={$defaultCustomQuestions}
-                                    onCheckedChange={() =>
-                                        defaultCustomQuestions.set(
-                                            !$defaultCustomQuestions,
-                                        )
-                                    }
-                                />
-                            </label>
-                            <label className="flex w-full min-h-11 flex-row items-center justify-between gap-2 cursor-pointer">
-                                <span className="text-base font-medium">
-                                    Allow Google Plus codes?
-                                </span>
-                                <Checkbox
-                                    checked={$allowGooglePlusCodes}
-                                    onCheckedChange={() =>
-                                        allowGooglePlusCodes.set(
-                                            !$allowGooglePlusCodes,
-                                        )
-                                    }
-                                />
-                            </label>
+                            <h3 className="text-lg font-semibold font-poppins self-start">
+                                Playing
+                            </h3>
                             <label className="flex w-full min-h-11 flex-row items-center justify-between gap-2 cursor-pointer">
                                 <span className="text-base font-medium">
                                     Hider mode?
@@ -666,6 +402,287 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                     )}
                                 </SidebarMenu>
                             )}
+                            <label className="flex w-full min-h-11 flex-row items-center justify-between gap-2 cursor-pointer">
+                                <span className="text-base font-medium">
+                                    Enable planning mode?
+                                </span>
+                                <Checkbox
+                                    checked={$planningMode}
+                                    onCheckedChange={() => {
+                                        if ($planningMode === true) {
+                                            const map = leafletMapContext.get();
+
+                                            if (map) {
+                                                map.eachLayer((layer: any) => {
+                                                    if (
+                                                        layer.questionKey ||
+                                                        layer.questionKey === 0
+                                                    ) {
+                                                        map.removeLayer(layer);
+                                                    }
+                                                });
+                                            }
+                                        } else {
+                                            questions.set([...questions.get()]); // I think that this should always be auto-saved
+                                        }
+
+                                        planningModeEnabled.set(!$planningMode);
+                                    }}
+                                />
+                            </label>
+                            <label className="flex w-full min-h-11 flex-row items-center justify-between gap-2 cursor-pointer">
+                                <span className="text-base font-medium">
+                                    Follow Me (GPS)?
+                                </span>
+                                <Checkbox
+                                    checked={$followMe}
+                                    onCheckedChange={() =>
+                                        followMe.set(!$followMe)
+                                    }
+                                />
+                            </label>
+
+                            <Separator className="bg-slate-300 w-[280px]" />
+                            <h3 className="text-lg font-semibold font-poppins self-start">
+                                Map
+                            </h3>
+                            <Label>Default Unit</Label>
+                            <UnitSelect
+                                unit={$defaultUnit}
+                                onChange={defaultUnit.set}
+                            />
+                            <label className="flex w-full min-h-11 flex-row items-center justify-between gap-2 cursor-pointer">
+                                <span className="text-base font-medium">
+                                    Auto zoom?
+                                </span>
+                                <Checkbox
+                                    checked={$autoZoom}
+                                    onCheckedChange={() =>
+                                        autoZoom.set(!$autoZoom)
+                                    }
+                                />
+                            </label>
+                            <label className="flex w-full min-h-11 flex-row items-center justify-between gap-2 cursor-pointer">
+                                <span className="text-base font-medium">
+                                    Animate map movements?
+                                </span>
+                                <Checkbox
+                                    checked={$animateMapMovements}
+                                    onCheckedChange={() => {
+                                        animateMapMovements.set(
+                                            !$animateMapMovements,
+                                        );
+                                    }}
+                                />
+                            </label>
+
+                            <Separator className="bg-slate-300 w-[280px]" />
+                            <h3 className="text-lg font-semibold font-poppins self-start">
+                                Data &amp; sharing
+                            </h3>
+                            <div className="flex flex-row max-[330px]:flex-col gap-4">
+                                <Button
+                                    onClick={() => {
+                                        if (!navigator || !navigator.clipboard)
+                                            return toast.error(
+                                                "Clipboard not supported",
+                                            );
+                                        navigator.clipboard.writeText(
+                                            JSON.stringify($hidingZone),
+                                        );
+                                        toast.success(
+                                            "Hiding zone copied successfully",
+                                            {
+                                                autoClose: 2000,
+                                            },
+                                        );
+                                    }}
+                                >
+                                    Copy Hiding Zone
+                                </Button>
+                                <Button
+                                    onClick={() => {
+                                        if (!navigator || !navigator.clipboard)
+                                            return toast.error(
+                                                "Clipboard not supported",
+                                            );
+                                        navigator.clipboard
+                                            .readText()
+                                            .then(loadHidingZone);
+                                    }}
+                                >
+                                    Paste Hiding Zone
+                                </Button>
+                            </div>
+                            <label className="flex w-full min-h-11 flex-row items-center justify-between gap-2 cursor-pointer">
+                                <span className="text-base font-medium">
+                                    Auto save?
+                                </span>
+                                <Checkbox
+                                    checked={$autoSave}
+                                    onCheckedChange={() =>
+                                        autoSave.set(!$autoSave)
+                                    }
+                                />
+                            </label>
+                            <div className="flex flex-col items-center gap-2">
+                                <Label>Pastebin API Key</Label>
+                                <Input
+                                    type="text"
+                                    value={$pastebinApiKey}
+                                    id="pastebinApiKey"
+                                    onChange={(e) =>
+                                        pastebinApiKey.set(e.target.value)
+                                    }
+                                    placeholder="Enter your Pastebin API key"
+                                />
+                                <p className="text-xs text-gray-500">
+                                    Needed for sharing large game data. Create a
+                                    key{" "}
+                                    <a
+                                        href="https://pastebin.com/doc_api"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-blue-500 cursor-pointer"
+                                    >
+                                        here
+                                    </a>
+                                    .
+                                </p>
+                            </div>
+                            <label className="flex w-full min-h-11 flex-row items-center justify-between gap-2 cursor-pointer">
+                                <span className="text-base font-medium">
+                                    Force Pastebin for sharing?
+                                </span>
+                                <Checkbox
+                                    checked={$alwaysUsePastebin}
+                                    onCheckedChange={() =>
+                                        alwaysUsePastebin.set(
+                                            !$alwaysUsePastebin,
+                                        )
+                                    }
+                                />
+                            </label>
+                            <Label>Permanent Map Overlay</Label>
+                            <div className="flex flex-row max-[330px]:flex-col gap-4">
+                                <Button
+                                    onClick={() => permanentOverlay.set(null)}
+                                >
+                                    Remove
+                                </Button>
+                                <Button
+                                    onClick={async () => {
+                                        if (!navigator || !navigator.clipboard)
+                                            return toast.error(
+                                                "Clipboard not supported",
+                                            );
+
+                                        try {
+                                            const clipboard =
+                                                await navigator.clipboard.readText();
+                                            const geojson =
+                                                JSON.parse(clipboard);
+                                            permanentOverlay.set(geojson);
+                                        } catch (e) {
+                                            toast.error(
+                                                `Invalid GeoJSON overlay: ${e}`,
+                                            );
+                                        }
+                                    }}
+                                >
+                                    Paste GeoJSON
+                                </Button>
+                            </div>
+
+                            <Separator className="bg-slate-300 w-[280px]" />
+                            <h3 className="text-lg font-semibold font-poppins self-start">
+                                Advanced
+                            </h3>
+                            <Label>New Custom Question Defaults</Label>
+                            <Select
+                                trigger="New custom default"
+                                options={{
+                                    ask: "Ask each time",
+                                    blank: "Start blank",
+                                    prefill: "Copy from current",
+                                }}
+                                value={$customInitPref}
+                                onValueChange={(v) =>
+                                    customInitPreference.set(v as any)
+                                }
+                            />
+                            <label className="flex w-full min-h-11 flex-row items-center justify-between gap-2 cursor-pointer">
+                                <span className="text-base font-medium">
+                                    Default to custom questions?
+                                </span>
+                                <Checkbox
+                                    checked={$defaultCustomQuestions}
+                                    onCheckedChange={() =>
+                                        defaultCustomQuestions.set(
+                                            !$defaultCustomQuestions,
+                                        )
+                                    }
+                                />
+                            </label>
+                            <label className="flex w-full min-h-11 flex-row items-center justify-between gap-2 cursor-pointer">
+                                <span className="text-base font-medium">
+                                    Allow Google Plus codes?
+                                </span>
+                                <Checkbox
+                                    checked={$allowGooglePlusCodes}
+                                    onCheckedChange={() =>
+                                        allowGooglePlusCodes.set(
+                                            !$allowGooglePlusCodes,
+                                        )
+                                    }
+                                />
+                            </label>
+
+                            <Separator className="bg-slate-300 w-[280px]" />
+                            <h3 className="text-lg font-semibold font-poppins self-start">
+                                Reset
+                            </h3>
+                            <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                    <Button
+                                        variant="outline"
+                                        disabled={$isLoading}
+                                    >
+                                        Clear Questions &amp; Cache
+                                    </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>
+                                            Clear questions &amp; cache?
+                                        </AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                            This action cannot be undone. This
+                                            will permanently delete all
+                                            questions and clear cached zone
+                                            data, useful for starting a fresh
+                                            round.
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel>
+                                            Cancel
+                                        </AlertDialogCancel>
+                                        <AlertDialogAction
+                                            onClick={() => {
+                                                mapGeoJSON.set(null);
+                                                questions.set([]);
+                                                clearCache(
+                                                    CacheType.ZONE_CACHE,
+                                                );
+                                            }}
+                                            className="mb-2 sm:mb-0"
+                                        >
+                                            Clear Questions &amp; Cache
+                                        </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
                         </div>
                     </div>
                 </DrawerContent>

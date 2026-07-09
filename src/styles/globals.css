@@ -28,7 +28,7 @@ div.leaflet-control-attribution.leaflet-control {
    on `.leaflet-touch` — that class relies on Leaflet's touch
    feature-detection, which doesn't reliably engage even on real touch
    viewports (this is why the audit measured 30x30 controls in the first
-   place). Zoom and easyPrint icons are centred (text glyph / fixed-size
+   place). Zoom icons are centred (text glyph / fixed-size
    background-image), so enlarging the button box doesn't require
    recalculating any sprite offsets. Excludes .leaflet-draw-toolbar, whose
    icons are positioned via fixed sprite offsets that would go out of
@@ -48,6 +48,17 @@ div.leaflet-control-attribution.leaflet-control {
 .leaflet-draw-toolbar {
     transform-origin: bottom left;
     transform: scale(1.47);
+}
+
+/* Zoom in/out buttons are redundant on touch devices (pinch-to-zoom covers
+   it) and just eat map space, so hide them below the `md` breakpoint and
+   keep them for desktop mouse users. Kept outside of @layer base for the
+   same reason as the rules above: "leaflet-control-zoom" never appears as a
+   literal string in scanned source files, so Tailwind would purge it. */
+@media not all and (min-width: 768px) {
+    .leaflet-control-zoom {
+        display: none;
+    }
 }
 
 @layer base {
@@ -125,25 +136,8 @@ div.leaflet-control-attribution.leaflet-control {
         --sidebar-ring: 217.2 91.2% 59.8%;
     }
 
-    main:not(.fullscreen)
-        .leaflet-control-container
-        .leaflet-top.leaflet-left
-        .leaflet-control {
+    main:not(.fullscreen) .leaflet-top .leaflet-control {
         @apply !mt-[104px] md:!mt-[40px];
-    }
-
-    main:not(.fullscreen)
-        .leaflet-top
-        .leaflet-control:not(.leaflet-control-easyPrint) {
-        @apply !mt-[104px] md:!mt-[40px];
-    }
-
-    div.leaflet-top div.leaflet-control-easyPrint {
-        @apply !mt-[140px] md:!mt-[74px];
-    }
-
-    main.fullscreen div.leaflet-control-easyPrint {
-        @apply hidden;
     }
 
     .selected-card-background-temporary {
