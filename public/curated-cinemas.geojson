@@ -1,0 +1,489 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.0937556, 51.5197763]
+            },
+            "properties": {
+                "id": "node/25474641",
+                "name": "Barbican Centre (Cinema)"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1304091, 51.5109335]
+            },
+            "properties": {
+                "id": "node/26573168",
+                "name": "Cineworld Leicester Square"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1293677, 51.5112449]
+            },
+            "properties": {
+                "id": "node/26573173",
+                "name": "Vue Leicester Square"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1312249, 51.5095663]
+            },
+            "properties": {
+                "id": "node/26671967",
+                "name": "Odeon Luxe Haymarket"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1306078, 51.5126577]
+            },
+            "properties": {
+                "id": "node/26699541",
+                "name": "Curzon Soho"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1058269, 51.5343822]
+            },
+            "properties": {
+                "id": "node/306042840",
+                "name": "Vue Islington"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.0730953, 51.5243518]
+            },
+            "properties": {
+                "id": "node/371525331",
+                "name": "Rich Mix Cinema"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.2188484, 51.503414]
+            },
+            "properties": {
+                "id": "node/452948294",
+                "name": "Vue"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1731524, 51.4855904]
+            },
+            "properties": {
+                "id": "node/498694180",
+                "name": "Everyman Chelsea"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1437574, 51.5389741]
+            },
+            "properties": {
+                "id": "node/931624349",
+                "name": "Odeon"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1117273, 51.5217117]
+            },
+            "properties": {
+                "id": "node/1236834452",
+                "name": "The Nickel Cinema"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1428506, 51.5168155]
+            },
+            "properties": {
+                "id": "node/1710144548",
+                "name": "Regent Street Cinema"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1780006, 51.500423]
+            },
+            "properties": {
+                "id": "node/1716046769",
+                "name": "Imperial Cinema"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1365788, 51.4975349]
+            },
+            "properties": {
+                "id": "node/2785097711",
+                "name": "Curzon Victoria"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1343413, 51.508942]
+            },
+            "properties": {
+                "id": "node/3357929234",
+                "name": "Vue"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.0739235, 51.5244086]
+            },
+            "properties": {
+                "id": "node/3767748685",
+                "name": "Electric Cinema"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1337164, 51.5107107]
+            },
+            "properties": {
+                "id": "node/3921178316",
+                "name": "Picturehouse Central"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.0719999, 51.5236118]
+            },
+            "properties": {
+                "id": "node/4145029892",
+                "name": "Close-Up Film Centre"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.0689221, 51.5138199]
+            },
+            "properties": {
+                "id": "node/4617424209",
+                "name": "Curzon Aldgate"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.0846045, 51.5196469]
+            },
+            "properties": {
+                "id": "node/5218118730",
+                "name": "Everyman"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1240562, 51.5375291]
+            },
+            "properties": {
+                "id": "node/5376964904",
+                "name": "Everyman King's Cross"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1565601, 51.5205013]
+            },
+            "properties": {
+                "id": "node/6338253691",
+                "name": "Everyman"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1469763, 51.4825125]
+            },
+            "properties": {
+                "id": "node/6345003067",
+                "name": "The Cinema in the Arches"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1771484, 51.4945283]
+            },
+            "properties": {
+                "id": "node/7930695624",
+                "name": "Ciné Lumière"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1035717, 51.5386358]
+            },
+            "properties": {
+                "id": "node/8819117410",
+                "name": "Odeon Luxe & Dine"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.083797, 51.5288806]
+            },
+            "properties": {
+                "id": "node/9120392029",
+                "name": "Curzon Hoxton"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1302154, 51.5099104]
+            },
+            "properties": {
+                "id": "node/9405724041",
+                "name": "Odeon Luxe West End"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.0922029, 51.5056351]
+            },
+            "properties": {
+                "id": "node/9960451065",
+                "name": "Everyman"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1311127, 51.5061096]
+            },
+            "properties": {
+                "id": "node/10554856531",
+                "name": "ICA Cinema"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1777493, 51.49721]
+            },
+            "properties": {
+                "id": "node/11709415903",
+                "name": "The Ronson Theatre"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1944172, 51.4808021]
+            },
+            "properties": {
+                "id": "node/13525260759",
+                "name": "Vue"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1036648, 51.5368532]
+            },
+            "properties": {
+                "id": "way/31305418",
+                "name": "Screen on the Green"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1479958, 51.5064636]
+            },
+            "properties": {
+                "id": "way/77002327",
+                "name": "Curzon Mayfair"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.0679074, 51.4708481]
+            },
+            "properties": {
+                "id": "way/78230879",
+                "name": "Peckhamplex"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1213592, 51.5162299]
+            },
+            "properties": {
+                "id": "way/97237929",
+                "name": "The Garden Cinema"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1136286, 51.504821]
+            },
+            "properties": {
+                "id": "way/123444154",
+                "name": "BFI IMAX"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1152119, 51.5067295]
+            },
+            "properties": {
+                "id": "way/150702283",
+                "name": "BFI Southbank"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1291028, 51.5105004]
+            },
+            "properties": {
+                "id": "way/180571964",
+                "name": "Odeon Luxe Leicester Square"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.13012, 51.5114935]
+            },
+            "properties": {
+                "id": "way/180594287",
+                "name": "Prince Charles Cinema"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1817063, 51.5280256]
+            },
+            "properties": {
+                "id": "way/208422244",
+                "name": "Everyman"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.123147, 51.5240631]
+            },
+            "properties": {
+                "id": "way/291651296",
+                "name": "Curzon Bloomsbury"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1973473, 51.5086882]
+            },
+            "properties": {
+                "id": "way/356675364",
+                "name": "Picturehouse Notting Hill"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.2050653, 51.5155295]
+            },
+            "properties": {
+                "id": "way/357556094",
+                "name": "Electric Cinema"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1325849, 51.5183594]
+            },
+            "properties": {
+                "id": "way/425222125",
+                "name": "Odeon"
+            }
+        }
+    ]
+}

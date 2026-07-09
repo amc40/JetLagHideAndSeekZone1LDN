@@ -17,6 +17,7 @@ import {
     polyGeoJSON,
 } from "@/lib/context";
 import {
+    fetchCuratedCinemas,
     fetchCuratedConsulates,
     fetchCuratedHospitals,
     fetchCuratedMuseums,
@@ -82,11 +83,17 @@ export const findMatchingPlaces = async (question: MatchingQuestion) => {
         case "park-full": {
             const location = question.type.split("-full")[0] as APILocations;
 
-            if (location === "hospital" || location === "museum") {
+            if (
+                location === "hospital" ||
+                location === "cinema" ||
+                location === "museum"
+            ) {
                 const curated =
                     location === "hospital"
                         ? await fetchCuratedHospitals()
-                        : await fetchCuratedMuseums();
+                        : location === "cinema"
+                          ? await fetchCuratedCinemas()
+                          : await fetchCuratedMuseums();
                 if (curated.features?.length > 0) {
                     return curated.features.map((f: any) =>
                         turf.point(f.geometry.coordinates, f.properties),
