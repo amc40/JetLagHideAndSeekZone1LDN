@@ -15,6 +15,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import {
     alwaysUsePastebin,
     hidingZone,
+    mapLayersDrawerOpen,
     optionsDrawerOpen,
     pastebinApiKey,
     showTutorial,
@@ -132,6 +133,16 @@ export const MobileActionBar = () => {
                             }}
                         >
                             Options
+                        </button>
+                        <button
+                            type="button"
+                            className="h-12 rounded-md border-2 border-black border-opacity-30 text-base font-medium"
+                            onClick={() => {
+                                setMoreOpen(false);
+                                mapLayersDrawerOpen.set(true);
+                            }}
+                        >
+                            Map Layers
                         </button>
                     </div>
                 </DrawerContent>

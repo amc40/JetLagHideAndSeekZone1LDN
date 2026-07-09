@@ -106,17 +106,9 @@ const tutorialSteps: TutorialStep[] = [
                 This fork of the tool is fixed to a single play area &mdash; TfL
                 Zone 1 &mdash; so there&apos;s no need to search for or draw a
                 boundary.
-                <br />
-                <br />
-                <strong>
-                    &ldquo;Clear Questions &amp; Cache&rdquo; button:
-                </strong>{" "}
-                Resets all questions and clears cached data, useful for starting
-                a fresh round without leaving the app.
             </>
         ),
-        targetSelector: '[data-tutorial-id="place-picker"]',
-        position: "bottom",
+        position: "center",
     },
     {
         title: "Opening the Question Sidebar",
@@ -617,6 +609,12 @@ const tutorialSteps: TutorialStep[] = [
                 hosting for all shares. This is also useful if you want to
                 generate a QR code containing the link, as this makes the QR
                 code much less convoluted.
+                <br />
+                <br />
+                <strong>Reset:</strong>
+                <br />• <strong>Clear Questions &amp; Cache:</strong> Resets all
+                questions and clears cached data, useful for starting a fresh
+                round without leaving the app.
             </>
         ),
         targetSelector: '[data-tutorial-id="option-questions-button"]',
