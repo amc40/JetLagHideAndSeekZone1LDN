@@ -1,0 +1,973 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1450659, 51.5194312]
+            },
+            "properties": {
+                "id": "node/12546753235",
+                "name": "Anaesthesia Heritage Centre"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1517124, 51.5034878]
+            },
+            "properties": {
+                "id": "way/120316250",
+                "name": "Apsley House"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.0876796, 51.5141974]
+            },
+            "properties": {
+                "id": "node/4513341393",
+                "name": "Bank of England"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1248919, 51.5076508]
+            },
+            "properties": {
+                "id": "way/104081033",
+                "name": "Benjamin Franklin House"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1217257, 51.5134897]
+            },
+            "properties": {
+                "id": "node/12064506169",
+                "name": "Bow Street Police Museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1281295, 51.5295982]
+            },
+            "properties": {
+                "id": "node/2617232245",
+                "name": "British Library Exhibition Space"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1268767, 51.5193124]
+            },
+            "properties": {
+                "id": "relation/177044",
+                "name": "British Museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1253919, 51.5078919]
+            },
+            "properties": {
+                "id": "node/5323721988",
+                "name": "British Optical Association Museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.0885236, 51.5192384]
+            },
+            "properties": {
+                "id": "node/12551995914",
+                "name": "British Red Cross Museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1697922, 51.4841139]
+            },
+            "properties": {
+                "id": "way/905365405",
+                "name": "Carlyle's House"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1163232, 51.5235936]
+            },
+            "properties": {
+                "id": "node/334631276",
+                "name": "Charles Dickens Museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1912833, 51.4827789]
+            },
+            "properties": {
+                "id": "way/715157652",
+                "name": "Chelsea FC Museum and Stadium Tours"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1293639, 51.4901511]
+            },
+            "properties": {
+                "id": "node/672741997",
+                "name": "Chelsea Space"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1292513, 51.5022091]
+            },
+            "properties": {
+                "id": "way/197206542",
+                "name": "Churchill War Rooms"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.0918979, 51.5069716]
+            },
+            "properties": {
+                "id": "way/82770797",
+                "name": "Clink Prison Museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1279676, 51.531669]
+            },
+            "properties": {
+                "id": "node/5029665757",
+                "name": "Crick Exhibition"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.0777904, 51.520943]
+            },
+            "properties": {
+                "id": "node/2244751330",
+                "name": "Dennis Severs' House"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.2001738, 51.4998875]
+            },
+            "properties": {
+                "id": "way/640554759",
+                "name": "Design Museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1081661, 51.5149094]
+            },
+            "properties": {
+                "id": "way/43706245",
+                "name": "Dr Johnson's House"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1422791, 51.5097024]
+            },
+            "properties": {
+                "id": "node/12556923049",
+                "name": "Faraday Museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.0816655, 51.501187]
+            },
+            "properties": {
+                "id": "way/101154182",
+                "name": "Fashion and Textile Museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1216728, 51.5252145]
+            },
+            "properties": {
+                "id": "way/28269975",
+                "name": "Foundling Museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.2156544, 51.4705417]
+            },
+            "properties": {
+                "id": "relation/3609581",
+                "name": "Fulham Palace"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.0752577, 51.5082243]
+            },
+            "properties": {
+                "id": "node/13958592487",
+                "name": "Fusiliers Museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1199749, 51.4948952]
+            },
+            "properties": {
+                "id": "way/117047225",
+                "name": "Garden Museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1342662, 51.523732]
+            },
+            "properties": {
+                "id": "node/1216160782",
+                "name": "Grant Museum of Zoology"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1458842, 51.5129421]
+            },
+            "properties": {
+                "id": "node/1493424622",
+                "name": "Handel & Hendrix"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.0813098, 51.5065635]
+            },
+            "properties": {
+                "id": "way/5006061",
+                "name": "HMS Belfast"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1272472, 51.5050096]
+            },
+            "properties": {
+                "id": "node/5071252726",
+                "name": "Household Cavalry Museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1158701, 51.5152831]
+            },
+            "properties": {
+                "id": "node/3349882188",
+                "name": "Hunterian Museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1085907, 51.4958006]
+            },
+            "properties": {
+                "id": "way/8614496",
+                "name": "Imperial War Museum London"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1045003, 51.5264897]
+            },
+            "properties": {
+                "id": "node/1588957563",
+                "name": "Islington Museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.0679105, 51.5107835]
+            },
+            "properties": {
+                "id": "way/257192112",
+                "name": "Jack the Ripper Museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1015441, 51.505966]
+            },
+            "properties": {
+                "id": "way/82459230",
+                "name": "Kirkaldy Testing Museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.2030775, 51.4986134]
+            },
+            "properties": {
+                "id": "way/115594423",
+                "name": "Leighton House Museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1260074, 51.5374302]
+            },
+            "properties": {
+                "id": "node/11008671201",
+                "name": "Lightroom"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.120207, 51.5342186]
+            },
+            "properties": {
+                "id": "way/190831613",
+                "name": "London Canal Museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1212213, 51.5119866]
+            },
+            "properties": {
+                "id": "way/44599803",
+                "name": "London Transport Museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1743025, 51.528945]
+            },
+            "properties": {
+                "id": "node/6525008514",
+                "name": "Lord's MCC Cricket Museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1548736, 51.5228997]
+            },
+            "properties": {
+                "id": "way/684695074",
+                "name": "Madame Tussauds"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1030689, 51.5061921]
+            },
+            "properties": {
+                "id": "node/13261198401",
+                "name": "MathsWorld"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1592376, 51.5135002]
+            },
+            "properties": {
+                "id": "node/13256051041",
+                "name": "Moco Museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.2109988, 51.5162502]
+            },
+            "properties": {
+                "id": "way/402345096",
+                "name": "Museum of Brands"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1212667, 51.5150089]
+            },
+            "properties": {
+                "id": "node/12541989407",
+                "name": "Museum of Freemasonry"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.0865519, 51.5238169]
+            },
+            "properties": {
+                "id": "node/734057156",
+                "name": "Museum of Methodism"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.0764441, 51.5315077]
+            },
+            "properties": {
+                "id": "way/706183718",
+                "name": "Museum of the Home"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1025564, 51.522006]
+            },
+            "properties": {
+                "id": "node/1686474834",
+                "name": "Museum of the Order of St John"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.135871, 51.5400251]
+            },
+            "properties": {
+                "id": "node/13962235901",
+                "name": "Museum Of Youth Culture"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1602867, 51.4862396]
+            },
+            "properties": {
+                "id": "way/10807015",
+                "name": "National Army Museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1760222, 51.4964552]
+            },
+            "properties": {
+                "id": "way/24436446",
+                "name": "Natural History Museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.0885153, 51.5050466]
+            },
+            "properties": {
+                "id": "way/90404358",
+                "name": "Old Operating Theatre Museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1639144, 51.4996747]
+            },
+            "properties": {
+                "id": "node/3357928873",
+                "name": "Paradox Museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1309483, 51.5310442]
+            },
+            "properties": {
+                "id": "node/13153838246",
+                "name": "People's Museum Somers Town"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1329843, 51.5235782]
+            },
+            "properties": {
+                "id": "way/27703085",
+                "name": "Petrie Museum of Egyptian Archeology"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1728628, 51.5014359]
+            },
+            "properties": {
+                "id": "way/640097060",
+                "name": "Polish Institute and Sikorski Museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1239054, 51.5356967]
+            },
+            "properties": {
+                "id": "node/10240945793",
+                "name": "Queer Britain"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1076445, 51.528594]
+            },
+            "properties": {
+                "id": "node/13583467062",
+                "name": "Quentin Blake Centre for Illustration"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1396975, 51.5092642]
+            },
+            "properties": {
+                "id": "way/31510288",
+                "name": "Royal Academy of Arts"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1522712, 51.5233717]
+            },
+            "properties": {
+                "id": "node/6414630967",
+                "name": "Royal Academy of Music Museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1774845, 51.49964]
+            },
+            "properties": {
+                "id": "node/12565855519",
+                "name": "Royal College of Music Museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1447883, 51.5257779]
+            },
+            "properties": {
+                "id": "node/6307248821",
+                "name": "Royal College of Physicians Museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.0683574, 51.50902]
+            },
+            "properties": {
+                "id": "node/12557420113",
+                "name": "Royal Pharmaceutical Society Museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1968743, 51.5004846]
+            },
+            "properties": {
+                "id": "way/129377070",
+                "name": "Sambourne House"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1762307, 51.4973971]
+            },
+            "properties": {
+                "id": "way/27765411",
+                "name": "Science Museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1584743, 51.5237629]
+            },
+            "properties": {
+                "id": "node/3916613190",
+                "name": "Sherlock Holmes Museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.117469, 51.5170751]
+            },
+            "properties": {
+                "id": "way/61453261",
+                "name": "Sir John Soane's Museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1287326, 51.521796]
+            },
+            "properties": {
+                "id": "node/1731830617",
+                "name": "SOAS Gallery"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1004735, 51.517723]
+            },
+            "properties": {
+                "id": "node/4354554594",
+                "name": "St Bartholomew's Hospital museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.0993862, 51.5074292]
+            },
+            "properties": {
+                "id": "way/24642569",
+                "name": "Tate Modern"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1504619, 51.517369]
+            },
+            "properties": {
+                "id": "way/134060144",
+                "name": "The Brown Collection"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1385815, 51.5175767]
+            },
+            "properties": {
+                "id": "node/7261799916",
+                "name": "The Cartoon Museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.0997845, 51.5214637]
+            },
+            "properties": {
+                "id": "node/5247197725",
+                "name": "The Charterhouse"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1050422, 51.4923804]
+            },
+            "properties": {
+                "id": "way/306698053",
+                "name": "The Cinema Museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1176697, 51.5000072]
+            },
+            "properties": {
+                "id": "node/5741257603",
+                "name": "The Florence Nightingale Museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1361252, 51.5000475]
+            },
+            "properties": {
+                "id": "node/4749096025",
+                "name": "The Guards Museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.144584, 51.5373041]
+            },
+            "properties": {
+                "id": "way/232592410",
+                "name": "The Jewish Museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.142551, 51.4998279]
+            },
+            "properties": {
+                "id": "node/1289223308",
+                "name": "The King's Gallery"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1953781, 51.4948747]
+            },
+            "properties": {
+                "id": "node/7715719671",
+                "name": "The Mosaic Rooms"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1500634, 51.5214613]
+            },
+            "properties": {
+                "id": "way/620603565",
+                "name": "The Museum of Philatelic History"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1139982, 51.5247243]
+            },
+            "properties": {
+                "id": "node/4973585223",
+                "name": "The Postal Museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1530662, 51.5175094]
+            },
+            "properties": {
+                "id": "node/7046046492",
+                "name": "The Wallace Collection"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.0761166, 51.5040417]
+            },
+            "properties": {
+                "id": "way/1002807722",
+                "name": "Tower Bridge Engine Rooms"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.0752994, 51.5058983]
+            },
+            "properties": {
+                "id": "way/367657974",
+                "name": "Tower Bridge Exhibition"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1430083, 51.5153317]
+            },
+            "properties": {
+                "id": "node/11346255514",
+                "name": "Twist Museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1331998, 51.5243862]
+            },
+            "properties": {
+                "id": "node/12561372014",
+                "name": "UCL Art Museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1721152, 51.4969111]
+            },
+            "properties": {
+                "id": "relation/29795",
+                "name": "Victoria and Albert Museum"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.0760213, 51.5086054]
+            },
+            "properties": {
+                "id": "way/369136185",
+                "name": "Waterloo Block"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1340195, 51.5259739]
+            },
+            "properties": {
+                "id": "node/2617821322",
+                "name": "Wellcome Collection"
+            }
+        }
+    ]
+}

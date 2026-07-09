@@ -205,6 +205,16 @@ export const fetchCuratedConsulates = async () => {
     return data;
 };
 
+export const fetchCuratedMuseums = async () => {
+    const response = await cacheFetch(
+        import.meta.env.BASE_URL + "/curated-museums.geojson",
+        "Loading curated museums...",
+        CacheType.PERMANENT_CACHE,
+    );
+    const data = await response.json();
+    return data;
+};
+
 export const trainLineNodeFinder = async (node: string): Promise<number[]> => {
     const nodeId = node.split("/")[1];
     const tagQuery = `

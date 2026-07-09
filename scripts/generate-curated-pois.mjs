@@ -52,6 +52,13 @@ const CATEGORIES = [
             new URL("../public/curated-libraries.geojson", import.meta.url),
         ),
     },
+    {
+        name: "museums",
+        source: new URL("../src/data/curated-museums.mjs", import.meta.url),
+        output: fileURLToPath(
+            new URL("../public/curated-museums.geojson", import.meta.url),
+        ),
+    },
 ];
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
