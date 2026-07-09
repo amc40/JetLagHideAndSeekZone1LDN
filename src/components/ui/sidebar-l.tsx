@@ -4,11 +4,11 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { atom } from "nanostores";
 import * as React from "react";
 import { TbMessage2Question } from "react-icons/tb";
+import { Drawer as DrawerPrimitive } from "vaul";
 
 import { type Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
     Tooltip,
@@ -27,6 +27,11 @@ const SIDEBAR_WIDTH_MOBILE = "18rem";
 const SIDEBAR_WIDTH_ICON = "3rem";
 const SIDEBAR_KEYBOARD_SHORTCUT = "b";
 const SIDEBAR_TUTORIAL_STEPS = [4];
+// Half-height by default so the map stays visible and live-updating while
+// editing questions; draggable up to near-full-height for long question lists.
+// vaul only treats plain numbers as fractions of the viewport (0-1) —
+// string snap points are parsed as raw pixel values, not percentages.
+const SIDEBAR_MOBILE_SNAP_POINTS: (number | string)[] = [0.45, 0.9];
 export const MENU_ITEM_CLASSNAME =
     "flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm outline-none ring-sidebar-ring transition-[width,height,padding] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 group-has-[[data-sidebar=menu-action]]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:!size-8 group-data-[collapsible=icon]:!p-2 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0";
 
@@ -171,6 +176,8 @@ const Sidebar = React.forwardRef<
         side?: "left" | "right";
         variant?: "sidebar" | "floating" | "inset";
         collapsible?: "offcanvas" | "icon" | "none";
+        title: string;
+        description?: string;
     }
 >(
     (
@@ -180,6 +187,8 @@ const Sidebar = React.forwardRef<
             collapsible = "offcanvas",
             className,
             children,
+            title,
+            description,
             ...props
         },
         ref,
@@ -213,27 +222,47 @@ const Sidebar = React.forwardRef<
 
         if (isMobile) {
             return (
-                <Sheet
+                <DrawerPrimitive.Root
                     open={openMobile}
                     onOpenChange={setOpenMobile}
-                    {...props}
+                    snapPoints={SIDEBAR_MOBILE_SNAP_POINTS}
                 >
-                    <SheetContent
-                        data-sidebar="sidebar"
-                        data-mobile="true"
-                        className="w-full bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden z-[1035]"
-                        style={
-                            {
-                                "--sidebar-width": SIDEBAR_WIDTH_MOBILE,
-                            } as React.CSSProperties
+                    <DrawerPrimitive.Portal
+                        container={
+                            typeof document !== "undefined"
+                                ? document.querySelector(
+                                      "#map-modal-dialog-container-leaflet",
+                                  )
+                                : null
                         }
-                        side={side}
                     >
-                        <div className="flex h-full w-full flex-col">
-                            {children}
-                        </div>
-                    </SheetContent>
-                </Sheet>
+                        <DrawerPrimitive.Overlay className="fixed inset-0 z-[1035] bg-black/40" />
+                        <DrawerPrimitive.Content
+                            data-sidebar="sidebar"
+                            data-mobile="true"
+                            className="fixed inset-x-0 bottom-0 z-[1035] flex h-full max-h-[97%] flex-col rounded-t-[10px] border bg-sidebar p-0 text-sidebar-foreground outline-none"
+                            style={
+                                {
+                                    "--sidebar-width": SIDEBAR_WIDTH_MOBILE,
+                                } as React.CSSProperties
+                            }
+                        >
+                            <DrawerPrimitive.Title className="sr-only">
+                                {title}
+                            </DrawerPrimitive.Title>
+                            <DrawerPrimitive.Description className="sr-only">
+                                {description ?? title}
+                            </DrawerPrimitive.Description>
+                            <div
+                                aria-hidden="true"
+                                className="mx-auto mt-2 h-1.5 w-10 shrink-0 rounded-full bg-sidebar-foreground/20"
+                            />
+                            <div className="flex h-full min-h-0 w-full flex-col overflow-hidden">
+                                {children}
+                            </div>
+                        </DrawerPrimitive.Content>
+                    </DrawerPrimitive.Portal>
+                </DrawerPrimitive.Root>
             );
         }
 
@@ -287,7 +316,7 @@ Sidebar.displayName = "Sidebar";
 const SidebarTrigger = React.forwardRef<
     React.ElementRef<typeof Button>,
     React.ComponentProps<typeof Button>
->(({ className, onClick, ...props }, ref) => {
+>(({ className, onClick, "aria-label": ariaLabel, ...props }, ref) => {
     const { toggleSidebar } = useStore(SidebarContext);
 
     return (
@@ -295,9 +324,10 @@ const SidebarTrigger = React.forwardRef<
             ref={ref}
             data-sidebar="trigger"
             size="icon"
+            aria-label={ariaLabel ?? "Toggle Questions panel"}
             className={cn(
-                "bg-white hover:bg-[#f4f4f4] text-black rounded-sm border-2 border-black border-opacity-30 cursor-pointer py-1 px-2",
-                "flex items-center gap-1",
+                "bg-white hover:bg-[#f4f4f4] text-black rounded-sm border-2 border-black border-opacity-30 cursor-pointer",
+                "flex items-center justify-center gap-1 min-h-11 min-w-11 p-2",
                 className,
             )}
             onClick={(event) => {

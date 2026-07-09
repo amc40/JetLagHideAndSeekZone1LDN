@@ -38,6 +38,20 @@ const CATEGORIES = [
             new URL("../public/curated-cinemas.geojson", import.meta.url),
         ),
     },
+    {
+        name: "consulates",
+        source: new URL("../src/data/curated-consulates.mjs", import.meta.url),
+        output: fileURLToPath(
+            new URL("../public/curated-consulates.geojson", import.meta.url),
+        ),
+    },
+    {
+        name: "libraries",
+        source: new URL("../src/data/curated-libraries.mjs", import.meta.url),
+        output: fileURLToPath(
+            new URL("../public/curated-libraries.geojson", import.meta.url),
+        ),
+    },
 ];
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -70,27 +84,37 @@ async function queryOverpass(query) {
                 `${OVERPASS_API}?data=${encodedQuery}`,
                 {
                     headers: REQUEST_HEADERS,
-                    signal: AbortSignal.timeout(20_000),
+                    signal: AbortSignal.timeout(60_000),
                 },
             );
             if (response.ok) return response.json();
             if (response.status !== 429) break;
         } catch {
-            break;
+            // Transient timeout/network error under the proxy — retry the
+            // primary host with backoff instead of giving up after one try.
         }
         await sleep(5000 * (attempt + 1));
     }
 
-    const fallbackResponse = await fetch(
-        `${OVERPASS_API_FALLBACK}?data=${encodedQuery}`,
-        { headers: REQUEST_HEADERS, signal: AbortSignal.timeout(20_000) },
-    );
-    if (!fallbackResponse.ok) {
-        throw new Error(
-            `Overpass request failed: ${fallbackResponse.status} ${fallbackResponse.statusText}`,
-        );
+    for (let attempt = 0; attempt < 2; attempt++) {
+        try {
+            const fallbackResponse = await fetch(
+                `${OVERPASS_API_FALLBACK}?data=${encodedQuery}`,
+                {
+                    headers: REQUEST_HEADERS,
+                    signal: AbortSignal.timeout(60_000),
+                },
+            );
+            if (fallbackResponse.ok) return fallbackResponse.json();
+        } catch {
+            // retry below
+        }
+        await sleep(5000 * (attempt + 1));
     }
-    return fallbackResponse.json();
+
+    throw new Error(
+        "Overpass request failed on both primary and fallback hosts",
+    );
 }
 
 // Entries with known {lat, lon} (e.g. sourced from a GPX/Wikipedia export)

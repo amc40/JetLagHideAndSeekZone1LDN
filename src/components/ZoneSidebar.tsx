@@ -536,15 +536,23 @@ export const ZoneSidebar = () => {
     ]);
 
     return (
-        <Sidebar side="right">
+        <Sidebar
+            side="right"
+            title="Hiding Zone"
+            description="View and configure the computed hiding zone and train stations."
+        >
             <div className="flex items-center justify-between">
                 <h2 className="ml-4 mt-4 font-poppins text-2xl">Hiding Zone</h2>
-                <SidebarCloseIcon
-                    className="mr-2 visible md:hidden scale-x-[-1]"
+                <button
+                    type="button"
+                    aria-label="Close Hiding Zone panel"
+                    className="p-2 mr-1 visible md:hidden cursor-pointer"
                     onClick={() => {
                         SidebarContext.get().setOpenMobile(false);
                     }}
-                />
+                >
+                    <SidebarCloseIcon className="scale-x-[-1]" />
+                </button>
             </div>
             <SidebarContent ref={sidebarRef}>
                 <ScrollToTop element={sidebarRef} minHeight={500} />
@@ -552,15 +560,17 @@ export const ZoneSidebar = () => {
                     <SidebarGroupContent>
                         <SidebarMenu>
                             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
-                                <Label className="font-semibold font-poppins">
-                                    Display hiding zones?
-                                </Label>
-                                <Checkbox
-                                    defaultChecked={$displayHidingZones}
-                                    checked={$displayHidingZones}
-                                    onCheckedChange={displayHidingZones.set}
-                                    disabled={$isLoading}
-                                />
+                                <label className="flex w-full min-h-11 items-center justify-between gap-2 cursor-pointer">
+                                    <span className="font-semibold font-poppins">
+                                        Display hiding zones?
+                                    </span>
+                                    <Checkbox
+                                        defaultChecked={$displayHidingZones}
+                                        checked={$displayHidingZones}
+                                        onCheckedChange={displayHidingZones.set}
+                                        disabled={$isLoading}
+                                    />
+                                </label>
                             </SidebarMenuItem>
                             <SidebarMenuItem
                                 className={cn(
@@ -572,10 +582,10 @@ export const ZoneSidebar = () => {
                                 your device.
                             </SidebarMenuItem>
                             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
-                                <div className="flex flex-row items-center justify-between w-full">
-                                    <Label className="font-semibold font-poppins">
+                                <label className="flex flex-row min-h-11 items-center justify-between w-full gap-2 cursor-pointer">
+                                    <span className="font-semibold font-poppins">
                                         Use custom station list?
-                                    </Label>
+                                    </span>
                                     <Checkbox
                                         checked={useCustomStations}
                                         onCheckedChange={(v) =>
@@ -583,13 +593,13 @@ export const ZoneSidebar = () => {
                                         }
                                         disabled={$isLoading}
                                     />
-                                </div>
+                                </label>
                             </SidebarMenuItem>
                             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
-                                <div className="flex flex-row items-center justify-between w-full">
-                                    <Label className="font-semibold font-poppins">
+                                <label className="flex flex-row min-h-11 items-center justify-between w-full gap-2 cursor-pointer">
+                                    <span className="font-semibold font-poppins">
                                         Merge duplicated stations?
-                                    </Label>
+                                    </span>
                                     <Checkbox
                                         checked={mergeDuplicates}
                                         onCheckedChange={(v) =>
@@ -597,7 +607,7 @@ export const ZoneSidebar = () => {
                                         }
                                         disabled={$isLoading}
                                     />
-                                </div>
+                                </label>
                             </SidebarMenuItem>
                             {useCustomStations && (
                                 <>
@@ -761,11 +771,11 @@ export const ZoneSidebar = () => {
                                                     }}
                                                 />
                                             </div>
-                                            <div className="flex flex-row items-center justify-between w-full">
-                                                <Label className="font-semibold font-poppins">
+                                            <label className="flex flex-row min-h-11 items-center justify-between w-full gap-2 cursor-pointer">
+                                                <span className="font-semibold font-poppins">
                                                     Include default stations
                                                     with custom list?
-                                                </Label>
+                                                </span>
                                                 <Checkbox
                                                     checked={
                                                         includeDefaultStations
@@ -777,7 +787,7 @@ export const ZoneSidebar = () => {
                                                     }
                                                     disabled={$isLoading}
                                                 />
-                                            </div>
+                                            </label>
                                             {$customStations.length > 0 && (
                                                 <div className="text-sm text-gray-300">
                                                     {_previewText(
@@ -1132,7 +1142,7 @@ export const ZoneSidebar = () => {
                                                                     .id,
                                                             );
                                                         }}
-                                                        className="bg-slate-600 p-0.5 rounded-md"
+                                                        className="bg-slate-600 rounded-md flex items-center justify-center min-h-11 min-w-11 px-3"
                                                         disabled={$isLoading}
                                                     >
                                                         View

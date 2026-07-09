@@ -18,6 +18,7 @@ import {
 } from "@/lib/context";
 import {
     fetchCuratedCinemas,
+    fetchCuratedConsulates,
     fetchCuratedHospitals,
     findAdminBoundary,
     findPlacesInZone,
@@ -85,6 +86,15 @@ export const findMatchingPlaces = async (question: MatchingQuestion) => {
                 const curated = await (location === "hospital"
                     ? fetchCuratedHospitals()
                     : fetchCuratedCinemas());
+                if (curated.features?.length > 0) {
+                    return curated.features.map((f: any) =>
+                        turf.point(f.geometry.coordinates, f.properties),
+                    );
+                }
+            }
+
+            if (location === "consulate") {
+                const curated = await fetchCuratedConsulates();
                 if (curated.features?.length > 0) {
                     return curated.features.map((f: any) =>
                         turf.point(f.geometry.coordinates, f.properties),

@@ -8,7 +8,12 @@ import { LiaThumbtackSolid } from "react-icons/lia";
 import { type Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
+import {
+    Sheet,
+    SheetContent,
+    SheetDescription,
+    SheetTitle,
+} from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
     Tooltip,
@@ -169,6 +174,8 @@ const Sidebar = React.forwardRef<
         side?: "left" | "right";
         variant?: "sidebar" | "floating" | "inset";
         collapsible?: "offcanvas" | "icon" | "none";
+        title: string;
+        description?: string;
     }
 >(
     (
@@ -178,6 +185,8 @@ const Sidebar = React.forwardRef<
             collapsible = "offcanvas",
             className,
             children,
+            title,
+            description,
             ...props
         },
         ref,
@@ -218,6 +227,10 @@ const Sidebar = React.forwardRef<
                         }
                         side={side}
                     >
+                        <SheetTitle className="sr-only">{title}</SheetTitle>
+                        <SheetDescription className="sr-only">
+                            {description ?? title}
+                        </SheetDescription>
                         <div className="flex h-full w-full flex-col">
                             {children}
                         </div>
@@ -276,7 +289,7 @@ Sidebar.displayName = "Sidebar";
 const SidebarTrigger = React.forwardRef<
     React.ElementRef<typeof Button>,
     React.ComponentProps<typeof Button>
->(({ className, onClick, ...props }, ref) => {
+>(({ className, onClick, "aria-label": ariaLabel, ...props }, ref) => {
     const { toggleSidebar } = useStore(SidebarContext);
 
     return (
@@ -284,9 +297,10 @@ const SidebarTrigger = React.forwardRef<
             ref={ref}
             data-sidebar="trigger"
             size="icon"
+            aria-label={ariaLabel ?? "Toggle Hiding Zone panel"}
             className={cn(
-                "bg-white hover:bg-[#f4f4f4] text-black rounded-sm border-2 border-black border-opacity-30 cursor-pointer py-1 px-2",
-                "flex items-center gap-1",
+                "bg-white hover:bg-[#f4f4f4] text-black rounded-sm border-2 border-black border-opacity-30 cursor-pointer",
+                "flex items-center justify-center gap-1 min-h-11 min-w-11 p-2",
                 className,
             )}
             onClick={(event) => {
