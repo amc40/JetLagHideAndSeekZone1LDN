@@ -23,7 +23,6 @@ import {
 import { shareHidingZone } from "@/lib/shareHidingZone";
 import { cn } from "@/lib/utils";
 
-import { clearQuestionsAndCache } from "./PlacePicker";
 import { SidebarContext as SidebarContextL } from "./ui/sidebar-l";
 import { SidebarContext as SidebarContextR } from "./ui/sidebar-r";
 
@@ -144,16 +143,6 @@ export const MobileActionBar = () => {
                             }}
                         >
                             Map Layers
-                        </button>
-                        <button
-                            type="button"
-                            className="h-12 rounded-md border-2 border-black border-opacity-30 text-base font-medium"
-                            onClick={() => {
-                                setMoreOpen(false);
-                                clearQuestionsAndCache();
-                            }}
-                        >
-                            Clear Questions &amp; Cache
                         </button>
                     </div>
                 </DrawerContent>

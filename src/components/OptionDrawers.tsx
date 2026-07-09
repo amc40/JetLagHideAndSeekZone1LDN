@@ -3,6 +3,17 @@ import { useEffect, useRef } from "react";
 import { toast } from "react-toastify";
 
 import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import {
     Drawer,
     DrawerContent,
     DrawerHeader,
@@ -29,6 +40,7 @@ import {
     hidingRadiusUnits,
     hidingZone,
     includeDefaultStations,
+    isLoading,
     leafletMapContext,
     mapGeoJSON,
     mapGeoLocation,
@@ -49,6 +61,7 @@ import {
     shareHidingZone,
 } from "@/lib/shareHidingZone";
 import { cn, decompress, fetchFromPastebin } from "@/lib/utils";
+import { CacheType, clearCache } from "@/maps/api";
 import { questionsSchema } from "@/maps/schema";
 
 import { LatitudeLongitude } from "./LatLngPicker";
@@ -82,6 +95,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
     const $alwaysUsePastebin = useStore(alwaysUsePastebin);
     const $followMe = useStore(followMe);
     const $customInitPref = useStore(customInitPreference);
+    const $isLoading = useStore(isLoading);
     const $isOptionsOpen = useStore(optionsDrawerOpen);
     const isMobile = useIsMobile();
     const lastDefaultUnit = useRef($defaultUnit);
@@ -352,6 +366,48 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                     Paste Hiding Zone
                                 </Button>
                             </div>
+                            <Separator className="bg-slate-300 w-[280px]" />
+                            <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                    <Button
+                                        variant="outline"
+                                        disabled={$isLoading}
+                                    >
+                                        Clear Questions &amp; Cache
+                                    </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>
+                                            Clear questions &amp; cache?
+                                        </AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                            This action cannot be undone. This
+                                            will permanently delete all
+                                            questions and clear cached zone
+                                            data, useful for starting a fresh
+                                            round.
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel>
+                                            Cancel
+                                        </AlertDialogCancel>
+                                        <AlertDialogAction
+                                            onClick={() => {
+                                                mapGeoJSON.set(null);
+                                                questions.set([]);
+                                                clearCache(
+                                                    CacheType.ZONE_CACHE,
+                                                );
+                                            }}
+                                            className="mb-2 sm:mb-0"
+                                        >
+                                            Clear Questions &amp; Cache
+                                        </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
                             <Separator className="bg-slate-300 w-[280px]" />
                             <Label>Default Unit</Label>
                             <UnitSelect

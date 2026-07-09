@@ -1,7 +1,6 @@
 ---
 import Layout from "@/layouts/Layout.astro";
 import { Map } from "@/components/Map";
-import { PlacePicker } from "@/components/PlacePicker";
 import { SidebarProvider as SidebarProviderL } from "@/components/ui/sidebar-l";
 import { SidebarProvider as SidebarProviderR } from "@/components/ui/sidebar-r";
 import { QuestionSidebar } from "@/components/QuestionSidebar";
@@ -34,11 +33,7 @@ import { TutorialDialog } from "@/components/TutorialDialog";
                             />
                             <MapLayersButton
                                 client:only
-                                className="mt-4 overflow-hidden shadow-md pointer-events-auto"
-                            />
-                            <PlacePicker
-                                client:only
-                                className="m-4 overflow-hidden pointer-events-auto"
+                                className="mt-4 mb-4 overflow-hidden shadow-md pointer-events-auto"
                             />
                         </div>
                         <div
