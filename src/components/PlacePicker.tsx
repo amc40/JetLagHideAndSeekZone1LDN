@@ -7,6 +7,7 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { useTutorialStep } from "@/hooks/use-tutorial-step";
 import { isLoading, mapGeoJSON, questions } from "@/lib/context";
 import { cn } from "@/lib/utils";
@@ -14,12 +15,26 @@ import { CacheType, clearCache } from "@/maps/api";
 
 import { Button } from "./ui/button";
 
+export const clearQuestionsAndCache = () => {
+    mapGeoJSON.set(null);
+    questions.set([]);
+    clearCache(CacheType.ZONE_CACHE);
+};
+
+// The place is permanently fixed to Zone 1 in this fork, so the only
+// functionality here is "Clear Questions & Cache" — on mobile that's folded
+// into the bottom app bar's overflow menu instead of a header button (see
+// mobile UX audit §2.7), so there's nothing left to render in the header.
 export const PlacePicker = ({ className = "" }: { className?: string }) => {
+    const isMobile = useIsMobile();
     const $isLoading = useStore(isLoading);
     const [open, setOpen] = useState(false);
+    const tutorialStepOpen = useTutorialStep(open, [2]);
+
+    if (isMobile) return null;
 
     return (
-        <Popover open={useTutorialStep(open, [2])} onOpenChange={setOpen}>
+        <Popover open={tutorialStepOpen} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
                 <Button
                     variant="outline"
@@ -43,11 +58,7 @@ export const PlacePicker = ({ className = "" }: { className?: string }) => {
                     variant="outline"
                     className="font-normal bg-slate-50 hover:bg-slate-200 w-full"
                     disabled={$isLoading}
-                    onClick={() => {
-                        mapGeoJSON.set(null);
-                        questions.set([]);
-                        clearCache(CacheType.ZONE_CACHE);
-                    }}
+                    onClick={clearQuestionsAndCache}
                 >
                     Clear Questions & Cache
                 </Button>

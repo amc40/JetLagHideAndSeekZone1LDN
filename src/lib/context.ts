@@ -390,6 +390,10 @@ export const tutorialStep = atom<number>(0);
 // drawer that the desktop button row opens.
 export const optionsDrawerOpen = atom<boolean>(false);
 
+// Lets the mobile bottom app bar's overflow menu open the same Map Layers
+// settings that the desktop header button opens.
+export const mapLayersDrawerOpen = atom<boolean>(false);
+
 export const customInitPreference = persistentAtom<"ask" | "blank" | "prefill">(
     "customInitPreference",
     "ask",
