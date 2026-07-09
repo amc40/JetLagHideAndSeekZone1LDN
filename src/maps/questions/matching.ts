@@ -21,6 +21,7 @@ import {
     fetchCuratedConsulates,
     fetchCuratedHospitals,
     fetchCuratedMuseums,
+    fetchCuratedParks,
     findAdminBoundary,
     findPlacesInZone,
     LOCATION_FIRST_TAG,
@@ -85,15 +86,18 @@ export const findMatchingPlaces = async (question: MatchingQuestion) => {
 
             if (
                 location === "hospital" ||
+                location === "park" ||
                 location === "cinema" ||
                 location === "museum"
             ) {
                 const curated =
                     location === "hospital"
                         ? await fetchCuratedHospitals()
-                        : location === "cinema"
-                          ? await fetchCuratedCinemas()
-                          : await fetchCuratedMuseums();
+                        : location === "park"
+                          ? await fetchCuratedParks()
+                          : location === "cinema"
+                            ? await fetchCuratedCinemas()
+                            : await fetchCuratedMuseums();
                 if (curated.features?.length > 0) {
                     return curated.features.map((f: any) =>
                         turf.point(f.geometry.coordinates, f.properties),

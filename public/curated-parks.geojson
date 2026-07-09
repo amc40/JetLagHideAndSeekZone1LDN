@@ -1,0 +1,796 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1837838, 51.5394192]
+            },
+            "properties": {
+                "id": "way/982728997",
+                "name": "Alexandra Road Park"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1168946, 51.4967922]
+            },
+            "properties": {
+                "id": "way/4260009",
+                "name": "Archbishop's Park"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.2127591, 51.5105681]
+            },
+            "properties": {
+                "id": "way/19748095",
+                "name": "Avondale Park"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1129016, 51.537203]
+            },
+            "properties": {
+                "id": "relation/19117130",
+                "name": "Barnard Park"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1574113, 51.4792184]
+            },
+            "properties": {
+                "id": "way/840130236",
+                "name": "Battersea Park"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.0748259, 51.4948643]
+            },
+            "properties": {
+                "id": "way/26163279",
+                "name": "Bermondsey Spa Gardens"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.2159273, 51.4697344]
+            },
+            "properties": {
+                "id": "way/292716717",
+                "name": "Bishop's Meadow"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.2162396, 51.4710647]
+            },
+            "properties": {
+                "id": "way/4380345",
+                "name": "Bishop's Park"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.2198063, 51.4961085]
+            },
+            "properties": {
+                "id": "way/25605582",
+                "name": "Brook Green"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.0858595, 51.475878]
+            },
+            "properties": {
+                "id": "way/26595608",
+                "name": "Brunswick Park"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.0841847, 51.4836526]
+            },
+            "properties": {
+                "id": "relation/18347320",
+                "name": "Burgess Park"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.119992, 51.5244014]
+            },
+            "properties": {
+                "id": "way/55737057",
+                "name": "Coram's Fields"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.0931914, 51.4973484]
+            },
+            "properties": {
+                "id": "way/44593191",
+                "name": "Dickens' Fields"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1949946, 51.4764278]
+            },
+            "properties": {
+                "id": "way/5131192",
+                "name": "Eel Brook Common"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.0967869, 51.4932663]
+            },
+            "properties": {
+                "id": "way/691296799",
+                "name": "Elephant Park"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1088176, 51.475078]
+            },
+            "properties": {
+                "id": "way/898542206",
+                "name": "Eythorne Park"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1651599, 51.4689201]
+            },
+            "properties": {
+                "id": "way/4416362",
+                "name": "Falcon Park"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1752265, 51.4722534]
+            },
+            "properties": {
+                "id": "way/4701535",
+                "name": "Fred Wells Gardens"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1085152, 51.4959219]
+            },
+            "properties": {
+                "id": "way/8614502",
+                "name": "Geraldine Mary Harmsworth Park"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.0677039, 51.5330692]
+            },
+            "properties": {
+                "id": "way/8501796",
+                "name": "Haggerston Park"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1420515, 51.4710658]
+            },
+            "properties": {
+                "id": "way/27363252",
+                "name": "Heathbrook Park"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.2031275, 51.5027819]
+            },
+            "properties": {
+                "id": "way/8137262",
+                "name": "Holland Park"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.2021224, 51.4690524]
+            },
+            "properties": {
+                "id": "way/4252522",
+                "name": "Hurlingham Park"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1630518, 51.5074147]
+            },
+            "properties": {
+                "id": "way/372975520",
+                "name": "Hyde Park"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1832233, 51.4710247]
+            },
+            "properties": {
+                "id": "way/97503323",
+                "name": "Imperial Park"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1076721, 51.48313]
+            },
+            "properties": {
+                "id": "relation/13461887",
+                "name": "Kennington Park"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1802014, 51.5066483]
+            },
+            "properties": {
+                "id": "way/3986346",
+                "name": "Kensington Gardens"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.2198458, 51.5206429]
+            },
+            "properties": {
+                "id": "way/23526046"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1131243, 51.4926096]
+            },
+            "properties": {
+                "id": "way/79308654",
+                "name": "Lambeth Walk Doorstep Green"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1310281, 51.4733552]
+            },
+            "properties": {
+                "id": "way/4982149",
+                "name": "Larkhall Park"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1165698, 51.5162701]
+            },
+            "properties": {
+                "id": "way/30613392",
+                "name": "Lincoln's Inn Fields"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.0604479, 51.5405754]
+            },
+            "properties": {
+                "id": "way/4406359",
+                "name": "London Fields"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.0822515, 51.47257]
+            },
+            "properties": {
+                "id": "way/5551993",
+                "name": "Lucas Gardens"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1116277, 51.4683283]
+            },
+            "properties": {
+                "id": "relation/14069923",
+                "name": "Max Roach Park"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.2037582, 51.5237583]
+            },
+            "properties": {
+                "id": "way/23600634",
+                "name": "Meanwhile Gardens"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.10351, 51.4736932]
+            },
+            "properties": {
+                "id": "way/4357123",
+                "name": "Myatt's Fields"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.0949988, 51.5444415]
+            },
+            "properties": {
+                "id": "relation/7768846",
+                "name": "New River Walk"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.0961447, 51.4976288]
+            },
+            "properties": {
+                "id": "way/44425766",
+                "name": "Newington Gardens"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.2066643, 51.4846438]
+            },
+            "properties": {
+                "id": "way/94221095",
+                "name": "Normand Park"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.0910387, 51.4902302]
+            },
+            "properties": {
+                "id": "way/22895152",
+                "name": "Nursery Row Park"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1905548, 51.5302677]
+            },
+            "properties": {
+                "id": "way/156510046",
+                "name": "Paddington Recreation Ground"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1009536, 51.4862454]
+            },
+            "properties": {
+                "id": "way/29360805",
+                "name": "Pasley Park"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.078101, 51.5041607]
+            },
+            "properties": {
+                "id": "way/367694522",
+                "name": "Potters Fields Park"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1616396, 51.5390612]
+            },
+            "properties": {
+                "id": "way/4082666",
+                "name": "Primrose Hill"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.2107364, 51.5361349]
+            },
+            "properties": {
+                "id": "way/4072806",
+                "name": "Queens Park"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1531496, 51.4869616]
+            },
+            "properties": {
+                "id": "way/851136558",
+                "name": "Ranelagh Gardens"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.0875617, 51.5384123]
+            },
+            "properties": {
+                "id": "way/5122303",
+                "name": "Rosemary Gardens"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.126069, 51.5216943]
+            },
+            "properties": {
+                "id": "way/3241371",
+                "name": "Russell Square"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.2219807, 51.5042477]
+            },
+            "properties": {
+                "id": "way/4244829",
+                "name": "Shepherds Bush Green"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1661547, 51.4684659]
+            },
+            "properties": {
+                "id": "way/4416363",
+                "name": "Shillington Park"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.0860094, 51.5346112]
+            },
+            "properties": {
+                "id": "way/100610481",
+                "name": "Shoreditch Park"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1148133, 51.4712027]
+            },
+            "properties": {
+                "id": "relation/14880311",
+                "name": "Slade Gardens"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1982335, 51.5314796]
+            },
+            "properties": {
+                "id": "way/93308046",
+                "name": "South Kilburn Open Space"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1942851, 51.4690551]
+            },
+            "properties": {
+                "id": "way/4252532",
+                "name": "South Park"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1074384, 51.5255681]
+            },
+            "properties": {
+                "id": "relation/2191175",
+                "name": "Spa Fields"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1210331, 51.526163]
+            },
+            "properties": {
+                "id": "way/23231897",
+                "name": "St George's Gardens"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1345834, 51.4870369]
+            },
+            "properties": {
+                "id": "way/23946211",
+                "name": "St. George's Square"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1344197, 51.5031135]
+            },
+            "properties": {
+                "id": "way/374960368",
+                "name": "St. James's Park"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1692116, 51.5311565]
+            },
+            "properties": {
+                "id": "way/398337148",
+                "name": "St. John's Wood Church Grounds"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.0820587, 51.4881465]
+            },
+            "properties": {
+                "id": "way/156931394",
+                "name": "Surrey Square Park"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.089085, 51.4986107]
+            },
+            "properties": {
+                "id": "way/26248229",
+                "name": "Tabard Gardens"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1441729, 51.50452]
+            },
+            "properties": {
+                "id": "way/863554956",
+                "name": "The Green Park"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1553995, 51.5301451]
+            },
+            "properties": {
+                "id": "relation/1384127",
+                "name": "The Regent's Park"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1220497, 51.4828574]
+            },
+            "properties": {
+                "id": "relation/14755741",
+                "name": "Vauxhall Park"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1207242, 51.4874704]
+            },
+            "properties": {
+                "id": "way/4256264",
+                "name": "Vauxhall Pleasure Gardens"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1248658, 51.4964596]
+            },
+            "properties": {
+                "id": "way/4259687",
+                "name": "Victoria Tower Gardens"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.0757688, 51.4694957]
+            },
+            "properties": {
+                "id": "relation/77740",
+                "name": "Warwick Gardens"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.0619794, 51.5252877]
+            },
+            "properties": {
+                "id": "way/506841261",
+                "name": "Weaver's Fields"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1894793, 51.5213741]
+            },
+            "properties": {
+                "id": "relation/10090476",
+                "name": "Westbourne Green Open Space"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1840894, 51.4798813]
+            },
+            "properties": {
+                "id": "way/4488669",
+                "name": "Westfield Park"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.0873454, 51.4922954]
+            },
+            "properties": {
+                "id": "way/22604638",
+                "name": "Salisbury Row"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.121026, 51.5086189]
+            },
+            "properties": {
+                "id": "way/4254099",
+                "name": "Victoria Embankment Gardens"
+            }
+        }
+    ]
+}

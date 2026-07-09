@@ -185,6 +185,16 @@ export const fetchCuratedHospitals = async () => {
     return data;
 };
 
+export const fetchCuratedParks = async () => {
+    const response = await cacheFetch(
+        import.meta.env.BASE_URL + "/curated-parks.geojson",
+        "Loading curated parks...",
+        CacheType.PERMANENT_CACHE,
+    );
+    const data = await response.json();
+    return data;
+};
+
 export const fetchCuratedCinemas = async () => {
     const response = await cacheFetch(
         import.meta.env.BASE_URL + "/curated-cinemas.geojson",

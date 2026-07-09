@@ -32,6 +32,13 @@ const CATEGORIES = [
         ),
     },
     {
+        name: "parks",
+        source: new URL("../src/data/curated-parks.mjs", import.meta.url),
+        output: fileURLToPath(
+            new URL("../public/curated-parks.geojson", import.meta.url),
+        ),
+    },
+    {
         name: "cinemas",
         source: new URL("../src/data/curated-cinemas.mjs", import.meta.url),
         output: fileURLToPath(

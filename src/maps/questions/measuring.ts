@@ -17,6 +17,7 @@ import {
     fetchCuratedHighspeed,
     fetchCuratedHospitals,
     fetchCuratedMuseums,
+    fetchCuratedParks,
     findPlacesInZone,
     findPlacesSpecificInZone,
     LOCATION_FIRST_TAG,
@@ -157,15 +158,18 @@ export const determineMeasuringBoundary = async (
 
             if (
                 location === "hospital" ||
+                location === "park" ||
                 location === "cinema" ||
                 location === "museum"
             ) {
                 const curated =
                     location === "hospital"
                         ? await fetchCuratedHospitals()
-                        : location === "cinema"
-                          ? await fetchCuratedCinemas()
-                          : await fetchCuratedMuseums();
+                        : location === "park"
+                          ? await fetchCuratedParks()
+                          : location === "cinema"
+                            ? await fetchCuratedCinemas()
+                            : await fetchCuratedMuseums();
                 if (curated.features?.length > 0) {
                     return [
                         turf.combine(turf.featureCollection(curated.features))
