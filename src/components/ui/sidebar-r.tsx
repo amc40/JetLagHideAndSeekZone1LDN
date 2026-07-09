@@ -299,8 +299,8 @@ const SidebarTrigger = React.forwardRef<
             size="icon"
             aria-label={ariaLabel ?? "Toggle Hiding Zone panel"}
             className={cn(
-                "bg-white hover:bg-[#f4f4f4] text-black rounded-sm border-2 border-black border-opacity-30 cursor-pointer py-1 px-2",
-                "flex items-center gap-1",
+                "bg-white hover:bg-[#f4f4f4] text-black rounded-sm border-2 border-black border-opacity-30 cursor-pointer",
+                "flex items-center justify-center gap-1 min-h-11 min-w-11 p-2",
                 className,
             )}
             onClick={(event) => {

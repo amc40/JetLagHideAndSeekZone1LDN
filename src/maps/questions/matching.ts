@@ -17,6 +17,7 @@ import {
     polyGeoJSON,
 } from "@/lib/context";
 import {
+    fetchCuratedConsulates,
     fetchCuratedHospitals,
     findAdminBoundary,
     findPlacesInZone,
@@ -82,6 +83,15 @@ export const findMatchingPlaces = async (question: MatchingQuestion) => {
 
             if (location === "hospital") {
                 const curated = await fetchCuratedHospitals();
+                if (curated.features?.length > 0) {
+                    return curated.features.map((f: any) =>
+                        turf.point(f.geometry.coordinates, f.properties),
+                    );
+                }
+            }
+
+            if (location === "consulate") {
+                const curated = await fetchCuratedConsulates();
                 if (curated.features?.length > 0) {
                     return curated.features.map((f: any) =>
                         turf.point(f.geometry.coordinates, f.properties),

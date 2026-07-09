@@ -83,17 +83,17 @@ export const MapLayersButton = ({ className = "" }: { className?: string }) => {
                     </p>
                 </div>
                 <Separator className="bg-slate-300" />
-                <div className="flex flex-row items-center justify-between gap-2">
-                    <label className="text-base font-medium">
+                <label className="flex flex-row min-h-11 items-center justify-between gap-2 cursor-pointer">
+                    <span className="text-base font-medium">
                         Show tube &amp; rail stops?
-                    </label>
+                    </span>
                     <Checkbox
                         checked={$showTransitStops}
                         onCheckedChange={() =>
                             showTransitStops.set(!$showTransitStops)
                         }
                     />
-                </div>
+                </label>
                 <Separator className="bg-slate-300" />
                 <Label>Map Overlays</Label>
                 <div className="flex flex-col gap-2">
@@ -103,13 +103,13 @@ export const MapLayersButton = ({ className = "" }: { className?: string }) => {
                             (typeof OVERLAY_CONFIG)[OverlayKey],
                         ][]
                     ).map(([key, cfg]) => (
-                        <div
+                        <label
                             key={key}
-                            className="flex flex-row items-center justify-between gap-2"
+                            className="flex flex-row min-h-11 items-center justify-between gap-2 cursor-pointer"
                         >
-                            <label className="text-base font-medium">
+                            <span className="text-base font-medium">
                                 {cfg.label}
-                            </label>
+                            </span>
                             <Checkbox
                                 checked={$mapOverlays.includes(key)}
                                 onCheckedChange={() => {
@@ -124,7 +124,7 @@ export const MapLayersButton = ({ className = "" }: { className?: string }) => {
                                     }
                                 }}
                             />
-                        </div>
+                        </label>
                     ))}
                 </div>
             </PopoverContent>
