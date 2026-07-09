@@ -39,6 +39,13 @@ const CATEGORIES = [
         ),
     },
     {
+        name: "highspeed",
+        source: new URL("../src/data/curated-highspeed.mjs", import.meta.url),
+        output: fileURLToPath(
+            new URL("../public/curated-highspeed.geojson", import.meta.url),
+        ),
+    },
+    {
         name: "consulates",
         source: new URL("../src/data/curated-consulates.mjs", import.meta.url),
         output: fileURLToPath(
