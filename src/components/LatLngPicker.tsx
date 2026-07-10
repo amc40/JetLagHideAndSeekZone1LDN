@@ -18,7 +18,12 @@ import { Label } from "@/components/ui/label";
 import { useDebounce } from "@/hooks/useDebounce";
 import { allowGooglePlusCodes, isLoading } from "@/lib/context";
 import { cn } from "@/lib/utils";
-import { determineName, geocode, ICON_COLORS } from "@/maps/api";
+import {
+    determineName,
+    fetchCuratedStations,
+    geocode,
+    ICON_COLORS,
+} from "@/maps/api";
 
 import { Button } from "./ui/button";
 import {
@@ -94,6 +99,28 @@ const parseCoordinatesFromText = (
     return { lat: null, lng: null };
 };
 
+type CuratedStation = { id: string; name: string; lat: number; lng: number };
+
+let curatedStationsPromise: Promise<CuratedStation[]> | null = null;
+
+const loadCuratedStations = (): Promise<CuratedStation[]> => {
+    if (!curatedStationsPromise) {
+        curatedStationsPromise = fetchCuratedStations()
+            .then((data) =>
+                (data.features ?? [])
+                    .filter((feature: any) => feature.properties?.name)
+                    .map((feature: any) => ({
+                        id: feature.properties.id,
+                        name: feature.properties.name as string,
+                        lat: feature.geometry.coordinates[1],
+                        lng: feature.geometry.coordinates[0],
+                    })),
+            )
+            .catch(() => []);
+    }
+    return curatedStationsPromise;
+};
+
 const LatLngEditForm = ({
     latitude,
     longitude,
@@ -108,6 +135,7 @@ const LatLngEditForm = ({
     const [inputValue, setInputValue] = useState("");
     const debouncedValue = useDebounce<string>(inputValue);
     const [results, setResults] = useState<any[]>([]);
+    const [stationResults, setStationResults] = useState<CuratedStation[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
     const $allowGooglePlusCodes = useStore(allowGooglePlusCodes);
@@ -116,10 +144,22 @@ const LatLngEditForm = ({
     useEffect(() => {
         if (debouncedValue === "") {
             setResults([]);
+            setStationResults([]);
             return;
         } else {
             setLoading(true);
             setResults([]);
+            setStationResults([]);
+
+            const query = debouncedValue.toLowerCase();
+            loadCuratedStations().then((stations) => {
+                setStationResults(
+                    stations.filter((station) =>
+                        station.name.toLowerCase().includes(query),
+                    ),
+                );
+            });
+
             geocode(debouncedValue, "en", false)
                 .then((x) => {
                     setResults(x);
@@ -163,7 +203,28 @@ const LatLngEditForm = ({
                               ? "Error loading places."
                               : "No locations found."}
                     </CommandEmpty>
-                    <CommandGroup>
+                    {stationResults.length > 0 && (
+                        <CommandGroup heading="Stations">
+                            {stationResults.map((station) => (
+                                <CommandItem
+                                    key={station.id}
+                                    onSelect={() =>
+                                        onChange(station.lat, station.lng)
+                                    }
+                                    className="cursor-pointer"
+                                >
+                                    {station.name}
+                                </CommandItem>
+                            ))}
+                        </CommandGroup>
+                    )}
+                    <CommandGroup
+                        heading={
+                            stationResults.length > 0
+                                ? "Other places"
+                                : undefined
+                        }
+                    >
                         {results.map((result) => (
                             <CommandItem
                                 key={`${result.properties.osm_id}${result.properties.name}`}
