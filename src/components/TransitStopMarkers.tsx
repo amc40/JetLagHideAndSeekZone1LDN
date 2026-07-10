@@ -37,10 +37,14 @@ const TUBE_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 615.3 500
   </g>
 </svg>`;
 
-const RAIL_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="26" height="26" style="display:block;filter:drop-shadow(0 1px 2px rgba(0,0,0,.55))">
-  <rect x="0" y="0" width="100" height="100" rx="18" ry="18" fill="#003466" stroke="white" stroke-width="3"/>
-  <path fill="white" transform="rotate(-45,50,50)" d="M18,44 L56,44 L56,30 L84,50 L56,70 L56,56 L18,56 Z"/>
-  <path fill="white" transform="rotate(135,50,50)" d="M18,44 L56,44 L56,30 L84,50 L56,70 L56,56 L18,56 Z"/>
+// Official National Rail double-arrow logo, from
+// https://commons.wikimedia.org/wiki/File:National_Rail_logo.svg (public domain)
+const RAIL_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 62 39" width="34" height="22" style="display:block;overflow:hidden;filter:drop-shadow(0 1px 2px rgba(0,0,0,.55))">
+  <rect width="62" height="39" rx="6" ry="6" fill="white"/>
+  <g stroke="#ED1C24" fill="none">
+    <path d="M1,-8.9 46,12.4 16,26.6 61,47.9" stroke-width="6"/>
+    <path d="M0,12.4H62m0,14.2H0" stroke-width="6.4"/>
+  </g>
 </svg>`;
 
 function makeIcon(
@@ -57,7 +61,7 @@ function makeIcon(
 }
 
 const TUBE_ICON = makeIcon(TUBE_SVG, [32, 26], [16, 13]);
-const RAIL_ICON = makeIcon(RAIL_SVG, [26, 26], [13, 13]);
+const RAIL_ICON = makeIcon(RAIL_SVG, [34, 22], [17, 11]);
 
 function makeMarker(stop: TransitStop): L.Marker {
     const icon = stop.type === "tube" ? TUBE_ICON : RAIL_ICON;
