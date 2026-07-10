@@ -50,6 +50,17 @@ div.leaflet-control-attribution.leaflet-control {
     }
 }
 
+/* Only the zoom control (leaflet-top-left, desktop-only) lands here now —
+   the fullscreen button moved out of Leaflet's control system into
+   DesktopSidebarTriggers.tsx so its spacing comes from a flex gap next to
+   the Zones trigger instead of a hand-tuned margin. The left Questions
+   trigger (DesktopSidebarTriggers.tsx) sits at top-2 and is 44px tall
+   (min-h-11), so it occupies y:8-52; 60px clears it with an 8px gap. Kept
+   outside of @layer base for the same reason as the rules above. */
+main:not(.fullscreen) .leaflet-top .leaflet-control {
+    margin-top: 60px !important;
+}
+
 @layer base {
     html {
         @apply text-slate-50;
@@ -123,10 +134,6 @@ div.leaflet-control-attribution.leaflet-control {
         --sidebar-accent-foreground: 240 4.8% 95.9%;
         --sidebar-border: 240 3.7% 15.9%;
         --sidebar-ring: 217.2 91.2% 59.8%;
-    }
-
-    main:not(.fullscreen) .leaflet-top .leaflet-control {
-        @apply !mt-[104px] md:!mt-[40px];
     }
 
     .selected-card-background-temporary {
