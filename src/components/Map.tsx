@@ -35,7 +35,6 @@ import { hiderifyQuestion } from "@/maps";
 import { clearCache, determineMapBoundaries } from "@/maps/api";
 
 import { DraggableMarkers } from "./DraggableMarkers";
-import { LeafletFullScreenButton } from "./LeafletFullScreenButton";
 import { MapOverlayMarkers } from "./MapOverlayMarkers";
 import { PolygonDraw } from "./PolygonDraw";
 import { TransitStopMarkers } from "./TransitStopMarkers";
@@ -397,11 +396,6 @@ export const Map = ({ className }: { className?: string }) => {
                 <TransitStopMarkers />
                 <MapOverlayMarkers />
                 <DraggableMarkers />
-                <div className="leaflet-top leaflet-right">
-                    <div className="leaflet-control flex-col flex gap-2">
-                        <LeafletFullScreenButton />
-                    </div>
-                </div>
                 <PolygonDraw />
                 <ScaleControl position="bottomleft" />
             </MapContainer>
