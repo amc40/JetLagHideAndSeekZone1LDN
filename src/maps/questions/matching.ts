@@ -68,9 +68,6 @@ export const findMatchingPlaces = async (question: MatchingQuestion) => {
                 ]),
             );
         }
-        case "custom-points": {
-            return question.geo!;
-        }
         case "aquarium-full":
         case "zoo-full":
         case "theme_park-full":
@@ -155,7 +152,7 @@ export const findMatchingPlaces = async (question: MatchingQuestion) => {
 
 export const determineMatchingBoundary = _.memoize(
     async (question: MatchingQuestion) => {
-        let boundary;
+        let boundary: any;
 
         switch (question.type) {
             case "aquarium":
@@ -173,10 +170,6 @@ export const determineMatchingBoundary = _.memoize(
             case "same-length-station":
             case "same-train-line": {
                 return false;
-            }
-            case "custom-zone": {
-                boundary = question.geo;
-                break;
             }
             case "zone": {
                 boundary = await findAdminBoundary(
@@ -260,8 +253,7 @@ export const determineMatchingBoundary = _.memoize(
             case "library-full":
             case "golf_course-full":
             case "consulate-full":
-            case "park-full":
-            case "custom-points": {
+            case "park-full": {
                 const data = await findMatchingPlaces(question);
 
                 const voronoi = geoSpatialVoronoi(data);
@@ -279,13 +271,12 @@ export const determineMatchingBoundary = _.memoize(
 
         return boundary;
     },
-    (question: MatchingQuestion & { geo?: unknown; cat?: unknown }) =>
+    (question: MatchingQuestion & { cat?: unknown }) =>
         JSON.stringify({
             type: question.type,
             lat: question.lat,
             lng: question.lng,
             cat: question.cat,
-            geo: question.geo,
             entirety: polyGeoJSON.get()
                 ? polyGeoJSON.get()
                 : mapGeoLocation.get(),

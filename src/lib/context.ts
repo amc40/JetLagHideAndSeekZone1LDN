@@ -211,59 +211,6 @@ export const save = () => {
     }
 };
 
-/* Presets for custom questions (savable / sharable / editable) */
-export type CustomPreset = {
-    id: string;
-    name: string;
-    type: string;
-    data: any;
-    createdAt: string;
-};
-
-export const customPresets = persistentAtom<CustomPreset[]>(
-    "customPresets",
-    [],
-    {
-        encode: JSON.stringify,
-        decode: JSON.parse,
-    },
-);
-onSet(customPresets, ({ newValue }) => {
-    newValue.sort((a, b) => a.name.localeCompare(b.name));
-});
-
-export const saveCustomPreset = (
-    preset: Omit<CustomPreset, "id" | "createdAt">,
-) => {
-    const id =
-        typeof crypto !== "undefined" &&
-        typeof (crypto as any).randomUUID === "function"
-            ? (crypto as any).randomUUID()
-            : String(Date.now());
-    const p: CustomPreset = {
-        ...preset,
-        id,
-        createdAt: new Date().toISOString(),
-    };
-    customPresets.set([...customPresets.get(), p]);
-    return p;
-};
-
-export const updateCustomPreset = (
-    id: string,
-    updates: Partial<CustomPreset>,
-) => {
-    customPresets.set(
-        customPresets
-            .get()
-            .map((p) => (p.id === id ? { ...p, ...updates } : p)),
-    );
-};
-
-export const deleteCustomPreset = (id: string) => {
-    customPresets.set(customPresets.get().filter((p) => p.id !== id));
-};
-
 export const hidingZone = computed(
     [
         questions,
@@ -277,7 +224,6 @@ export const hidingZone = computed(
         useCustomStations,
         customStations,
         includeDefaultStations,
-        customPresets,
         permanentOverlay,
     ],
     (
@@ -292,7 +238,6 @@ export const hidingZone = computed(
         useCustom,
         $customStations,
         includeDefault,
-        presets,
         $permanentOverlay,
     ) => {
         if (geo !== null) {
@@ -306,7 +251,6 @@ export const hidingZone = computed(
                 useCustomStations: useCustom,
                 customStations: $customStations,
                 includeDefaultStations: includeDefault,
-                presets: structuredClone(presets),
                 permanentOverlay: $permanentOverlay,
             };
         } else {
@@ -323,14 +267,12 @@ export const hidingZone = computed(
                 useCustomStations: useCustom,
                 customStations: $customStations,
                 includeDefaultStations: includeDefault,
-                presets: structuredClone(presets),
                 permanentOverlay: $permanentOverlay,
             };
         }
     },
 );
 
-export const drawingQuestionKey = atom<number>(-1);
 export const planningModeEnabled = persistentAtom<boolean>(
     "planningModeEnabled",
     false,
@@ -361,14 +303,6 @@ export const followMe = persistentAtom<boolean>("followMe", false, {
     encode: JSON.stringify,
     decode: JSON.parse,
 });
-export const defaultCustomQuestions = persistentAtom<boolean>(
-    "defaultCustomQuestions",
-    false,
-    {
-        encode: JSON.stringify,
-        decode: JSON.parse,
-    },
-);
 
 export const pastebinApiKey = persistentAtom<string>("pastebinApiKey", "");
 export const alwaysUsePastebin = persistentAtom<boolean>(
@@ -393,15 +327,6 @@ export const optionsDrawerOpen = atom<boolean>(false);
 // Lets the mobile bottom app bar's overflow menu open the same Map Layers
 // settings that the desktop header button opens.
 export const mapLayersDrawerOpen = atom<boolean>(false);
-
-export const customInitPreference = persistentAtom<"ask" | "blank" | "prefill">(
-    "customInitPreference",
-    "ask",
-    {
-        encode: JSON.stringify,
-        decode: JSON.parse,
-    },
-);
 
 export const allowGooglePlusCodes = persistentAtom<boolean>(
     "allowGooglePlusCodes",

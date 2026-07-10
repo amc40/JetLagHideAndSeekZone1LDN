@@ -1,11 +1,6 @@
 import { useStore } from "@nanostores/react";
-import * as React from "react";
-import { toast } from "react-toastify";
 
-import CustomInitDialog from "@/components/CustomInitDialog";
 import { LatitudeLongitude } from "@/components/LatLngPicker";
-import PresetsDialog from "@/components/PresetsDialog";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import {
@@ -14,9 +9,7 @@ import {
 } from "@/components/ui/sidebar-l";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import {
-    customInitPreference,
     displayHidingZones,
-    drawingQuestionKey,
     hiderMode,
     isLoading,
     questionModified,
@@ -24,10 +17,6 @@ import {
     triggerLocalRefresh,
 } from "@/lib/context";
 import { cn } from "@/lib/utils";
-import {
-    determineMatchingBoundary,
-    findMatchingPlaces,
-} from "@/maps/questions/matching";
 import {
     determineUnionizedStrings,
     type MatchingQuestion,
@@ -52,13 +41,7 @@ export const MatchingQuestionComponent = ({
     const $hiderMode = useStore(hiderMode);
     const $questions = useStore(questions);
     const $displayHidingZones = useStore(displayHidingZones);
-    const $drawingQuestionKey = useStore(drawingQuestionKey);
     const $isLoading = useStore(isLoading);
-    const $customInitPref = useStore(customInitPreference);
-    const [customDialogOpen, setCustomDialogOpen] = React.useState(false);
-    const [pendingCustomType, setPendingCustomType] = React.useState<
-        "custom-zone" | "custom-points" | null
-    >(null);
     const label = `Matching
     ${
         $questions
@@ -144,38 +127,6 @@ export const MatchingQuestionComponent = ({
                 </span>
             );
             break;
-        case "custom-zone":
-        case "custom-points":
-            if (data.drag) {
-                questionSpecific = (
-                    <>
-                        <p className="px-2 mb-1 text-center text-orange-500">
-                            To modify the matching{" "}
-                            {data.type === "custom-zone" ? "zones" : "points"},
-                            enable it:
-                            <Checkbox
-                                className="mx-1 my-1"
-                                checked={$drawingQuestionKey === questionKey}
-                                onCheckedChange={(checked) => {
-                                    if (checked) {
-                                        drawingQuestionKey.set(questionKey);
-                                    } else {
-                                        drawingQuestionKey.set(-1);
-                                    }
-                                }}
-                                disabled={$isLoading}
-                            />
-                            and use the buttons at the bottom left of the map.
-                        </p>
-                        <div className="flex justify-center gap-2 mb-2">
-                            <PresetsDialog
-                                data={data}
-                                presetTypeHint={data.type}
-                            />
-                        </div>
-                    </>
-                );
-            }
     }
 
     return (
@@ -193,54 +144,6 @@ export const MatchingQuestionComponent = ({
             hidden={data.hidden}
             setHidden={(hidden) => questionModified((data.hidden = !hidden))}
         >
-            <CustomInitDialog
-                open={customDialogOpen}
-                onOpenChange={setCustomDialogOpen}
-                onBlank={async () => {
-                    if (!pendingCustomType) return;
-                    if (pendingCustomType === "custom-zone") {
-                        (data as any).geo = undefined;
-                        toast.info("Please draw the zone on the map.");
-                    } else {
-                        (data as any).geo = [];
-                        toast.info("Please draw the points on the map.");
-                    }
-                    data.type = pendingCustomType;
-                    questionModified();
-                    setCustomDialogOpen(false);
-                }}
-                onPrefill={async () => {
-                    if (!pendingCustomType) return;
-                    if (pendingCustomType === "custom-zone") {
-                        (data as any).geo =
-                            await determineMatchingBoundary(data);
-                    } else {
-                        if (
-                            data.type === "airport" ||
-                            data.type === "major-city" ||
-                            data.type === "aquarium-full" ||
-                            data.type === "zoo-full" ||
-                            data.type === "theme_park-full" ||
-                            data.type === "peak-full" ||
-                            data.type === "museum-full" ||
-                            data.type === "hospital-full" ||
-                            data.type === "cinema-full" ||
-                            data.type === "library-full" ||
-                            data.type === "golf_course-full" ||
-                            data.type === "consulate-full" ||
-                            data.type === "park-full"
-                        ) {
-                            (data as any).geo = await findMatchingPlaces(data);
-                        } else {
-                            (data as any).geo = [];
-                            toast.info("Please draw the points on the map.");
-                        }
-                    }
-                    data.type = pendingCustomType;
-                    questionModified();
-                    setCustomDialogOpen(false);
-                }}
-            />
             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
                 <Select
                     trigger="Matching Type"
@@ -292,67 +195,7 @@ export const MatchingQuestionComponent = ({
                             >,
                         )}
                     value={data.type}
-                    onValueChange={async (value) => {
-                        if (
-                            value === "custom-zone" ||
-                            value === "custom-points"
-                        ) {
-                            if ($customInitPref === "ask") {
-                                setPendingCustomType(value);
-                                setCustomDialogOpen(true);
-                                return;
-                            }
-                            // Apply preference without dialog
-                            if ($customInitPref === "blank") {
-                                if (value === "custom-zone") {
-                                    (data as any).geo = undefined;
-                                    toast.info(
-                                        "Please draw the zone on the map.",
-                                    );
-                                } else {
-                                    (data as any).geo = [];
-                                    toast.info(
-                                        "Please draw the points on the map.",
-                                    );
-                                }
-                            } else if ($customInitPref === "prefill") {
-                                if (value === "custom-zone") {
-                                    (data as any).geo =
-                                        await determineMatchingBoundary(data);
-                                } else {
-                                    if (
-                                        data.type === "airport" ||
-                                        data.type === "major-city" ||
-                                        data.type === "aquarium-full" ||
-                                        data.type === "zoo-full" ||
-                                        data.type === "theme_park-full" ||
-                                        data.type === "peak-full" ||
-                                        data.type === "museum-full" ||
-                                        data.type === "hospital-full" ||
-                                        data.type === "cinema-full" ||
-                                        data.type === "library-full" ||
-                                        data.type === "golf_course-full" ||
-                                        data.type === "consulate-full" ||
-                                        data.type === "park-full"
-                                    ) {
-                                        (data as any).geo =
-                                            await findMatchingPlaces(data);
-                                    } else {
-                                        (data as any).geo = [];
-                                        toast.info(
-                                            "Please draw the points on the map.",
-                                        );
-                                    }
-                                }
-                            }
-                            // The category should be defined such that no error is thrown if this is a zone question.
-                            if (!(data as any).cat) {
-                                (data as any).cat = { adminLevel: 3 };
-                            }
-                            questionModified((data.type = value));
-                            return;
-                        }
-
+                    onValueChange={(value) => {
                         if (value === "same-length-station") {
                             data.lengthComparison = "same";
                             data.same = true;
@@ -369,23 +212,21 @@ export const MatchingQuestionComponent = ({
             </SidebarMenuItem>
             {questionSpecific}
 
-            {data.type !== "custom-zone" && (
-                <LatitudeLongitude
-                    latitude={data.lat}
-                    longitude={data.lng}
-                    colorName={data.color}
-                    onChange={(lat, lng) => {
-                        if (lat !== null) {
-                            data.lat = lat;
-                        }
-                        if (lng !== null) {
-                            data.lng = lng;
-                        }
-                        questionModified();
-                    }}
-                    disabled={!data.drag || $isLoading}
-                />
-            )}
+            <LatitudeLongitude
+                latitude={data.lat}
+                longitude={data.lng}
+                colorName={data.color}
+                onChange={(lat, lng) => {
+                    if (lat !== null) {
+                        data.lat = lat;
+                    }
+                    if (lng !== null) {
+                        data.lng = lng;
+                    }
+                    questionModified();
+                }}
+                disabled={!data.drag || $isLoading}
+            />
             <div
                 className={cn(
                     "flex gap-2 items-center p-2",
