@@ -17,29 +17,51 @@ type TransitStop = {
     type: "tube" | "rail";
 };
 
-const TUBE_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="26" height="26" style="display:block;filter:drop-shadow(0 1px 2px rgba(0,0,0,.55))">
-  <rect x="6" y="36" width="88" height="28" fill="#003087"/>
-  <path fill-rule="evenodd" fill="#E32017" d="M4,50 A46,46 0 1,0 96,50 A46,46 0 1,0 4,50 Z M24,50 A26,26 0 1,0 76,50 A26,26 0 1,0 24,50 Z"/>
-  <circle cx="50" cy="50" r="46" fill="none" stroke="white" stroke-width="3"/>
+// Official London Underground roundel, from
+// https://commons.wikimedia.org/wiki/File:Underground.svg (public domain)
+const TUBE_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 615.3 500" width="32" height="26" style="display:block;filter:drop-shadow(0 1px 2px rgba(0,0,0,.55))">
+  <path d="m469.5 250c0 89.1-72.3 161.3-161.3 161.3-89.1 0-161.3-72.2-161.3-161.3s72.1-161.3 161.2-161.3 161.4 72.2 161.4 161.3m-161.4-250c-138.1 0-250 111.9-250 250s111.9 250 250 250 250-111.9 250-250-111.9-250-250-250" fill="#e1251f" fill-rule="nonzero"/>
+  <rect y="199.5" width="615.3" height="101.1" fill="#000f9f"/>
+  <g fill="#fff" fill-rule="nonzero">
+    <path d="m71.9 268.6c-4.2 5.2-10.5 8.5-18.3 8.5s-14-3.2-18.4-8.6c-3.4-4.1-4.9-9-4.9-16v-28.5h10.2v28.6c0 8.9 5.1 14.7 13.1 14.7 8.2 0 13.2-5.9 13.2-14.7v-28.6h10.1v28.2c0 7.2-1.3 11.9-5 16.4"/>
+    <path d="m122.6 276.1-27.7-35.9v35.9h-10.2v-52.1h10.2l27.7 36.1v-36.1h10.2v52.1z"/>
+    <path d="m155.4 276.1h-14.5v-52.1h17.8c18 0 27.7 11.9 27.7 25.4-0.1 14-10.3 26.7-31 26.7m1.4-43.3h-5.8v34.2h5c12.1 0 20.1-6.8 20.1-17.2-0.1-10.5-7.3-17-19.3-17"/>
+    <path d="m192.7 276.1v-52.1h32.3v9.1h-22.2v10.8h18.3v9.2h-18.3v13.7h24.1v9.3z"/>
+    <path d="m261.6 276.1-14.4-20.8h-4.7v20.8h-10.1v-52.1h16.9c10.7 0 17.7 5.6 17.7 15.2 0 6.4-3.6 11.5-9.8 13.7l16.4 23.1h-12zm-13.2-43.3h-5.8v13.7h4.8c5.9 0 9.4-2.6 9.4-7.2 0.1-4-3.1-6.5-8.4-6.5"/>
+    <path d="m301.4 277.1c-16.3 0-28.3-11.4-28.3-27.1 0-15.3 12-27 28.2-27 6.1 0 12.3 1.6 18.1 4.6v10.6c-4.9-3.5-11.2-5.9-17.4-5.9-11.3 0-18.6 8.1-18.6 17.9 0 10 7.4 17.8 18.3 17.8 2.7 0 5.3-0.2 8-1.2v-11.2h-8.5v-8.9h18.7v24.8c-6.3 3.8-11.8 5.6-18.5 5.6"/>
+    <path d="m356.8 276.1-14.4-20.8h-4.7v20.8h-10.1v-52.1h16.9c10.7 0 17.7 5.6 17.7 15.2 0 6.4-3.6 11.5-9.8 13.7l16.4 23.1h-12zm-13.3-43.3h-5.8v13.7h4.8c5.9 0 9.4-2.6 9.4-7.2 0.1-4-3.1-6.5-8.4-6.5"/>
+    <path d="m395.5 277.1c-15 0-27.3-11.3-27.3-27.1 0-15.7 12.4-27 27.3-27s27.3 11.3 27.3 27.1c0.1 15.7-12.4 27-27.3 27m0-44.1c-9.8 0-17 7.4-17 17.1 0 9.6 7.2 17 17 17s17-7.4 17-17c0.1-9.7-7.2-17.1-17-17.1"/>
+    <path d="m470.5 268.6c-4.2 5.2-10.5 8.5-18.3 8.5s-14-3.2-18.4-8.6c-3.4-4.1-4.9-9-4.9-16v-28.5h10.1v28.6c0 8.9 5.2 14.7 13.1 14.7 8.2 0 13.2-5.9 13.2-14.7v-28.6h10.1v28.2c0.1 7.2-1.2 11.9-4.9 16.4"/>
+    <path d="m521.3 276.1-27.8-35.9v35.9h-10.2v-52.1h10.2l27.8 36.1v-36.1h10.1v52.1z"/>
+    <path d="m554 276.1h-14.5v-52.1h17.8c18 0 27.7 11.9 27.7 25.4 0 14-10.3 26.7-31 26.7m1.5-43.3h-5.9v34.2h5c12.1 0 20.1-6.8 20.1-17.2 0-10.5-7.3-17-19.2-17"/>
+  </g>
 </svg>`;
 
-const RAIL_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="26" height="26" style="display:block;filter:drop-shadow(0 1px 2px rgba(0,0,0,.55))">
-  <rect x="0" y="0" width="100" height="100" rx="18" ry="18" fill="#003466" stroke="white" stroke-width="3"/>
-  <path fill="white" transform="rotate(-45,50,50)" d="M18,44 L56,44 L56,30 L84,50 L56,70 L56,56 L18,56 Z"/>
-  <path fill="white" transform="rotate(135,50,50)" d="M18,44 L56,44 L56,30 L84,50 L56,70 L56,56 L18,56 Z"/>
+// Official National Rail double-arrow logo, from
+// https://commons.wikimedia.org/wiki/File:National_Rail_logo.svg (public domain)
+const RAIL_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 62 39" width="34" height="22" style="display:block;overflow:hidden;filter:drop-shadow(0 1px 2px rgba(0,0,0,.55))">
+  <rect width="62" height="39" rx="6" ry="6" fill="white"/>
+  <g stroke="#ED1C24" fill="none">
+    <path d="M1,-8.9 46,12.4 16,26.6 61,47.9" stroke-width="6"/>
+    <path d="M0,12.4H62m0,14.2H0" stroke-width="6.4"/>
+  </g>
 </svg>`;
 
-function makeIcon(svg: string): L.DivIcon {
+function makeIcon(
+    svg: string,
+    iconSize: [number, number],
+    iconAnchor: [number, number],
+): L.DivIcon {
     return L.divIcon({
         html: svg,
         className: "",
-        iconSize: [26, 26],
-        iconAnchor: [13, 13],
+        iconSize,
+        iconAnchor,
     });
 }
 
-const TUBE_ICON = makeIcon(TUBE_SVG);
-const RAIL_ICON = makeIcon(RAIL_SVG);
+const TUBE_ICON = makeIcon(TUBE_SVG, [32, 26], [16, 13]);
+const RAIL_ICON = makeIcon(RAIL_SVG, [34, 22], [17, 11]);
 
 function makeMarker(stop: TransitStop): L.Marker {
     const icon = stop.type === "tube" ? TUBE_ICON : RAIL_ICON;
