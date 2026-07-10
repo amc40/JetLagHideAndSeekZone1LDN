@@ -310,8 +310,6 @@ const tutorialSteps: TutorialStep[] = [
                 Aquariums
                 <br />• <strong>1-Mile Radius:</strong> Museums, Hospitals,
                 Cinemas, Libraries
-                <br />• <strong>Custom:</strong> Define your own points of
-                interest
                 <br />
                 <br />
                 <strong>Radius Control:</strong> Adjusts the search area for
@@ -320,10 +318,6 @@ const tutorialSteps: TutorialStep[] = [
                 <br />
                 <strong>Smart Detection:</strong> Automatically finds all
                 qualifying locations within the radius using OpenStreetMap data
-                <br />
-                <br />
-                <strong>Custom Mode:</strong> Enable drawing mode to manually
-                place or edit location points
             </>
         ),
         position: "center",
@@ -401,13 +395,6 @@ const tutorialSteps: TutorialStep[] = [
                 with identical character counts
                 <br />• <strong>Same Train Line:</strong> Stations connected by
                 rail lines
-                <br />
-                <br />
-                <strong>Custom Matching:</strong>
-                <br />• <strong>Custom Zone:</strong> Draw your own zones for
-                comparison
-                <br />• <strong>Custom Points:</strong> Define your own point
-                categories
             </>
         ),
         position: "center",
@@ -477,13 +464,6 @@ const tutorialSteps: TutorialStep[] = [
                 convenience store
                 <br />• <strong>Train Station:</strong> Distance to nearest
                 railway station
-                <br />
-                <br />
-                <strong>Custom Measuring:</strong>
-                <br />• <strong>Custom Measure:</strong> Draw your own features
-                to measure distance to
-                <br />• Enable drawing mode to create custom points or areas
-                <br />• Perfect for game-specific features or local landmarks
                 <br />
                 <br />
                 <strong>Implementation Details:</strong>

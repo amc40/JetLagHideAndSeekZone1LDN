@@ -27,10 +27,7 @@ import {
     animateMapMovements,
     autoSave,
     autoZoom,
-    customInitPreference,
-    customPresets,
     customStations,
-    defaultCustomQuestions,
     defaultUnit,
     disabledStations,
     displayHidingZonesOptions,
@@ -69,7 +66,6 @@ import { Button } from "./ui/button";
 import { Checkbox } from "./ui/checkbox";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
-import { Select } from "./ui/select";
 import { Separator } from "./ui/separator";
 import {
     SidebarMenu,
@@ -82,7 +78,6 @@ const HIDING_ZONE_URL_PARAM = "hz";
 
 export const OptionDrawers = ({ className }: { className?: string }) => {
     useStore(triggerLocalRefresh);
-    const $defaultCustomQuestions = useStore(defaultCustomQuestions);
     const $allowGooglePlusCodes = useStore(allowGooglePlusCodes);
     const $defaultUnit = useStore(defaultUnit);
     const $animateMapMovements = useStore(animateMapMovements);
@@ -94,7 +89,6 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
     const $pastebinApiKey = useStore(pastebinApiKey);
     const $alwaysUsePastebin = useStore(alwaysUsePastebin);
     const $followMe = useStore(followMe);
-    const $customInitPref = useStore(customInitPreference);
     const $isLoading = useStore(isLoading);
     const $isOptionsOpen = useStore(optionsDrawerOpen);
     const isMobile = useIsMobile();
@@ -206,37 +200,6 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                     questions.set([]);
                     mapGeoJSON.set(geojson);
                     polyGeoJSON.set(geojson);
-                }
-            }
-
-            const incomingPresets =
-                geojson.presets ?? geojson.properties?.presets;
-            if (incomingPresets && Array.isArray(incomingPresets)) {
-                try {
-                    const normalized = (incomingPresets as any[])
-                        .filter((p) => p && p.data)
-                        .map((p) => {
-                            return {
-                                id:
-                                    p.id ??
-                                    (typeof crypto !== "undefined" &&
-                                    typeof (crypto as any).randomUUID ===
-                                        "function"
-                                        ? (crypto as any).randomUUID()
-                                        : String(Date.now()) + Math.random()),
-                                name: p.name ?? "Imported preset",
-                                type: p.type ?? "custom",
-                                data: p.data,
-                                createdAt:
-                                    p.createdAt ?? new Date().toISOString(),
-                            };
-                        });
-                    if (normalized.length > 0) {
-                        customPresets.set(normalized);
-                        toast.info(`Imported ${normalized.length} preset(s)`);
-                    }
-                } catch (err) {
-                    console.warn("Failed to import presets", err);
                 }
             }
 
@@ -598,32 +561,6 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                             <h3 className="text-lg font-semibold font-poppins self-start">
                                 Advanced
                             </h3>
-                            <Label>New Custom Question Defaults</Label>
-                            <Select
-                                trigger="New custom default"
-                                options={{
-                                    ask: "Ask each time",
-                                    blank: "Start blank",
-                                    prefill: "Copy from current",
-                                }}
-                                value={$customInitPref}
-                                onValueChange={(v) =>
-                                    customInitPreference.set(v as any)
-                                }
-                            />
-                            <label className="flex w-full min-h-11 flex-row items-center justify-between gap-2 cursor-pointer">
-                                <span className="text-base font-medium">
-                                    Default to custom questions?
-                                </span>
-                                <Checkbox
-                                    checked={$defaultCustomQuestions}
-                                    onCheckedChange={() =>
-                                        defaultCustomQuestions.set(
-                                            !$defaultCustomQuestions,
-                                        )
-                                    }
-                                />
-                            </label>
                             <label className="flex w-full min-h-11 flex-row items-center justify-between gap-2 cursor-pointer">
                                 <span className="text-base font-medium">
                                     Allow Google Plus codes?

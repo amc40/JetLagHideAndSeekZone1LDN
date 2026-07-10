@@ -37,7 +37,6 @@ import { clearCache, determineMapBoundaries } from "@/maps/api";
 import { DraggableMarkers } from "./DraggableMarkers";
 import { LeafletFullScreenButton } from "./LeafletFullScreenButton";
 import { MapOverlayMarkers } from "./MapOverlayMarkers";
-import { PolygonDraw } from "./PolygonDraw";
 import { TransitStopMarkers } from "./TransitStopMarkers";
 
 const getTileLayer = (tileLayer: string, thunderforestApiKey: string) => {
@@ -402,7 +401,6 @@ export const Map = ({ className }: { className?: string }) => {
                         <LeafletFullScreenButton />
                     </div>
                 </div>
-                <PolygonDraw />
                 <ScaleControl position="bottomleft" />
             </MapContainer>
         ),

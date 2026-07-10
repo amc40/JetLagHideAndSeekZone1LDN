@@ -177,25 +177,7 @@ const encompassingTentacleQuestionSchema = baseTentacleQuestionSchema.extend({
     places: z.array(z.any()).optional(),
 });
 
-const customTentacleQuestionSchema = baseTentacleQuestionSchema.extend({
-    locationType: z.literal("custom").describe("Custom Locations"),
-    places: z.array(
-        z.object({
-            type: z.literal("Feature"),
-            geometry: z.object({
-                type: z.literal("Point"),
-                coordinates: z.array(z.number()),
-            }),
-            id: z.union([z.string(), z.number(), z.undefined()]).optional(),
-            properties: z.object({
-                name: z.any(),
-            }),
-        }),
-    ),
-});
-
 export const tentacleQuestionSchema = z.union([
-    customTentacleQuestionSchema.describe(NO_GROUP),
     tentacleQuestionSpecificSchemaFifteen.describe("15 Miles (Typically)"),
     tentacleQuestionSpecificSchemaOne.describe("1 Mile (Typically)"),
 ]);
@@ -303,18 +285,9 @@ const hidingZoneMatchingQuestionsSchema = baseMatchingQuestionSchema.extend({
     ]),
 });
 
-const customMatchingQuestionSchema = baseMatchingQuestionSchema.extend({
-    type: z.union([
-        z.literal("custom-zone").describe("Custom Zone Question"),
-        z.literal("custom-points").describe("Custom Points Question"),
-    ]),
-    geo: z.any(),
-});
-
 export const matchingQuestionSchema = z.union([
     zoneMatchingQuestionsSchema.describe(NO_GROUP),
     ordinaryMatchingQuestionSchema.describe(NO_GROUP),
-    customMatchingQuestionSchema.describe(NO_GROUP),
     hidingZoneMatchingQuestionsSchema.describe("Hiding Zone Mode"),
     homeGameMatchingQuestionsSchema.describe("Hiding Zone Mode"),
 ]);
@@ -395,14 +368,8 @@ const homeGameMeasuringQuestionsSchema = baseMeasuringQuestionSchema.extend({
     ]),
 });
 
-const customMeasuringQuestionSchema = baseMeasuringQuestionSchema.extend({
-    type: z.literal("custom-measure").describe("Custom Measuring Question"),
-    geo: z.any(),
-});
-
 export const measuringQuestionSchema = z.union([
     ordinaryMeasuringQuestionSchema.describe(NO_GROUP),
-    customMeasuringQuestionSchema.describe(NO_GROUP),
     hidingZoneMeasuringQuestionsSchema.describe("Hiding Zone Mode"),
     homeGameMeasuringQuestionsSchema.describe("Hiding Zone Mode"),
 ]);
@@ -447,12 +414,6 @@ export type HomeGameMatchingQuestions = z.infer<
     typeof homeGameMatchingQuestionsSchema
 >;
 export type ZoneMatchingQuestions = z.infer<typeof zoneMatchingQuestionsSchema>;
-export type CustomMatchingQuestion = z.infer<
-    typeof customMatchingQuestionSchema
->;
-export type CustomMeasuringQuestion = z.infer<
-    typeof customMeasuringQuestionSchema
->;
 export type MeasuringQuestion = z.infer<typeof measuringQuestionSchema>;
 export type HomeGameMeasuringQuestions = z.infer<
     typeof homeGameMeasuringQuestionsSchema
@@ -467,7 +428,4 @@ export type TraditionalTentacleQuestion =
     | z.infer<typeof tentacleQuestionSpecificSchemaOne>;
 export type EncompassingTentacleQuestionSchema = z.infer<
     typeof encompassingTentacleQuestionSchema
->;
-export type CustomTentacleQuestion = z.infer<
-    typeof customTentacleQuestionSchema
 >;

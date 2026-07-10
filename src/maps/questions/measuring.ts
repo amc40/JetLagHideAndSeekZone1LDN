@@ -230,10 +230,6 @@ export const determineMeasuringBoundary = async (
                 ).features[0],
             ];
         }
-        case "custom-measure":
-            return turf.combine(
-                turf.featureCollection((question as any).geo.features),
-            ).features;
         case "aquarium":
         case "zoo":
         case "theme_park":
@@ -272,7 +268,6 @@ const bufferedDeterminer = _.memoize(
             entirety: polyGeoJSON.get()
                 ? polyGeoJSON.get()
                 : mapGeoLocation.get(),
-            geo: (question as any).geo,
         }),
 );
 

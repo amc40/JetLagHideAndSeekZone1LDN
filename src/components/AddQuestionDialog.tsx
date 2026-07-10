@@ -12,12 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { SidebarContext, SidebarMenuButton } from "@/components/ui/sidebar-l";
 import { useIsMobile } from "@/hooks/use-mobile";
-import {
-    addQuestion,
-    defaultCustomQuestions,
-    isLoading,
-    leafletMapContext,
-} from "@/lib/context";
+import { addQuestion, isLoading, leafletMapContext } from "@/lib/context";
 
 export const AddQuestionDialog = ({
     children,
@@ -71,14 +66,7 @@ export const AddQuestionDialog = ({
         const center = map.getCenter();
         addQuestion({
             id: "tentacles",
-            data: defaultCustomQuestions.get()
-                ? {
-                      lat: center.lat,
-                      lng: center.lng,
-                      locationType: "custom",
-                      places: [],
-                  }
-                : { lat: center.lat, lng: center.lng },
+            data: { lat: center.lat, lng: center.lng },
         });
         return true;
     };
@@ -89,9 +77,7 @@ export const AddQuestionDialog = ({
         const center = map.getCenter();
         addQuestion({
             id: "matching",
-            data: defaultCustomQuestions.get()
-                ? { lat: center.lat, lng: center.lng, type: "custom-points" }
-                : { lat: center.lat, lng: center.lng },
+            data: { lat: center.lat, lng: center.lng },
         });
         return true;
     };
@@ -102,9 +88,7 @@ export const AddQuestionDialog = ({
         const center = map.getCenter();
         addQuestion({
             id: "measuring",
-            data: defaultCustomQuestions.get()
-                ? { lat: center.lat, lng: center.lng, type: "custom-measure" }
-                : { lat: center.lat, lng: center.lng },
+            data: { lat: center.lat, lng: center.lng },
         });
         return true;
     };
