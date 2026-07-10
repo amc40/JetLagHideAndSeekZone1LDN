@@ -4,41 +4,7 @@ import { hiderMode } from "@/lib/context";
 import { findTentacleLocations } from "@/maps/api";
 import { arcBuffer, safeUnion } from "@/maps/geo-utils";
 import { geoSpatialVoronoi } from "@/maps/geo-utils";
-import type { TentacleQuestion, Units } from "@/maps/schema";
-
-const filterPointsWithinRadius = (
-    points: any,
-    centerLng: number,
-    centerLat: number,
-    radius: number,
-    unit: Units,
-) => {
-    if (
-        centerLng === null ||
-        centerLat === null ||
-        radius === undefined ||
-        radius === null
-    ) {
-        return points;
-    }
-    const center = turf.point([centerLng, centerLat]);
-
-    return turf.featureCollection(
-        points.features.filter((feature: any) => {
-            const coords =
-                feature?.geometry?.coordinates ??
-                (feature?.properties?.lon && feature?.properties?.lat
-                    ? [feature.properties.lon, feature.properties.lat]
-                    : null);
-
-            if (!coords) return false;
-
-            const pt = turf.point(coords);
-            const dist = turf.distance(center, pt, { units: unit });
-            return dist <= radius;
-        }),
-    );
-};
+import type { TentacleQuestion } from "@/maps/schema";
 
 export const adjustPerTentacle = async (
     question: TentacleQuestion,
@@ -49,21 +15,7 @@ export const adjustPerTentacle = async (
         throw new Error("Must have a location");
     }
 
-    const rawPoints =
-        question.locationType === "custom"
-            ? turf.featureCollection(question.places)
-            : await findTentacleLocations(question);
-
-    const points =
-        question.locationType === "custom"
-            ? filterPointsWithinRadius(
-                  rawPoints,
-                  question.lng,
-                  question.lat,
-                  question.radius,
-                  question.unit,
-              )
-            : rawPoints;
+    const points = await findTentacleLocations(question);
 
     const voronoi = geoSpatialVoronoi(points);
 
@@ -95,21 +47,7 @@ export const hiderifyTentacles = async (question: TentacleQuestion) => {
         return question;
     }
 
-    const rawPoints =
-        question.locationType === "custom"
-            ? turf.featureCollection(question.places)
-            : await findTentacleLocations(question);
-
-    const points =
-        question.locationType === "custom"
-            ? filterPointsWithinRadius(
-                  rawPoints,
-                  question.lng,
-                  question.lat,
-                  question.radius,
-                  question.unit,
-              )
-            : rawPoints;
+    const points = await findTentacleLocations(question);
 
     const voronoi = geoSpatialVoronoi(points);
 
@@ -147,21 +85,7 @@ export const hiderifyTentacles = async (question: TentacleQuestion) => {
 };
 
 export const tentaclesPlanningPolygon = async (question: TentacleQuestion) => {
-    const rawPoints =
-        question.locationType === "custom"
-            ? turf.featureCollection(question.places)
-            : await findTentacleLocations(question);
-
-    const points =
-        question.locationType === "custom"
-            ? filterPointsWithinRadius(
-                  rawPoints,
-                  question.lng,
-                  question.lat,
-                  question.radius,
-                  question.unit,
-              )
-            : rawPoints;
+    const points = await findTentacleLocations(question);
 
     const voronoi = geoSpatialVoronoi(points);
     const circle = await arcBuffer(

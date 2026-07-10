@@ -95,9 +95,6 @@ importers:
       leaflet-contextmenu:
         specifier: ^1.4.0
         version: 1.4.0
-      leaflet-draw:
-        specifier: ^1.0.4
-        version: 1.0.4
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
@@ -128,9 +125,6 @@ importers:
       react-leaflet:
         specifier: 5.0.0
         version: 5.0.0(leaflet@1.9.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      react-leaflet-draw:
-        specifier: ^0.20.6
-        version: 0.20.6(leaflet-draw@1.0.4)(leaflet@1.9.4)(prop-types@15.8.1)(react-leaflet@5.0.0(leaflet@1.9.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)
       react-toastify:
         specifier: ^11.0.3
         version: 11.0.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -168,9 +162,6 @@ importers:
       '@types/leaflet':
         specifier: ^1.9.16
         version: 1.9.16
-      '@types/leaflet-draw':
-        specifier: ^1.0.11
-        version: 1.0.11
       '@types/lodash':
         specifier: ^4.17.15
         version: 4.17.15
@@ -2973,9 +2964,6 @@ packages:
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
 
-  '@types/leaflet-draw@1.0.11':
-    resolution: {integrity: sha512-dyedtNm3aSmnpi6FM6VSl28cQuvP+MD7pgpXyO3Q1ZOCvrJKmzaDq0P3YZTnnBs61fQCKSnNYmbvCkDgFT9FHQ==}
-
   '@types/leaflet@1.9.16':
     resolution: {integrity: sha512-wzZoyySUxkgMZ0ihJ7IaUIblG8Rdc8AbbZKLneyn+QjYsj5q1QU7TEKYqwTr10BGSzY5LI7tJk9Ifo+mEjdFRw==}
 
@@ -4549,9 +4537,6 @@ packages:
   leaflet-contextmenu@1.4.0:
     resolution: {integrity: sha512-BXASCmJ5bLkuJGDCpWmvGqhZi5AzeOY0IbQalfkgBcMAMfAOFSvD4y0gIQxF/XzEyLkjXaRiUpibVj4+Cf3tUA==}
 
-  leaflet-draw@1.0.4:
-    resolution: {integrity: sha512-rsQ6saQO5ST5Aj6XRFylr5zvarWgzWnrg46zQ1MEOEIHsppdC/8hnN8qMoFvACsPvTioAuysya/TVtog15tyAQ==}
-
   leaflet@1.9.4:
     resolution: {integrity: sha512-nxS1ynzJOmOlHp+iL3FyWqK89GtNL8U8rvlMOsQdTTssxZwCXh8N2NB3GDQOL+YR3XnWyZAxwQixURb+FA74PA==}
 
@@ -5170,15 +5155,6 @@ packages:
 
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
-
-  react-leaflet-draw@0.20.6:
-    resolution: {integrity: sha512-mGypDjJNrrnVpfKfGYovNBuJZXSk39ClOdUJe/5dB5Cj3f2BGQlY9txyV4UmUxZCbc96aq+FMwrGZeM4BokhHQ==}
-    peerDependencies:
-      leaflet: ^1.8.0
-      leaflet-draw: ^1.0.4
-      prop-types: ^15.5.2
-      react: ^18.0.0
-      react-leaflet: ^4.0.0
 
   react-leaflet@5.0.0:
     resolution: {integrity: sha512-CWbTpr5vcHw5bt9i4zSlPEVQdTVcML390TjeDG0cK59z1ylexpqC6M1PJFjV8jD7CF+ACBFsLIDs6DRMoLEofw==}
@@ -9923,10 +9899,6 @@ snapshots:
 
   '@types/json-schema@7.0.15': {}
 
-  '@types/leaflet-draw@1.0.11':
-    dependencies:
-      '@types/leaflet': 1.9.16
-
   '@types/leaflet@1.9.16':
     dependencies:
       '@types/geojson': 7946.0.16
@@ -11907,8 +11879,6 @@ snapshots:
 
   leaflet-contextmenu@1.4.0: {}
 
-  leaflet-draw@1.0.4: {}
-
   leaflet@1.9.4: {}
 
   leven@3.1.0: {}
@@ -12667,16 +12637,6 @@ snapshots:
       react: 19.1.0
 
   react-is@16.13.1: {}
-
-  react-leaflet-draw@0.20.6(leaflet-draw@1.0.4)(leaflet@1.9.4)(prop-types@15.8.1)(react-leaflet@5.0.0(leaflet@1.9.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0):
-    dependencies:
-      fast-deep-equal: 3.1.3
-      leaflet: 1.9.4
-      leaflet-draw: 1.0.4
-      lodash-es: 4.17.21
-      prop-types: 15.8.1
-      react: 19.1.0
-      react-leaflet: 5.0.0(leaflet@1.9.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
 
   react-leaflet@5.0.0(leaflet@1.9.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
     dependencies:

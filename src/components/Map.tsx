@@ -36,7 +36,6 @@ import { clearCache, determineMapBoundaries } from "@/maps/api";
 
 import { DraggableMarkers } from "./DraggableMarkers";
 import { MapOverlayMarkers } from "./MapOverlayMarkers";
-import { PolygonDraw } from "./PolygonDraw";
 import { TransitStopMarkers } from "./TransitStopMarkers";
 
 const getTileLayer = (tileLayer: string, thunderforestApiKey: string) => {
@@ -143,49 +142,49 @@ export const Map = ({ className }: { className?: string }) => {
 
         isLoading.set(true);
 
-        if ($questions.length === 0) {
-            await clearCache();
-        }
-
-        let mapGeoData = mapGeoJSON.get();
-
-        if (!mapGeoData) {
-            const polyGeoData = polyGeoJSON.get();
-            if (polyGeoData) {
-                mapGeoData = polyGeoData;
-                mapGeoJSON.set(polyGeoData);
-            } else {
-                await toast.promise(
-                    determineMapBoundaries()
-                        .then((x) => {
-                            mapGeoJSON.set(x);
-                            mapGeoData = x;
-                        })
-                        .catch((error) => console.log(error)),
-                    {
-                        error: "Error refreshing map data",
-                    },
-                );
-            }
-        }
-
-        if ($hiderMode !== false) {
-            for (const question of $questions) {
-                await hiderifyQuestion(question);
-            }
-
-            triggerLocalRefresh.set(Math.random()); // Refresh the question sidebar with new information but not this map
-        }
-
-        map.eachLayer((layer: any) => {
-            if (layer.questionKey || layer.questionKey === 0) {
-                map.removeLayer(layer);
-            }
-        });
-
-        const playAreaBoundary = structuredClone(mapGeoData);
-
         try {
+            if ($questions.length === 0) {
+                await clearCache();
+            }
+
+            let mapGeoData = mapGeoJSON.get();
+
+            if (!mapGeoData) {
+                const polyGeoData = polyGeoJSON.get();
+                if (polyGeoData) {
+                    mapGeoData = polyGeoData;
+                    mapGeoJSON.set(polyGeoData);
+                } else {
+                    await toast.promise(
+                        determineMapBoundaries()
+                            .then((x) => {
+                                mapGeoJSON.set(x);
+                                mapGeoData = x;
+                            })
+                            .catch((error) => console.log(error)),
+                        {
+                            error: "Error refreshing map data",
+                        },
+                    );
+                }
+            }
+
+            if ($hiderMode !== false) {
+                for (const question of $questions) {
+                    await hiderifyQuestion(question);
+                }
+
+                triggerLocalRefresh.set(Math.random()); // Refresh the question sidebar with new information but not this map
+            }
+
+            map.eachLayer((layer: any) => {
+                if (layer.questionKey || layer.questionKey === 0) {
+                    map.removeLayer(layer);
+                }
+            });
+
+            const playAreaBoundary = structuredClone(mapGeoData);
+
             mapGeoData = await applyQuestionsToMapGeoData(
                 $questions,
                 mapGeoData,
@@ -255,7 +254,6 @@ export const Map = ({ className }: { className?: string }) => {
         } catch (error) {
             console.log(error);
 
-            isLoading.set(false);
             if (document.querySelectorAll(".Toastify__toast").length === 0) {
                 return toast.error("No solutions found / error occurred");
             }
@@ -396,7 +394,6 @@ export const Map = ({ className }: { className?: string }) => {
                 <TransitStopMarkers />
                 <MapOverlayMarkers />
                 <DraggableMarkers />
-                <PolygonDraw />
                 <ScaleControl position="bottomleft" />
             </MapContainer>
         ),
