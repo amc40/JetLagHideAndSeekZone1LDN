@@ -11,6 +11,11 @@ const determinePermanentCache = _.memoize(() =>
 
 const inFlightFetches = new Map<string, Promise<Response>>();
 
+// Matches Overpass's server-side query timeout. Without a client-side cap a
+// stalled request keeps the global isLoading flag stuck true, disabling
+// question controls app-wide until the browser gives up.
+const FETCH_TIMEOUT_MS = 180_000;
+
 export const determineCache = async (cacheType: CacheType) => {
     switch (cacheType) {
         case CacheType.CACHE:
@@ -47,7 +52,9 @@ export const cacheFetch = async (
         }
 
         const fetchAndMaybeCache = async () => {
-            const response = await fetch(url);
+            const response = await fetch(url, {
+                signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+            });
             if (response.ok) {
                 await cache.put(url, response.clone());
             } else {
@@ -73,7 +80,13 @@ export const cacheFetch = async (
     } catch (e) {
         console.log(e); // Probably a caches not supported error
 
-        return fetch(url);
+        if (e instanceof DOMException && e.name === "TimeoutError") {
+            throw e;
+        }
+
+        return fetch(url, {
+            signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+        });
     }
 };
 

@@ -34,7 +34,7 @@ import {
     SidebarGroupLabel,
     SidebarMenu,
 } from "@/components/ui/sidebar-l";
-import { isLoading, questions } from "@/lib/context";
+import { questions } from "@/lib/context";
 import { cn } from "@/lib/utils";
 
 export const QuestionCard = ({
@@ -64,7 +64,6 @@ export const QuestionCard = ({
 }) => {
     const [isCollapsed, setIsCollapsed] = useState(collapsed ?? false);
     const $questions = useStore(questions);
-    const $isLoading = useStore(isLoading);
     const copyButtonRef = useRef<HTMLButtonElement>(null);
 
     const toggleCollapse = () => {
@@ -111,7 +110,6 @@ export const QuestionCard = ({
                                     variant="outline"
                                     size="icon"
                                     onClick={() => setLocked!(!locked)}
-                                    disabled={$isLoading}
                                     title={
                                         locked
                                             ? "Unlock question"
@@ -126,10 +124,7 @@ export const QuestionCard = ({
                                     {locked ? <LockIcon /> : <UnlockIcon />}
                                 </Button>
                             )}
-                            <MoreActionsMenu
-                                disabled={$isLoading}
-                                label="More question actions"
-                            >
+                            <MoreActionsMenu label="More question actions">
                                 <MoreActionsMenuItem
                                     icon={
                                         hidden ? (
@@ -139,7 +134,6 @@ export const QuestionCard = ({
                                         )
                                     }
                                     onClick={() => setHidden!(!hidden)}
-                                    disabled={$isLoading}
                                 >
                                     {hidden ? "Show question" : "Hide question"}
                                 </MoreActionsMenuItem>
@@ -252,7 +246,6 @@ export const QuestionCard = ({
                                     <AlertDialogTrigger asChild>
                                         <Button
                                             variant="ghost"
-                                            disabled={$isLoading}
                                             className="w-full justify-start gap-2 px-2 text-destructive hover:text-destructive hover:bg-destructive/10"
                                         >
                                             <VscTrash className="size-4" />

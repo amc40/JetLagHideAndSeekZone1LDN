@@ -5,7 +5,7 @@ import "leaflet-contextmenu";
 import { useStore } from "@nanostores/react";
 import * as turf from "@turf/turf";
 import * as L from "leaflet";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { MapContainer, ScaleControl, TileLayer } from "react-leaflet";
 import { toast } from "react-toastify";
 
@@ -121,7 +121,6 @@ export const Map = ({ className }: { className?: string }) => {
     const $baseTileLayer = useStore(baseTileLayer);
     const $thunderforestApiKey = useStore(thunderforestApiKey);
     const $hiderMode = useStore(hiderMode);
-    const $isLoading = useStore(isLoading);
     const $followMe = useStore(followMe);
     const $permanentOverlay = useStore(permanentOverlay);
     const map = useStore(leafletMapContext);
@@ -135,15 +134,27 @@ export const Map = ({ className }: { className?: string }) => {
         [],
     );
 
+    const refreshQueuedRef = useRef(false);
+
     const refreshQuestions = async (focus: boolean = false) => {
         if (!map) return;
 
-        if ($isLoading) return;
+        if (isLoading.get()) {
+            // Another load (e.g. hiding-zone initialization) is in progress.
+            // Queue a rerun instead of dropping this refresh, so question
+            // changes made while loading still reach the map.
+            refreshQueuedRef.current = true;
+            return;
+        }
 
         isLoading.set(true);
 
         try {
-            if ($questions.length === 0) {
+            // Read live state rather than render-scoped values so queued
+            // reruns pick up questions added/deleted during a load.
+            const currentQuestions = questions.get();
+
+            if (currentQuestions.length === 0) {
                 await clearCache();
             }
 
@@ -169,8 +180,8 @@ export const Map = ({ className }: { className?: string }) => {
                 }
             }
 
-            if ($hiderMode !== false) {
-                for (const question of $questions) {
+            if (hiderMode.get() !== false) {
+                for (const question of currentQuestions) {
                     await hiderifyQuestion(question);
                 }
 
@@ -186,7 +197,7 @@ export const Map = ({ className }: { className?: string }) => {
             const playAreaBoundary = structuredClone(mapGeoData);
 
             mapGeoData = await applyQuestionsToMapGeoData(
-                $questions,
+                currentQuestions,
                 mapGeoData,
                 planningModeEnabled.get(),
                 (geoJSONObj, question) => {
@@ -405,6 +416,17 @@ export const Map = ({ className }: { className?: string }) => {
 
         refreshQuestions(true);
     }, [$questions, map, $hiderMode]);
+
+    useEffect(() => {
+        if (!map) return;
+
+        return isLoading.listen((loading) => {
+            if (!loading && refreshQueuedRef.current) {
+                refreshQueuedRef.current = false;
+                refreshQuestions(true);
+            }
+        });
+    }, [map]);
 
     useEffect(() => {
         const intervalId = setInterval(async () => {
