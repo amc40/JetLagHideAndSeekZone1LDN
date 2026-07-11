@@ -60,11 +60,42 @@ function makeIcon(
     });
 }
 
-const TUBE_ICON = makeIcon(TUBE_SVG, [32, 26], [16, 13]);
-const RAIL_ICON = makeIcon(RAIL_SVG, [34, 22], [17, 11]);
+const BASE_TUBE_SIZE: [number, number] = [32, 26];
+const BASE_RAIL_SIZE: [number, number] = [34, 22];
 
-function makeMarker(stop: TransitStop): L.Marker {
-    const icon = stop.type === "tube" ? TUBE_ICON : RAIL_ICON;
+// Full size is only used from this zoom level upward - below it icons shrink
+// in proportion to the map scale so they stop overlapping when zoomed out.
+const ICON_FULL_SIZE_ZOOM = 15;
+// Icons never shrink past this fraction of full size, so they stay visible
+// and tappable even when the whole zone is in view.
+const ICON_MIN_SCALE = 0.35;
+
+function getIconScale(zoom: number): number {
+    const scale = Math.pow(2, zoom - ICON_FULL_SIZE_ZOOM);
+    return Math.min(1, Math.max(ICON_MIN_SCALE, scale));
+}
+
+const iconCache = new Map<string, L.DivIcon>();
+
+function getIcon(type: "tube" | "rail", zoom: number): L.DivIcon {
+    const scale = getIconScale(zoom);
+    const key = `${type}:${scale.toFixed(3)}`;
+    const cached = iconCache.get(key);
+    if (cached) return cached;
+
+    const [baseWidth, baseHeight] =
+        type === "tube" ? BASE_TUBE_SIZE : BASE_RAIL_SIZE;
+    const width = baseWidth * scale;
+    const height = baseHeight * scale;
+    const svg = type === "tube" ? TUBE_SVG : RAIL_SVG;
+
+    const icon = makeIcon(svg, [width, height], [width / 2, height / 2]);
+    iconCache.set(key, icon);
+    return icon;
+}
+
+function makeMarker(stop: TransitStop, zoom: number): L.Marker {
+    const icon = getIcon(stop.type, zoom);
     const label = stop.type === "tube" ? "London Underground" : "National Rail";
     const colour = stop.type === "tube" ? "#E32017" : "#003466";
 
@@ -116,7 +147,20 @@ export const TransitStopMarkers = () => {
     const $showTransitStops = useStore(showTransitStops);
     const $mapGeoLocation = useStore(mapGeoLocation);
     const [stops, setStops] = useState<TransitStop[]>([]);
+    const [zoom, setZoom] = useState<number>(() => map?.getZoom() ?? 5);
     const layerGroupRef = useRef<L.LayerGroup | null>(null);
+    const markersRef = useRef<Map<string, L.Marker>>(new Map());
+
+    useEffect(() => {
+        if (!map) return;
+
+        setZoom(map.getZoom());
+        const onZoom = () => setZoom(map.getZoom());
+        map.on("zoomend", onZoom);
+        return () => {
+            map.off("zoomend", onZoom);
+        };
+    }, [map]);
 
     useEffect(() => {
         let cancelled = false;
@@ -168,11 +212,16 @@ export const TransitStopMarkers = () => {
             layerGroupRef.current.remove();
             layerGroupRef.current = null;
         }
+        markersRef.current.clear();
 
         if (!$showTransitStops || stops.length === 0) return;
 
         const group = L.layerGroup();
-        for (const stop of stops) group.addLayer(makeMarker(stop));
+        for (const stop of stops) {
+            const marker = makeMarker(stop, map.getZoom());
+            markersRef.current.set(stop.id, marker);
+            group.addLayer(marker);
+        }
 
         layerGroupRef.current = group;
         group.addTo(map);
@@ -180,8 +229,15 @@ export const TransitStopMarkers = () => {
         return () => {
             group.remove();
             layerGroupRef.current = null;
+            markersRef.current.clear();
         };
     }, [map, stops, $showTransitStops]);
+
+    useEffect(() => {
+        for (const stop of stops) {
+            markersRef.current.get(stop.id)?.setIcon(getIcon(stop.type, zoom));
+        }
+    }, [zoom, stops]);
 
     return null;
 };
