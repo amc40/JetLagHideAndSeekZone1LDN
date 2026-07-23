@@ -12,7 +12,8 @@
         "lint:check": "eslint src && prettier . --check",
         "typecheck": "astro check",
         "test": "vitest",
-        "generate:pois": "node scripts/generate-curated-pois.mjs"
+        "generate:pois": "node scripts/generate-curated-pois.mjs",
+        "generate:stations": "node scripts/generate-curated-stations.mjs"
     },
     "dependencies": {
         "@arcgis/core": "^4.32.10",

@@ -165,6 +165,16 @@ export const fetchCoastline = async () => {
     return data;
 };
 
+export const fetchCuratedStations = async () => {
+    const response = await cacheFetch(
+        import.meta.env.BASE_URL + "/curated-stations.geojson",
+        "Loading curated stations...",
+        CacheType.PERMANENT_CACHE,
+    );
+    const data = await response.json();
+    return data;
+};
+
 export const fetchCuratedHospitals = async () => {
     const response = await cacheFetch(
         import.meta.env.BASE_URL + "/curated-hospitals.geojson",

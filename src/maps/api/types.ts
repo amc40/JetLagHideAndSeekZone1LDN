@@ -51,9 +51,11 @@ export interface StationPlaceProperties {
     id: string;
     name?: string;
     "name:en"?: string;
-    // Present on merged (co-located) stations: the transport modes served and
-    // every underlying OSM member id (used for "same train line" checks).
+    // Baked into the curated station data: the transport modes served (drives
+    // the icons shown), the lines calling here (drives "same train line"), and
+    // every underlying OSM member id.
     modes?: StationMode[];
+    lines?: string[];
     memberIds?: string[];
     [key: string]: unknown;
 }

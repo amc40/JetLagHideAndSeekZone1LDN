@@ -22,13 +22,13 @@ import {
     fetchCuratedHospitals,
     fetchCuratedMuseums,
     fetchCuratedParks,
+    fetchCuratedStations,
     fetchLondonBoroughs,
     findAdminBoundary,
     findPlacesInZone,
     LOCATION_FIRST_TAG,
     nearestToQuestion,
     prettifyLocation,
-    trainLineNodeFinder,
 } from "@/maps/api";
 import { holedMask, modifyMapData, safeUnion } from "@/maps/geo-utils";
 import { geoSpatialVoronoi } from "@/maps/geo-utils";
@@ -370,13 +370,10 @@ export const hiderifyMatching = async (question: MatchingQuestion) => {
         ]);
         const seekerPoint = turf.point([question.lng, question.lat]);
 
-        const places = osmtogeojson(
-            await findPlacesInZone(
-                "[railway=station]",
-                "Finding train stations. This may take a while. Do not press any buttons while this is processing. Don't worry, it will be cached.",
-                "node",
-            ),
-        ) as FeatureCollection<Point>;
+        // Stations (and their line memberships) come from the curated data,
+        // baked at build time — nothing is fetched live.
+        const places =
+            (await fetchCuratedStations()) as FeatureCollection<Point>;
 
         const nearestHiderTrainStation = turf.nearestPoint(hiderPoint, places);
         const nearestSeekerTrainStation = turf.nearestPoint(
@@ -385,19 +382,14 @@ export const hiderifyMatching = async (question: MatchingQuestion) => {
         );
 
         if (question.type === "same-train-line") {
-            const nodes = await trainLineNodeFinder(
-                nearestSeekerTrainStation.properties.id,
-            );
+            const seekerLines: string[] =
+                nearestSeekerTrainStation.properties.lines ?? [];
+            const hiderLines: string[] =
+                nearestHiderTrainStation.properties.lines ?? [];
 
-            const hiderId = parseInt(
-                nearestHiderTrainStation.properties.id.split("/")[1],
+            question.same = seekerLines.some((line) =>
+                hiderLines.includes(line),
             );
-
-            if (nodes.includes(hiderId)) {
-                question.same = true;
-            } else {
-                question.same = false;
-            }
         }
 
         const hiderEnglishName =

@@ -4,9 +4,7 @@ import type { Feature, FeatureCollection } from "geojson";
 import * as L from "leaflet";
 import _ from "lodash";
 import { SidebarCloseIcon } from "lucide-react";
-import osmtogeojson from "osmtogeojson";
 import { useEffect, useRef, useState } from "react";
-import { VscChevronDown } from "react-icons/vsc";
 import { toast } from "react-toastify";
 
 import {
@@ -23,7 +21,6 @@ import {
     autoZoom,
     disabledStations,
     displayHidingZones,
-    displayHidingZonesOptions,
     displayHidingZonesStyle,
     hidingRadius,
     hidingRadiusUnits,
@@ -38,14 +35,13 @@ import { getStationModesIcon } from "@/lib/stationIcons";
 import { cn } from "@/lib/utils";
 import {
     BLANK_GEOJSON,
-    findPlacesInZone,
+    fetchCuratedStations,
     findPlacesSpecificInZone,
     findTentacleLocations,
     nearestToQuestion,
     QuestionSpecificLocation,
     type StationCircle,
     type StationPlace,
-    trainLineNodeFinder,
 } from "@/maps/api";
 import {
     extractStationLabel,
@@ -53,7 +49,6 @@ import {
     geoSpatialVoronoi,
     holedMask,
     lngLatToText,
-    mergeCoLocatedStations,
     safeUnion,
     type StationMode,
 } from "@/maps/geo-utils";
@@ -70,26 +65,10 @@ import {
 } from "./ui/command";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
-import { MultiSelect } from "./ui/multi-select";
 import { ScrollToTop } from "./ui/scroll-to-top";
 import { MENU_ITEM_CLASSNAME } from "./ui/sidebar-l";
 import { ToggleGroup, ToggleGroupItem } from "./ui/toggle-group";
 import { UnitSelect } from "./UnitSelect";
-
-// Every underlying OSM id for a (possibly merged) station, keeping only real
-// OSM references like "node/123" — used for "same train line" line lookups.
-function stationOsmIds(properties: Record<string, unknown>): string[] {
-    const memberIds = properties.memberIds;
-    const ids =
-        Array.isArray(memberIds) && memberIds.length > 0
-            ? memberIds
-            : typeof properties.id === "string"
-              ? [properties.id]
-              : [];
-    return ids.filter(
-        (id): id is string => typeof id === "string" && id.includes("/"),
-    );
-}
 
 // Above this, the "can drastically slow down your device" warning is worth
 // surfacing; below it (e.g. a Zone 1 sweep of a few dozen stations) it's just
@@ -109,7 +88,6 @@ const DISPLAY_STYLE_OPTIONS: {
 export const ZoneSidebar = () => {
     const $displayHidingZones = useStore(displayHidingZones);
     const $questionFinishedMapData = useStore(questionFinishedMapData);
-    const $displayHidingZonesOptions = useStore(displayHidingZonesOptions);
     const $displayHidingZonesStyle = useStore(displayHidingZonesStyle);
     const $hidingRadius = useStore(hidingRadius);
     const $hidingRadiusUnits = useStore(hidingRadiusUnits);
@@ -123,7 +101,6 @@ export const ZoneSidebar = () => {
     const isStationSearchActive = stationSearch.trim().length > 0;
     const setStations = trainStations.set;
     const sidebarRef = useRef<HTMLDivElement>(null);
-    const [setupOpen, setSetupOpen] = useState(false);
 
     const removeHidingZones = () => {
         if (!map) return;
@@ -195,28 +172,17 @@ export const ZoneSidebar = () => {
             isLoading.set(true);
 
             try {
-                if ($displayHidingZonesOptions.length === 0) {
-                    toast.error("At least one place type must be selected");
-                    return;
-                }
-
-                // Stations come live from Overpass (OSM), so they carry real OSM
-                // ids and tags — needed for "same train line" and mode icons.
-                // @ts-expect-error osmtogeojson always defines properties with an "id" string
-                let places: StationPlace[] = osmtogeojson(
-                    await findPlacesInZone(
-                        $displayHidingZonesOptions[0],
-                        "Finding stations. This may take a while. Do not press any buttons while this is processing. Don't worry, it will be cached.",
-                        "nwr",
-                        "center",
-                        $displayHidingZonesOptions.slice(1),
-                    ),
-                ).features;
-
-                // Treat co-located stations (e.g. a National Rail station and the
-                // Tube station on top of it) as a single interchange, carrying the
-                // union of their modes and OSM member ids.
-                places = mergeCoLocatedStations(places);
+                // Stations come solely from the hand-curated list, with all
+                // metadata (modes/icons, lines, merged interchanges) baked in.
+                // Nothing is fetched live.
+                const curated = await fetchCuratedStations();
+                const places: StationPlace[] = (curated.features ?? []).map(
+                    (f: any) => ({
+                        type: "Feature",
+                        geometry: f.geometry,
+                        properties: f.properties,
+                    }),
+                );
 
                 const unionized = safeUnion(
                     turf.simplify($questionFinishedMapData, {
@@ -264,40 +230,29 @@ export const ZoneSidebar = () => {
                         );
 
                         if (question.data.type === "same-train-line") {
-                            // A (possibly merged) station keeps every underlying
-                            // OSM member id; use them all to look up its lines.
-                            const seekerIds = stationOsmIds(
-                                nearestTrainStation.properties,
+                            // Line memberships are baked into the curated data,
+                            // so "same line" = the stations share any line.
+                            const seekerLines = new Set(
+                                (nearestTrainStation.properties.lines ??
+                                    []) as string[],
                             );
-                            if (seekerIds.length === 0) {
+                            if (seekerLines.size === 0) {
                                 toast.warning(
-                                    "Nearest station has no OSM id; skipping 'same train line' filter.",
-                                );
-                                continue;
-                            }
-
-                            const nodeSets = await Promise.all(
-                                seekerIds.map((id) => trainLineNodeFinder(id)),
-                            );
-                            const nodes = new Set<number>(nodeSets.flat());
-
-                            if (nodes.size === 0) {
-                                toast.warning(
-                                    `No train line found for ${extractStationName(
+                                    `No line data for ${extractStationName(
                                         nearestTrainStation,
-                                    )}`,
+                                    )}; skipping 'same train line' filter.`,
                                 );
                                 continue;
                             }
 
                             circles = circles.filter((circle) => {
-                                const onLine = stationOsmIds(
-                                    circle.properties.properties,
-                                ).some((idProp) =>
-                                    nodes.has(parseInt(idProp.split("/")[1])),
+                                const lines = (circle.properties.properties
+                                    .lines ?? []) as string[];
+                                const shares = lines.some((line) =>
+                                    seekerLines.has(line),
                                 );
 
-                                return question.data.same ? onLine : !onLine;
+                                return question.data.same ? shares : !shares;
                             });
                         }
 
@@ -410,8 +365,8 @@ export const ZoneSidebar = () => {
     }, [
         $questionFinishedMapData,
         $displayHidingZones,
-        $displayHidingZonesOptions,
         $hidingRadius,
+        $hidingRadiusUnits,
     ]);
 
     useEffect(() => {
@@ -758,103 +713,6 @@ export const ZoneSidebar = () => {
                                         </CommandGroup>
                                     </CommandList>
                                 </Command>
-                            )}
-                            <SidebarMenuItem>
-                                <button
-                                    type="button"
-                                    onClick={() =>
-                                        setSetupOpen((prev) => !prev)
-                                    }
-                                    aria-expanded={setupOpen}
-                                    className={cn(
-                                        MENU_ITEM_CLASSNAME,
-                                        "justify-between font-semibold font-poppins",
-                                    )}
-                                >
-                                    Setup: station types
-                                    <VscChevronDown
-                                        className={cn(
-                                            "transition-transform duration-300",
-                                            !setupOpen && "-rotate-90",
-                                        )}
-                                    />
-                                </button>
-                            </SidebarMenuItem>
-                            {setupOpen && (
-                                <>
-                                    <SidebarMenuItem
-                                        className={MENU_ITEM_CLASSNAME}
-                                    >
-                                        <MultiSelect
-                                            options={[
-                                                {
-                                                    label: "Railway Stations",
-                                                    value: "[railway=station]",
-                                                },
-                                                {
-                                                    label: "Railway Halts",
-                                                    value: "[railway=halt]",
-                                                },
-                                                {
-                                                    label: "Railway Stops",
-                                                    value: "[railway=stop]",
-                                                },
-                                                {
-                                                    label: "Tram Stops",
-                                                    value: "[railway=tram_stop]",
-                                                },
-                                                {
-                                                    label: "Bus Stops",
-                                                    value: "[highway=bus_stop]",
-                                                },
-                                                {
-                                                    label: "Ferry Terminals",
-                                                    value: "[amenity=ferry_terminal]",
-                                                },
-                                                {
-                                                    label: "Ferry Platforms (public transport)",
-                                                    value: "[public_transport=platform][platform=ferry]",
-                                                },
-                                                {
-                                                    label: "Funicular Stations",
-                                                    value: "[railway=funicular]",
-                                                },
-                                                {
-                                                    label: "Aerialway Stations",
-                                                    value: "[aerialway=station]",
-                                                },
-                                                {
-                                                    label: "Railway Stations Excluding Subways",
-                                                    value: "[railway=station][subway!=yes]",
-                                                },
-                                                {
-                                                    label: "Subway Stations",
-                                                    value: "[railway=station][subway=yes]",
-                                                },
-                                                {
-                                                    label: "Light Rail Stations",
-                                                    value: "[railway=station][light_rail=yes]",
-                                                },
-                                                {
-                                                    label: "Light Rail Halts",
-                                                    value: "[railway=halt][light_rail=yes]",
-                                                },
-                                            ]}
-                                            onValueChange={
-                                                displayHidingZonesOptions.set
-                                            }
-                                            defaultValue={
-                                                $displayHidingZonesOptions
-                                            }
-                                            placeholder="Select allowed places"
-                                            animation={2}
-                                            maxCount={3}
-                                            modalPopover
-                                            className="!bg-popover bg-opacity-100"
-                                            disabled={$isLoading}
-                                        />
-                                    </SidebarMenuItem>
-                                </>
                             )}
                         </SidebarMenu>
                     </SidebarGroupContent>

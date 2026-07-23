@@ -1,17 +1,18 @@
 ---
 name: curate-pois
-description: Interactively (re)build one of this repo's hand-curated POI lists (src/data/curated-hospitals.mjs, curated-parks.mjs, or a new category) by querying Overpass for the real candidate set in the play zone, applying judgment to recommend a sensible subset with rationale, and interviewing the user before writing the result.
+description: Interactively (re)build one of this repo's hand-curated POI lists (src/data/curated-stations.mjs, curated-hospitals.mjs, or a new category) by querying Overpass for the real candidate set in the play zone, applying judgment to recommend a sensible subset with rationale, and interviewing the user before writing the result.
 ---
 
-This repo (see `CLAUDE.md` and `TODO.md`) replaces live Overpass queries for specific POI categories with hand-curated lists — e.g. `src/data/curated-hospitals.mjs` and `src/data/curated-parks.mjs`, resolved to coordinates by `pnpm generate:pois` into `public/curated-<category>.geojson`. (Train/tube stations are the exception: they are fetched live from Overpass, not curated.) This skill is the tool for building or refreshing one of those lists: ask OSM the same question the live app would ask, then curate the answer with the user instead of blindly accepting everything OSM returns.
+This repo (see `CLAUDE.md` and `TODO.md`) replaces live Overpass queries for specific POI categories with hand-curated lists — e.g. `src/data/curated-stations.mjs` and `src/data/curated-hospitals.mjs`, resolved to coordinates by `pnpm generate:pois` into `public/curated-<category>.geojson`. (Stations are a special case: `src/data/curated-stations.mjs` holds the hand-picked set, and `pnpm generate:stations` enriches each with modes + line memberships from OSM and merges co-located interchanges into `public/curated-stations.geojson` — see `scripts/generate-curated-stations.mjs`.) This skill is the tool for building or refreshing one of those lists: ask OSM the same question the live app would ask, then curate the answer with the user instead of blindly accepting everything OSM returns.
 
 **Never just dump the raw Overpass result into the curated file.** The whole point of curation is judgment — spotting duplicates, excluding things that are tagged right but don't really belong (a GP surgery tagged `amenity=hospital`, a disused station), and explaining why.
 
 ## 1. Determine category, tag filter, and area
 
-- If not given an explicit category (via `args` or the conversation), ask the user: which category are we curating? (e.g. "hospitals", "parks", or a brand new one not yet in `src/data/curated-*.mjs`. Note: stations are not curated — they come live from Overpass.)
+- If not given an explicit category (via `args` or the conversation), ask the user: which category are we curating? (e.g. "hospitals", "stations", or a brand new one not yet in `src/data/curated-*.mjs`.)
 - Map the category to the Overpass tag filter the live app itself uses for it:
     - Amenity-style categories (hospital, museum, cinema, library, aquarium, zoo, theme_park, golf_course, consulate, park, peak): see `LOCATION_FIRST_TAG` in `src/maps/api/constants.ts` — filter is `[${LOCATION_FIRST_TAG[category]}=${category}]`, e.g. hospital → `[amenity=hospital]`.
+    - Stations: the set lives in `src/data/curated-stations.mjs` as `{name, lat, lon}` entries; `pnpm generate:stations` handles the OSM enrichment (modes, lines, merged interchanges), so curation here is about choosing which stations belong in the play zone.
     - A genuinely new category: ask the user for the raw OSM tag (`key=value`) directly.
 - Determine the bounding box for the play zone, as `south,west,north,east` (Overpass order = minlat,minlon,maxlat,maxlon):
     - If the category's `src/data/curated-<category>.mjs` already has coordinate entries, derive a default bbox from the min/max lat/lon of them, padded by ~0.01° (~1km), and confirm it with the user.

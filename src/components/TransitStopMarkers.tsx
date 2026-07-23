@@ -2,79 +2,40 @@ import { useStore } from "@nanostores/react";
 import * as L from "leaflet";
 import { useEffect, useRef, useState } from "react";
 
-import {
-    leafletMapContext,
-    mapGeoLocation,
-    showTransitStops,
-} from "@/lib/context";
-import {
-    getStationModeIcon,
-    STATION_MODE_COLOUR,
-    STATION_MODE_LABEL,
-} from "@/lib/stationIcons";
-import { findPlacesInZone } from "@/maps/api";
-import { classifyStationModes, type StationMode } from "@/maps/geo-utils";
+import { leafletMapContext, showTransitStops } from "@/lib/context";
+import { getStationModesIcon, STATION_MODE_LABEL } from "@/lib/stationIcons";
+import { fetchCuratedStations } from "@/maps/api";
+import type { StationMode } from "@/maps/geo-utils";
 
 type TransitStop = {
     id: string;
     name: string;
     lat: number;
     lng: number;
-    mode: StationMode;
+    modes: StationMode[];
 };
 
 function makeMarker(stop: TransitStop, zoom: number): L.Marker {
-    const icon = getStationModeIcon(stop.mode, zoom);
-    const label = STATION_MODE_LABEL[stop.mode];
-    const colour = STATION_MODE_COLOUR[stop.mode];
+    const marker = L.marker([stop.lat, stop.lng], {
+        icon: getStationModesIcon(stop.modes, zoom),
+        zIndexOffset: 200,
+    });
 
-    const marker = L.marker([stop.lat, stop.lng], { icon, zIndexOffset: 200 });
-
+    const modeLabels = stop.modes
+        .map((mode) => STATION_MODE_LABEL[mode])
+        .join(", ");
     marker.bindTooltip(
         `<b>${stop.name}</b><br/>` +
-            `<span style="color:${colour};font-size:11px">${label}</span>`,
+            `<span style="font-size:11px">${modeLabels}</span>`,
         { direction: "top", offset: [0, -10] },
     );
 
     return marker;
 }
 
-type OverpassElement = {
-    type: string;
-    id: number;
-    lat?: number;
-    lon?: number;
-    center?: { lat: number; lon: number };
-    tags?: Record<string, string>;
-};
-
-function parseElements(elements: OverpassElement[]): TransitStop[] {
-    const seen = new Set<string>();
-    const stops: TransitStop[] = [];
-
-    for (const el of elements) {
-        const lat = el.center ? el.center.lat : el.lat;
-        const lng = el.center ? el.center.lon : el.lon;
-        if (typeof lat !== "number" || typeof lng !== "number") continue;
-
-        const name = el.tags?.["name:en"] || el.tags?.name || "Unknown Station";
-        const key = `${name}|${lat.toFixed(4)}|${lng.toFixed(4)}`;
-        if (seen.has(key)) continue;
-        seen.add(key);
-
-        // A single node usually serves one mode; take the primary classification.
-        const mode = classifyStationModes(el.tags)[0];
-
-        stops.push({ id: `${el.type}/${el.id}`, name, lat, lng, mode });
-    }
-
-    return stops;
-}
-
 export const TransitStopMarkers = () => {
     const map = useStore(leafletMapContext);
     const $showTransitStops = useStore(showTransitStops);
-    const $mapGeoLocation = useStore(mapGeoLocation);
     const [stops, setStops] = useState<TransitStop[]>([]);
     const [zoom, setZoom] = useState<number>(() => map?.getZoom() ?? 5);
     const layerGroupRef = useRef<L.LayerGroup | null>(null);
@@ -96,26 +57,19 @@ export const TransitStopMarkers = () => {
 
         const fetchStops = async () => {
             try {
-                const [tubeData, railData] = await Promise.all([
-                    findPlacesInZone(
-                        "[railway=station][subway=yes]",
-                        "Loading tube stations...",
-                        "nwr",
-                        "center",
-                    ),
-                    findPlacesInZone(
-                        "[railway=station][subway!=yes]",
-                        "Loading national rail stations...",
-                        "nwr",
-                        "center",
-                    ),
-                ]);
-
+                const curated = await fetchCuratedStations();
                 if (cancelled) return;
 
-                const tubeStops = parseElements(tubeData.elements ?? []);
-                const railStops = parseElements(railData.elements ?? []);
-                setStops([...tubeStops, ...railStops]);
+                const parsed: TransitStop[] = (curated.features ?? [])
+                    .filter((f: any) => f.geometry?.type === "Point")
+                    .map((f: any) => ({
+                        id: f.properties?.id,
+                        name: f.properties?.name ?? "Unknown Station",
+                        lat: f.geometry.coordinates[1],
+                        lng: f.geometry.coordinates[0],
+                        modes: (f.properties?.modes ?? []) as StationMode[],
+                    }));
+                setStops(parsed);
             } catch (err) {
                 if (!cancelled)
                     console.error("TransitStopMarkers: fetch error", err);
@@ -126,7 +80,7 @@ export const TransitStopMarkers = () => {
         return () => {
             cancelled = true;
         };
-    }, [$mapGeoLocation]);
+    }, []);
 
     useEffect(() => {
         if (!map) return;
@@ -160,7 +114,7 @@ export const TransitStopMarkers = () => {
         for (const stop of stops) {
             markersRef.current
                 .get(stop.id)
-                ?.setIcon(getStationModeIcon(stop.mode, zoom));
+                ?.setIcon(getStationModesIcon(stop.modes, zoom));
         }
     }, [zoom, stops]);
 
