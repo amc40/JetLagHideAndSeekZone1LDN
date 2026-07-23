@@ -12,6 +12,7 @@ A tool to trivially generate interactive maps for viewing hiding possibilities i
     - Same occupance of custom zone
     - Same nearest of custom points
     - Same zone (i.e., same region or prefecture)
+    - Landmass (same side of the River Thames)
     - Same first letter of zone
     - Same nearest commercial airport
     - Same train line
