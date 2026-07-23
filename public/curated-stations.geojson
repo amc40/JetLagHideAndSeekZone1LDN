@@ -143,7 +143,11 @@
                 "id": "curated/blackfriars-station",
                 "name": "Blackfriars",
                 "modes": ["tube", "rail"],
-                "lines": ["Circle line", "District line"],
+                "lines": [
+                    "Circle line",
+                    "District line",
+                    "Govia Thameslink Railway"
+                ],
                 "memberIds": ["curated/blackfriars-station"]
             }
         },
@@ -189,7 +193,8 @@
                     "Circle line",
                     "DLR",
                     "District line",
-                    "Northern line"
+                    "Northern line",
+                    "Southeastern"
                 ],
                 "memberIds": ["curated/cannon-street-station"]
             }
@@ -222,7 +227,8 @@
                     "Bakerloo line",
                     "Circle line",
                     "District line",
-                    "Northern line"
+                    "Northern line",
+                    "Southeastern"
                 ],
                 "memberIds": [
                     "curated/charing-cross-railway-station",
@@ -240,7 +246,7 @@
                 "id": "curated/city-thameslink-railway-station",
                 "name": "City Thameslink",
                 "modes": ["rail"],
-                "lines": [],
+                "lines": ["Govia Thameslink Railway"],
                 "memberIds": ["curated/city-thameslink-railway-station"]
             }
         },
@@ -304,7 +310,11 @@
                 "id": "curated/elephant-castle-railway-station",
                 "name": "Elephant & Castle",
                 "modes": ["tube", "rail"],
-                "lines": ["Bakerloo line", "Northern line"],
+                "lines": [
+                    "Bakerloo line",
+                    "Govia Thameslink Railway",
+                    "Northern line"
+                ],
                 "memberIds": [
                     "curated/elephant-castle-railway-station",
                     "curated/elephant-castle-tube-station"
@@ -325,7 +335,8 @@
                     "Bakerloo line",
                     "Circle line",
                     "District line",
-                    "Northern line"
+                    "Northern line",
+                    "Southeastern"
                 ],
                 "memberIds": ["curated/embankment-tube-station"]
             }
@@ -340,7 +351,15 @@
                 "id": "curated/euston-railway-station",
                 "name": "Euston",
                 "modes": ["tube", "rail", "overground"],
-                "lines": ["Lioness Line", "Northern line", "Victoria line"],
+                "lines": [
+                    "Avanti West Coast",
+                    "Caledonian Sleeper",
+                    "Lioness Line",
+                    "Lumo",
+                    "Northern line",
+                    "Victoria line",
+                    "West Midlands Trains"
+                ],
                 "memberIds": [
                     "curated/euston-railway-station",
                     "curated/euston-tube-station"
@@ -375,10 +394,11 @@
             "properties": {
                 "id": "curated/farringdon-station",
                 "name": "Farringdon",
-                "modes": ["tube", "elizabeth"],
+                "modes": ["tube", "rail", "elizabeth"],
                 "lines": [
                     "Circle line",
                     "Elizabeth line",
+                    "Govia Thameslink Railway",
                     "Hammersmith & City line",
                     "Metropolitan line"
                 ],
@@ -395,7 +415,7 @@
                 "id": "curated/fenchurch-street-railway-station",
                 "name": "Fenchurch Street",
                 "modes": ["rail"],
-                "lines": [],
+                "lines": ["c2c"],
                 "memberIds": ["curated/fenchurch-street-railway-station"]
             }
         },
@@ -501,7 +521,7 @@
                 "id": "curated/hoxton-railway-station",
                 "name": "Hoxton",
                 "modes": ["rail", "overground"],
-                "lines": [],
+                "lines": ["Windrush Line"],
                 "memberIds": ["curated/hoxton-railway-station"]
             }
         },
@@ -542,8 +562,12 @@
             "properties": {
                 "id": "curated/kensington-olympia-station",
                 "name": "Kensington (Olympia)",
-                "modes": ["tube", "overground"],
-                "lines": ["District line"],
+                "modes": ["tube", "rail", "overground"],
+                "lines": [
+                    "District line",
+                    "Govia Thameslink Railway",
+                    "Mildmay Line"
+                ],
                 "memberIds": ["curated/kensington-olympia-station"]
             }
         },
@@ -559,7 +583,12 @@
                 "modes": ["tube", "rail"],
                 "lines": [
                     "Circle line",
+                    "Eurostar",
+                    "Govia Thameslink Railway",
+                    "Grand Central",
                     "Hammersmith & City line",
+                    "London North Eastern Railway",
+                    "Lumo",
                     "Metropolitan line",
                     "Northern line",
                     "Piccadilly line",
@@ -656,8 +685,10 @@
                     "Central line",
                     "Circle line",
                     "Elizabeth line",
+                    "Greater Anglia",
                     "Hammersmith & City line",
-                    "Metropolitan line"
+                    "Metropolitan line",
+                    "Weaver Line"
                 ],
                 "memberIds": ["curated/liverpool-street-station"]
             }
@@ -672,7 +703,13 @@
                 "id": "curated/london-bridge-station",
                 "name": "London Bridge",
                 "modes": ["tube", "rail"],
-                "lines": ["Jubilee line", "Northern line"],
+                "lines": [
+                    "Govia Thameslink Railway",
+                    "Jubilee line",
+                    "Northern line",
+                    "Southeastern",
+                    "Southern"
+                ],
                 "memberIds": ["curated/london-bridge-station"]
             }
         },
@@ -718,7 +755,7 @@
                 "id": "curated/marylebone-station",
                 "name": "Marylebone",
                 "modes": ["tube", "rail"],
-                "lines": ["Bakerloo line"],
+                "lines": ["Bakerloo line", "Chiltern Railways"],
                 "memberIds": ["curated/marylebone-station"]
             }
         },
@@ -735,6 +772,7 @@
                 "lines": [
                     "Circle line",
                     "Elizabeth line",
+                    "Govia Thameslink Railway",
                     "Hammersmith & City line",
                     "Metropolitan line",
                     "Northern line"
@@ -779,8 +817,8 @@
             "properties": {
                 "id": "curated/old-street-station",
                 "name": "Old Street",
-                "modes": ["tube"],
-                "lines": ["Northern line"],
+                "modes": ["tube", "rail"],
+                "lines": ["Govia Thameslink Railway", "Northern line"],
                 "memberIds": ["curated/old-street-station"]
             }
         },
@@ -813,6 +851,7 @@
                     "Circle line",
                     "District line",
                     "Elizabeth line",
+                    "Great Western Railway",
                     "Hammersmith & City line"
                 ],
                 "memberIds": [
@@ -874,7 +913,7 @@
                 "id": "curated/shoreditch-high-street-railway-station",
                 "name": "Shoreditch High Street",
                 "modes": ["rail", "overground"],
-                "lines": [],
+                "lines": ["Windrush Line"],
                 "memberIds": ["curated/shoreditch-high-street-railway-station"]
             }
         },
@@ -915,8 +954,8 @@
             "properties": {
                 "id": "curated/southwark-tube-station",
                 "name": "Southwark",
-                "modes": ["tube"],
-                "lines": ["Jubilee line"],
+                "modes": ["tube", "rail"],
+                "lines": ["Jubilee line", "Southeastern"],
                 "memberIds": ["curated/southwark-tube-station"]
             }
         },
@@ -986,7 +1025,7 @@
                 "id": "curated/tower-gateway-dlr-station",
                 "name": "Tower Gateway",
                 "modes": ["tube", "dlr"],
-                "lines": ["Circle line", "DLR", "District line"],
+                "lines": ["Circle line", "DLR", "District line", "c2c"],
                 "memberIds": [
                     "curated/tower-gateway-dlr-station",
                     "curated/tower-hill-tube-station"
@@ -1003,7 +1042,7 @@
                 "id": "curated/vauxhall-station",
                 "name": "Vauxhall",
                 "modes": ["tube", "rail"],
-                "lines": ["Victoria line"],
+                "lines": ["South Western Railway", "Victoria line"],
                 "memberIds": ["curated/vauxhall-station"]
             }
         },
@@ -1017,7 +1056,13 @@
                 "id": "curated/london-victoria-station",
                 "name": "Victoria",
                 "modes": ["tube", "rail"],
-                "lines": ["Circle line", "District line", "Victoria line"],
+                "lines": [
+                    "Circle line",
+                    "District line",
+                    "Govia Thameslink Railway",
+                    "Southeastern",
+                    "Victoria line"
+                ],
                 "memberIds": [
                     "curated/london-victoria-station",
                     "curated/victoria-tube-station"
@@ -1058,6 +1103,8 @@
                     "Bakerloo line",
                     "Jubilee line",
                     "Northern line",
+                    "South Western Railway",
+                    "Southeastern",
                     "Waterloo & City line"
                 ],
                 "memberIds": [

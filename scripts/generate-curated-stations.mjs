@@ -152,12 +152,47 @@ function classifyModesFromName(name) {
 }
 
 // A named line for a route relation, as { line, mode }, or null for routes that
-// aren't a meaningful "line" for this game — chiefly National Rail service
-// patterns (route=train), whose relation names are origin→destination journeys
-// ("London King's Cross => Aberdeen") rather than lines. We only keep the
-// London modes that have real named lines: Tube, DLR, Overground, Elizabeth,
-// tram.
-export function deriveLine(tags = {}) {
+// aren't a meaningful "line" for this game. For the London modes with real
+// named lines (Tube, DLR, Overground, Elizabeth, tram) the line is that name.
+// National Rail is different: OSM's route=train relations are named as
+// origin→destination journeys ("London King's Cross => Aberdeen"), not lines,
+// so a National Rail station's "line" is taken to be its Train Operating
+// Company (TOC) — the `operator` tag — which is stable and meaningful for a
+// "same train line" comparison. A route can list several operators (joint
+// services), so this returns an array of { line, mode }.
+// The post-2024 named London Overground lines, so their route relations are
+// recognised as Overground even when OSM tags them operator=Transport for London
+// / route=train rather than network=London Overground.
+const OVERGROUND_LINES =
+    /\b(Lioness|Mildmay|Windrush|Weaver|Suffragette|Liberty)\b/i;
+
+// Operators that aren't a meaningful National Rail TOC line.
+const TOC_IGNORE = new Set([
+    "",
+    "national rail",
+    "network rail",
+    "transport for london",
+    "tfl rail",
+]);
+
+// Canonicalise the messiest OSM operator variants so "same line" doesn't split
+// on spelling/branding differences or defunct franchise names.
+const TOC_ALIASES = {
+    "abellio greater anglia": "Greater Anglia",
+    "greater thameslink railway": "Govia Thameslink Railway",
+    "virgin trains east coast": "London North Eastern Railway",
+    lner: "London North Eastern Railway",
+    "eurostar international ltd": "Eurostar",
+};
+
+function canonicalToc(operator) {
+    const trimmed = operator.trim();
+    const key = trimmed.toLowerCase();
+    if (TOC_IGNORE.has(key)) return null;
+    return TOC_ALIASES[key] ?? trimmed;
+}
+
+export function deriveLines(tags = {}) {
     const name = tags.name || tags["name:en"] || "";
     const nameL = lc(name);
     const network = lc(tags.network);
@@ -165,16 +200,26 @@ export function deriveLine(tags = {}) {
     const base = name.split(/[:(]/)[0].trim();
 
     if (nameL.includes("elizabeth") || network.includes("elizabeth"))
-        return { line: "Elizabeth line", mode: "elizabeth" };
+        return [{ line: "Elizabeth line", mode: "elizabeth" }];
     if (network.includes("docklands") || /\bdlr\b/.test(nameL))
-        return { line: "DLR", mode: "dlr" };
+        return [{ line: "DLR", mode: "dlr" }];
     if (route === "subway" || network.includes("underground"))
-        return { line: base || "London Underground", mode: "tube" };
-    if (network.includes("overground"))
-        return { line: base || "London Overground", mode: "overground" };
+        return [{ line: base || "London Underground", mode: "tube" }];
+    if (network.includes("overground") || OVERGROUND_LINES.test(name))
+        return [{ line: base || "London Overground", mode: "overground" }];
     if (route === "tram" || network.includes("tram"))
-        return { line: base || "Tramlink", mode: "tram" };
-    return null;
+        return [{ line: base || "Tramlink", mode: "tram" }];
+
+    // National Rail — identify the line by (canonicalised) Train Operating Company.
+    if (route === "train") {
+        return (tags.operator || "")
+            .split(";")
+            .map(canonicalToc)
+            .filter((toc) => toc !== null)
+            .map((toc) => ({ line: toc, mode: "rail" }));
+    }
+
+    return [];
 }
 
 export function cleanName(name) {
@@ -272,15 +317,16 @@ out skel qt;`);
     const routes = [];
     for (const el of routeData.elements ?? []) {
         if (el.type !== "relation") continue;
-        const derived = deriveLine(el.tags);
-        if (!derived) continue;
+        const derived = deriveLines(el.tags);
+        if (derived.length === 0) continue;
         const coords = (el.members ?? [])
             .filter((m) => m.type === "node" && nodeCoords.has(m.ref))
             .map((m) => nodeCoords.get(m.ref));
-        if (coords.length > 0)
-            routes.push({ line: derived.line, mode: derived.mode, coords });
+        if (coords.length === 0) continue;
+        for (const { line, mode } of derived)
+            routes.push({ line, mode, coords });
     }
-    console.log(`[stations] kept ${routes.length} named-line route relations`);
+    console.log(`[stations] kept ${routes.length} line/route mappings`);
 
     // 3. Enrich each curated entry with modes + lines.
     const enriched = curatedStations.map((entry) => {

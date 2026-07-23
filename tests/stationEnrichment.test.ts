@@ -5,7 +5,7 @@ import { describe, expect, test } from "vitest";
 import {
     classifyModes,
     cleanName,
-    deriveLine,
+    deriveLines,
     normaliseName,
 } from "../scripts/generate-curated-stations.mjs";
 
@@ -40,31 +40,60 @@ describe("classifyModes", () => {
     });
 });
 
-describe("deriveLine", () => {
-    test("names Underground / DLR / Elizabeth lines", () => {
+describe("deriveLines", () => {
+    test("names Underground / DLR / Elizabeth / Overground lines", () => {
         expect(
-            deriveLine({
+            deriveLines({
                 route: "subway",
                 network: "London Underground",
                 name: "Central line: West Ruislip → Epping",
             }),
-        ).toEqual({ line: "Central line", mode: "tube" });
+        ).toEqual([{ line: "Central line", mode: "tube" }]);
         expect(
-            deriveLine({ route: "train", network: "Elizabeth line" }),
-        ).toEqual({ line: "Elizabeth line", mode: "elizabeth" });
+            deriveLines({ route: "train", network: "Elizabeth line" }),
+        ).toEqual([{ line: "Elizabeth line", mode: "elizabeth" }]);
         expect(
-            deriveLine({ route: "light_rail", name: "DLR: Bank → Lewisham" }),
-        ).toEqual({ line: "DLR", mode: "dlr" });
+            deriveLines({ route: "light_rail", name: "DLR: Bank → Lewisham" }),
+        ).toEqual([{ line: "DLR", mode: "dlr" }]);
+        // Overground recognised by line name even when tagged operator=TfL/route=train.
+        expect(
+            deriveLines({
+                route: "train",
+                operator: "Transport for London",
+                name: "Windrush Line: Highbury & Islington → New Cross",
+            }),
+        ).toEqual([{ line: "Windrush Line", mode: "overground" }]);
     });
 
-    test("ignores National Rail service-pattern routes", () => {
+    test("National Rail routes become their (canonicalised) TOC", () => {
         expect(
-            deriveLine({
+            deriveLines({
                 route: "train",
-                network: "National Rail",
-                name: "London King's Cross => Aberdeen",
+                operator: "Southeastern",
+                name: "Cannon Street => Dartford",
             }),
-        ).toBeNull();
+        ).toEqual([{ line: "Southeastern", mode: "rail" }]);
+        // Aliases collapse to one canonical name.
+        expect(
+            deriveLines({ route: "train", operator: "Abellio Greater Anglia" }),
+        ).toEqual([{ line: "Greater Anglia", mode: "rail" }]);
+        // Joint services split into one line per operator.
+        expect(
+            deriveLines({
+                route: "train",
+                operator: "Southern;Gatwick Express",
+            }),
+        ).toEqual([
+            { line: "Southern", mode: "rail" },
+            { line: "Gatwick Express", mode: "rail" },
+        ]);
+    });
+
+    test("ignores umbrella operators that aren't a real line", () => {
+        expect(
+            deriveLines({ route: "train", operator: "Network Rail" }),
+        ).toEqual([]);
+        expect(deriveLines({ route: "train", operator: "" })).toEqual([]);
     });
 });
 
