@@ -195,8 +195,8 @@ const tutorialSteps: TutorialStep[] = [
                                 drag: true,
                                 lat: 35.6762,
                                 lng: 139.6503,
-                                radius: 10,
-                                unit: "miles",
+                                radius: 2,
+                                unit: "kilometers",
                                 color: "blue",
                                 within: false,
                                 hidden: false,
@@ -209,7 +209,7 @@ const tutorialSteps: TutorialStep[] = [
                 decimals)
                 <br />
                 <br />
-                <strong>Units:</strong> Miles, kilometers, or meters
+                <strong>Units:</strong> Kilometers, meters, or miles
                 <br />
                 <br />
                 <strong>Position:</strong> Drag the marker on the map or input
@@ -294,8 +294,8 @@ const tutorialSteps: TutorialStep[] = [
                                 drag: true,
                                 lat: 35.6762,
                                 lng: 139.6503,
-                                radius: 15,
-                                unit: "miles",
+                                radius: 24,
+                                unit: "kilometers",
                                 color: "red",
                                 locationType: "theme_park",
                                 location: false,
@@ -306,9 +306,9 @@ const tutorialSteps: TutorialStep[] = [
                 </SidebarGroup>
                 <br />
                 <strong>Location Types:</strong>
-                <br />• <strong>15-Mile Radius:</strong> Theme Parks, Zoos,
+                <br />• <strong>24 km Radius:</strong> Theme Parks, Zoos,
                 Aquariums
-                <br />• <strong>1-Mile Radius:</strong> Museums, Hospitals,
+                <br />• <strong>1.5 km Radius:</strong> Museums, Hospitals,
                 Cinemas, Libraries
                 <br />
                 <br />
@@ -556,8 +556,8 @@ const tutorialSteps: TutorialStep[] = [
                 <br />
                 <br />
                 <strong>Unit Preferences:</strong>
-                <br />• <strong>Default Unit:</strong> Miles, kilometers, or
-                meters for new questions. This becomes the default for all new
+                <br />• <strong>Default Unit:</strong> Kilometers, meters, or
+                miles for new questions. This becomes the default for all new
                 questions. Choose based on your region&apos;s conventions.
                 <br />• Affects all distance-based questions and measurements
                 throughout the entire game
