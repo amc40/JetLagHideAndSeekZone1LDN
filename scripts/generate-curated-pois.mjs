@@ -18,13 +18,6 @@ const OSM_TYPE_QUERY_NAME = {
 
 const CATEGORIES = [
     {
-        name: "stations",
-        source: new URL("../src/data/curated-stations.mjs", import.meta.url),
-        output: fileURLToPath(
-            new URL("../public/curated-stations.geojson", import.meta.url),
-        ),
-    },
-    {
         name: "hospitals",
         source: new URL("../src/data/curated-hospitals.mjs", import.meta.url),
         output: fileURLToPath(

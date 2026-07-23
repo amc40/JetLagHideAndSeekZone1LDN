@@ -2,144 +2,142 @@ import * as turf from "@turf/turf";
 
 import type { StationPlace } from "@/maps/api";
 
-/**
- * Function to merge duplicates stations into one station, by averaging their longitude and latitude
- * @param places    Array of all unmerged stations
- * @param radius    Radius of the hiding zone
- * @param units     turf.Units unit of the radius ("miles", "kilometers" etc.)
- * @returns         Array of all merged stations
- */
-export function mergeDuplicateStation(
-    places: StationPlace[],
-    radius: number,
-    units: turf.Units,
-): StationPlace[] {
-    const grouped = new Map<string, any[]>();
-    // 1. Group by name
-    for (const place of places) {
-        const name = place.properties.name ?? "";
-        // Check if the group already exist, if not add a new group entry.
-        if (!grouped.has(name)) {
-            grouped.set(name, [place]);
-        } else {
-            // group already exist, need to check all groups and all members if their zones are shared
-            let placeAdded = false;
-            for (const group of grouped) {
-                // check all groups
-                const groupValues = group[1];
+import { classifyStationModes, STATION_MODES } from "./stationModes";
 
-                // if the name matches the first group members name, check all members
-                if (groupValues[0].properties.name == name) {
-                    let shareZones: boolean = false;
-                    for (const groupPlace of groupValues) {
-                        const station1: Location = {
-                            coordinates: place.geometry.coordinates,
-                        };
-                        const station2: Location = {
-                            coordinates: groupPlace.geometry.coordinates,
-                        };
-                        shareZones = checkIfStationsShareZones(
-                            station1,
-                            station2,
-                            radius,
-                            units,
-                        );
-                        if (!shareZones) {
-                            // new zone does not overlap with a station, leave early
-                            break;
-                        }
-                    }
-                    if (shareZones) {
-                        // add to group if all stations share the zone
-                        groupValues.push(place);
-                        placeAdded = true;
-                        break; // leave group search, as the new place is already added
-                    }
-                }
+// Two stations at most this far apart are treated as the same physical
+// interchange regardless of name (e.g. stacked National Rail + Tube platforms).
+const CO_LOCATION_RADIUS_METERS = 150;
+// Two stations this far apart are merged only when their names match, catching
+// interchanges spread over a larger footprint but with a shared name.
+const NAME_MATCH_RADIUS_METERS = 500;
+
+const extractName = (place: StationPlace): string =>
+    (place.properties["name:en"] as string) ||
+    (place.properties.name as string) ||
+    "";
+
+/** Normalise a station name for loose equality (drop punctuation, mode suffixes). */
+const normaliseName = (name: string): string =>
+    name
+        .toLowerCase()
+        .replace(/['`’.]/g, "")
+        .replace(
+            /\b(london underground|underground|tube|dlr|overground|national rail|railway|rail|light rail|tram|station|stop|halt)\b/g,
+            "",
+        )
+        .replace(/\s+/g, " ")
+        .trim();
+
+const distanceMeters = (a: StationPlace, b: StationPlace): number =>
+    turf.distance(a.geometry.coordinates, b.geometry.coordinates, {
+        units: "meters",
+    });
+
+/**
+ * Merge co-located stations (e.g. a National Rail station and the Tube station
+ * on top of it) into a single station. The merged station keeps every member's
+ * OSM id (`memberIds`, used for "same train line" checks) and the union of the
+ * transport modes served (`modes`, used to render one icon per mode).
+ */
+export function mergeCoLocatedStations(places: StationPlace[]): StationPlace[] {
+    const n = places.length;
+    if (n === 0) return [];
+
+    const normNames = places.map((p) => normaliseName(extractName(p)));
+
+    // Union-find over stations that belong to the same interchange.
+    const parent = Array.from({ length: n }, (_, i) => i);
+    const find = (i: number): number => {
+        while (parent[i] !== i) {
+            parent[i] = parent[parent[i]];
+            i = parent[i];
+        }
+        return i;
+    };
+    const union = (i: number, j: number) => {
+        const ri = find(i);
+        const rj = find(j);
+        if (ri !== rj) parent[ri] = rj;
+    };
+
+    for (let i = 0; i < n; i++) {
+        for (let j = i + 1; j < n; j++) {
+            // Cheap bounding-box prefilter (~0.01° ≈ 1.1km) before the geodesic distance.
+            const [lngA, latA] = places[i].geometry.coordinates;
+            const [lngB, latB] = places[j].geometry.coordinates;
+            if (Math.abs(latA - latB) > 0.01 || Math.abs(lngA - lngB) > 0.01) {
+                continue;
             }
 
-            if (!placeAdded) {
-                // if we arrive here, we need to make a new group with a unique key
+            const d = distanceMeters(places[i], places[j]);
+            const sameName =
+                normNames[i] !== "" && normNames[i] === normNames[j];
 
-                // searching for all groups containing the station name to find latest index
-                const matches = Array.from(grouped.entries()).filter(
-                    ([key]) => typeof key === "string" && key.includes(name),
-                );
-                const lastGroup = matches.at(-1); // last group has the latest index
-                let lastKey = "0";
-                if (lastGroup) {
-                    lastKey = lastGroup[0];
-                }
-                const lastIdx = Number(lastKey.split("#")[1] ?? "0");
-                const nextIdx = lastIdx + 1;
-                const key: string = name + "#" + nextIdx.toString();
-                // New key example: "Station Name#1"
-                grouped.set(key, [place]);
+            if (
+                d <= CO_LOCATION_RADIUS_METERS ||
+                (sameName && d <= NAME_MATCH_RADIUS_METERS)
+            ) {
+                union(i, j);
             }
         }
     }
 
-    // 2. Compute central point per group
-    const merged: any[] = [];
-    grouped.forEach((group) => {
+    const groups = new Map<number, number[]>();
+    for (let i = 0; i < n; i++) {
+        const root = find(i);
+        const group = groups.get(root);
+        if (group) group.push(i);
+        else groups.set(root, [i]);
+    }
+
+    const merged: StationPlace[] = [];
+    groups.forEach((indices) => {
+        const members = indices.map((i) => places[i]);
+
         const avgLng =
-            group.reduce((sum, p) => sum + p.geometry.coordinates[0], 0) /
-            group.length;
+            members.reduce((sum, p) => sum + p.geometry.coordinates[0], 0) /
+            members.length;
         const avgLat =
-            group.reduce((sum, p) => sum + p.geometry.coordinates[1], 0) /
-            group.length;
+            members.reduce((sum, p) => sum + p.geometry.coordinates[1], 0) /
+            members.length;
+
+        // Union of modes, kept in canonical order for stable icon layout.
+        const modeSet = new Set(
+            members.flatMap((m) => classifyStationModes(m.properties)),
+        );
+        const modes = STATION_MODES.filter((mode) => modeSet.has(mode));
+
+        const memberIds = members
+            .map((m) => m.properties.id)
+            .filter((id): id is string => typeof id === "string");
+
+        // Prefer a National Rail member's name as the canonical interchange name,
+        // then the longest available name.
+        const railMembers = members.filter((m) =>
+            classifyStationModes(m.properties).includes("rail"),
+        );
+        const namePool = (railMembers.length ? railMembers : members)
+            .map(extractName)
+            .filter(Boolean)
+            .sort((a, b) => b.length - a.length);
+        const name = namePool[0] ?? extractName(members[0]);
 
         merged.push({
-            ...group[0], // copy other fields from the first feature
+            ...members[0],
             geometry: {
                 type: "Point",
                 coordinates: [avgLng, avgLat],
             },
+            properties: {
+                ...members[0].properties,
+                id: memberIds[0] ?? members[0].properties.id,
+                name,
+                "name:en": name,
+                modes,
+                memberIds,
+            },
         });
     });
+
     return merged;
-}
-
-// Location object definition
-export type Location = {
-    name?: string;
-    type?: string;
-    coordinates: number[]; // [longitude, latitude]
-};
-
-/**
- * Check if two stations share a zone in a way that both centers are inside the others radius.
- * Both stations must lie within the given radius of each other.
- *
- * Matches:
- *      (...{Z1..Z2)...}
- * Does not match:
- *      (....Z1....) {....Z2....}
- * @param station1 First station location.
- * @param station2 Second station location.
- * @param radius   The zone radius around each station.
- * @param units    The unit for the radius ("miles","kilometers", "meters").
- * @returns        True if both stations share a zone, otherwise false.
- */
-export function checkIfStationsShareZones(
-    station1: Location,
-    station2: Location,
-    radius: number,
-    units: turf.Units,
-): boolean {
-    // Convert to turf points
-    const point1 = turf.point([
-        station1.coordinates[0],
-        station1.coordinates[1],
-    ]);
-    const point2 = turf.point([
-        station2.coordinates[0],
-        station2.coordinates[1],
-    ]);
-
-    // Distance of the 2 center points
-    const d = turf.distance(point1, point2, { units });
-
-    // If the distance of the 2 center points is smaller or equal of the radius, the 2 zones overlap.
-    return d <= radius;
 }
