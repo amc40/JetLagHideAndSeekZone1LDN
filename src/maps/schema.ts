@@ -255,6 +255,10 @@ const zoneMatchingQuestionsSchema = baseMatchingQuestionSchema.extend({
         .default(() => ({ adminLevel: 3 }) as { adminLevel: 3 }),
 });
 
+const londonBoroughMatchingQuestionsSchema = baseMatchingQuestionSchema.extend({
+    type: z.literal("london-borough").describe("Same London Borough Question"),
+});
+
 const homeGameMatchingQuestionsSchema = baseMatchingQuestionSchema.extend({
     type: z.union([
         z.literal("aquarium").describe("Aquarium Question"),
@@ -287,6 +291,7 @@ const hidingZoneMatchingQuestionsSchema = baseMatchingQuestionSchema.extend({
 
 export const matchingQuestionSchema = z.union([
     zoneMatchingQuestionsSchema.describe(NO_GROUP),
+    londonBoroughMatchingQuestionsSchema.describe(NO_GROUP),
     ordinaryMatchingQuestionSchema.describe(NO_GROUP),
     hidingZoneMatchingQuestionsSchema.describe("Hiding Zone Mode"),
     homeGameMatchingQuestionsSchema.describe("Hiding Zone Mode"),

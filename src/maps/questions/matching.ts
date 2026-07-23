@@ -22,6 +22,7 @@ import {
     fetchCuratedHospitals,
     fetchCuratedMuseums,
     fetchCuratedParks,
+    fetchLondonBoroughs,
     findAdminBoundary,
     findPlacesInZone,
     LOCATION_FIRST_TAG,
@@ -170,6 +171,25 @@ export const determineMatchingBoundary = _.memoize(
             case "same-length-station":
             case "same-train-line": {
                 return false;
+            }
+            case "london-borough": {
+                const boroughs =
+                    (await fetchLondonBoroughs()) as FeatureCollection<
+                        Polygon | MultiPolygon
+                    >;
+
+                const point = turf.point([question.lng, question.lat]);
+
+                boundary = boroughs.features.find((feature) =>
+                    turf.booleanPointInPolygon(point, feature),
+                );
+
+                if (!boundary) {
+                    toast.error("The marker is not inside a London borough");
+                    throw new Error("No London borough found");
+                }
+
+                break;
             }
             case "zone": {
                 boundary = await findAdminBoundary(
