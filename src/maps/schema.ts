@@ -107,12 +107,12 @@ const getDefaultUnit = () => {
     try {
         return defaultUnit.get();
     } catch {
-        return "miles";
+        return "kilometers";
     }
 };
 
 const radiusQuestionSchema = ordinaryBaseQuestionSchema.extend({
-    radius: z.number().min(0, "You cannot have a negative radius").default(50),
+    radius: z.number().min(0, "You cannot have a negative radius").default(1),
     unit: unitsSchema.default(getDefaultUnit),
     within: z.boolean().default(true),
 });
@@ -140,7 +140,7 @@ const apiLocationSchema = z.union([
 ]);
 
 const baseTentacleQuestionSchema = ordinaryBaseQuestionSchema.extend({
-    radius: z.number().min(0, "You cannot have a negative radius").default(15),
+    radius: z.number().min(0, "You cannot have a negative radius").default(24),
     unit: unitsSchema.default(getDefaultUnit),
     location: z
         .union([
@@ -167,6 +167,7 @@ const tentacleQuestionSpecificSchemaFifteen = baseTentacleQuestionSchema.extend(
 );
 
 const tentacleQuestionSpecificSchemaOne = baseTentacleQuestionSchema.extend({
+    radius: z.number().min(0, "You cannot have a negative radius").default(1.5),
     locationType: tentacleLocationsOne,
     places: z.array(z.any()).optional(),
 });
@@ -178,8 +179,8 @@ const encompassingTentacleQuestionSchema = baseTentacleQuestionSchema.extend({
 });
 
 export const tentacleQuestionSchema = z.union([
-    tentacleQuestionSpecificSchemaFifteen.describe("15 Miles (Typically)"),
-    tentacleQuestionSpecificSchemaOne.describe("1 Mile (Typically)"),
+    tentacleQuestionSpecificSchemaFifteen.describe("24 km (Typically)"),
+    tentacleQuestionSpecificSchemaOne.describe("1.5 km (Typically)"),
 ]);
 
 const baseMatchingQuestionSchema = ordinaryBaseQuestionSchema.extend({
