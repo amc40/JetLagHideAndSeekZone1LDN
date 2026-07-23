@@ -291,7 +291,7 @@ const tutorialSteps: TutorialStep[] = [
                                 lng: 139.6503,
                                 color: "blue",
                                 same: true,
-                                type: "major-city",
+                                type: "london-borough",
                                 hidden: false,
                             }}
                         />
@@ -301,11 +301,6 @@ const tutorialSteps: TutorialStep[] = [
                 <strong>London Borough Matching:</strong>
                 <br />• <strong>Same Borough:</strong> Whether the hider is in
                 the same London borough as the reference point
-                <br />
-                <br />
-                <strong>City Matching:</strong>
-                <br />• Compares nearest major cities (1,000,000+ population)
-                <br />• Useful for large-scale geographic questions
             </>
         ),
         position: "center",
@@ -355,7 +350,7 @@ const tutorialSteps: TutorialStep[] = [
                                 lng: 139.6503,
                                 color: "green",
                                 hiderCloser: true,
-                                type: "city",
+                                type: "highspeed-measure-shinkansen",
                                 hidden: false,
                             }}
                         />
@@ -363,8 +358,6 @@ const tutorialSteps: TutorialStep[] = [
                 </SidebarGroup>
                 <br />
                 <strong>Geographic Features:</strong>
-                <br />• <strong>Major Cities:</strong> Distance to cities with
-                1M+ population
                 <br />• <strong>High-Speed Rail:</strong> Distance to St Pancras
                 (HS1&apos;s only Zone 1 station)
                 <br />

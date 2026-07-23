@@ -41,24 +41,6 @@ export const determineMeasuringBoundary = async (
                     .features[0],
             ];
         }
-        case "city":
-            return [
-                turf.combine(
-                    turf.featureCollection(
-                        (
-                            await findPlacesInZone(
-                                '[place=city]["population"~"^[1-9]+[0-9]{6}$"]', // The regex is faster than (if:number(t["population"])>1000000)
-                                "Finding cities...",
-                            )
-                        ).elements.map((x: any) =>
-                            turf.point([
-                                x.center ? x.center.lon : x.lon,
-                                x.center ? x.center.lat : x.lat,
-                            ]),
-                        ),
-                    ),
-                ).features[0],
-            ];
         case "aquarium-full":
         case "museum-full":
         case "hospital-full":

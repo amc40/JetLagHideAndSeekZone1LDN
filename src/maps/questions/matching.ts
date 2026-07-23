@@ -33,19 +33,6 @@ import type {
 
 export const findMatchingPlaces = async (question: MatchingQuestion) => {
     switch (question.type) {
-        case "major-city": {
-            return (
-                await findPlacesInZone(
-                    '[place=city]["population"~"^[1-9]+[0-9]{6}$"]', // The regex is faster than (if:number(t["population"])>1000000)
-                    "Finding cities...",
-                )
-            ).elements.map((x: any) =>
-                turf.point([
-                    x.center ? x.center.lon : x.lon,
-                    x.center ? x.center.lat : x.lat,
-                ]),
-            );
-        }
         case "museum-full":
         case "hospital-full":
         case "cinema-full":
@@ -158,7 +145,6 @@ export const determineMatchingBoundary = _.memoize(
 
                 break;
             }
-            case "major-city":
             case "museum-full":
             case "hospital-full":
             case "cinema-full":
