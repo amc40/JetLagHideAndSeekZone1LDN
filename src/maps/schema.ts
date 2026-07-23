@@ -268,6 +268,9 @@ const ordinaryMeasuringQuestionSchema = baseMeasuringQuestionSchema.extend({
             z
                 .literal("park-full")
                 .describe("Park Question (Small+Medium Games)"),
+            z
+                .literal("sea-level")
+                .describe("Sea Level Question (Greater London Only)"),
         ])
         .default("city"),
 });

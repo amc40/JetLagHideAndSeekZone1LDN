@@ -23,7 +23,13 @@ import {
     prettifyLocation,
     QuestionSpecificLocation,
 } from "@/maps/api";
-import { arcBufferToPoint, holedMask, modifyMapData } from "@/maps/geo-utils";
+import {
+    arcBufferToPoint,
+    computeSeaLevelBand,
+    getElevationAt,
+    holedMask,
+    modifyMapData,
+} from "@/maps/geo-utils";
 import type {
     APILocations,
     HomeGameMeasuringQuestions,
@@ -152,6 +158,7 @@ export const determineMeasuringBoundary = async (
         case "mcdonalds":
         case "seven11":
         case "rail-measure":
+        case "sea-level":
             return false;
     }
 };
@@ -185,6 +192,19 @@ export const adjustPerMeasuring = async (
 ) => {
     if (mapData === null) return;
 
+    if (question.type === "sea-level") {
+        const referenceElevation = await getElevationAt(
+            question.lat,
+            question.lng,
+        );
+        if (referenceElevation === null) return mapData;
+
+        const band = await computeSeaLevelBand(referenceElevation);
+        if (band === false) return mapData;
+
+        return modifyMapData(mapData, band, question.hiderCloser);
+    }
+
     const buffer = await bufferedDeterminer(question);
 
     if (buffer === false) return mapData;
@@ -195,6 +215,24 @@ export const adjustPerMeasuring = async (
 export const hiderifyMeasuring = async (question: MeasuringQuestion) => {
     const $hiderMode = hiderMode.get();
     if ($hiderMode === false) {
+        return question;
+    }
+
+    if (question.type === "sea-level") {
+        const referenceElevation = await getElevationAt(
+            question.lat,
+            question.lng,
+        );
+        const hiderElevation = await getElevationAt(
+            $hiderMode.latitude,
+            $hiderMode.longitude,
+        );
+
+        if (referenceElevation === null || hiderElevation === null) {
+            return question;
+        }
+
+        question.hiderCloser = hiderElevation < referenceElevation;
         return question;
     }
 
@@ -314,6 +352,19 @@ export const hiderifyMeasuring = async (question: MeasuringQuestion) => {
 
 export const measuringPlanningPolygon = async (question: MeasuringQuestion) => {
     try {
+        if (question.type === "sea-level") {
+            const referenceElevation = await getElevationAt(
+                question.lat,
+                question.lng,
+            );
+            if (referenceElevation === null) return false;
+
+            const band = await computeSeaLevelBand(referenceElevation);
+            if (band === false) return false;
+
+            return turf.polygonToLine(band);
+        }
+
         const buffered = await bufferedDeterminer(question);
 
         if (buffered === false) return false;
