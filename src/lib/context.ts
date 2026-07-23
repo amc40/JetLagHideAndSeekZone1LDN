@@ -20,28 +20,26 @@ import {
     type Units,
 } from "@/maps/schema";
 
-export const DEFAULT_MAP_GEO_LOCATION: OpenStreetMap = {
-    geometry: {
-        coordinates: [51.5074, -0.1278],
-        type: "Point",
-    },
-    type: "Feature",
-    properties: {
-        osm_type: "R",
-        osm_id: 65606,
-        extent: [51.6919, -0.5104, 51.2868, 0.334],
-        country: "United Kingdom",
-        osm_key: "place",
-        countrycode: "GB",
-        osm_value: "city",
-        name: "London",
-        type: "city",
-    },
-};
-
 export const mapGeoLocation = persistentAtom<OpenStreetMap>(
     "mapGeoLocation",
-    DEFAULT_MAP_GEO_LOCATION,
+    {
+        geometry: {
+            coordinates: [51.5074, -0.1278],
+            type: "Point",
+        },
+        type: "Feature",
+        properties: {
+            osm_type: "R",
+            osm_id: 65606,
+            extent: [51.6919, -0.5104, 51.2868, 0.334],
+            country: "United Kingdom",
+            osm_key: "place",
+            countrycode: "GB",
+            osm_value: "city",
+            name: "London",
+            type: "city",
+        },
+    },
     {
         encode: JSON.stringify,
         decode: JSON.parse,
@@ -72,27 +70,6 @@ export const polyGeoJSON = persistentAtom<FeatureCollection<
     encode: JSON.stringify,
     decode: JSON.parse,
 });
-
-// One-time migration: earlier builds of this tool defaulted to Japan and
-// persisted that starting location (and a null play-area polygon) to
-// localStorage. Now that the play area is fixed to London / TfL Zone 1,
-// changing the atom defaults alone doesn't help returning visitors — their
-// browser still has the old Japan value. Force everyone onto the new default
-// once, keyed by a version flag so we only ever do it a single time.
-const LOCATION_DEFAULTS_VERSION = "london-zone1-1";
-if (typeof localStorage !== "undefined") {
-    if (
-        localStorage.getItem("locationDefaultsVersion") !==
-        LOCATION_DEFAULTS_VERSION
-    ) {
-        mapGeoLocation.set(DEFAULT_MAP_GEO_LOCATION);
-        polyGeoJSON.set(TFL_ZONE_1_POLYGON);
-        localStorage.setItem(
-            "locationDefaultsVersion",
-            LOCATION_DEFAULTS_VERSION,
-        );
-    }
-}
 
 export const questions = persistentAtom<Questions>("questions", [], {
     encode: JSON.stringify,
