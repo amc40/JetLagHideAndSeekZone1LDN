@@ -199,6 +199,12 @@ const londonBoroughMatchingQuestionsSchema = baseMatchingQuestionSchema.extend({
     type: z.literal("london-borough").describe("Same London Borough Question"),
 });
 
+const thamesMatchingQuestionSchema = baseMatchingQuestionSchema.extend({
+    type: z
+        .literal("thames")
+        .describe("Landmass (North or South of River) Question"),
+});
+
 const homeGameMatchingQuestionsSchema = baseMatchingQuestionSchema.extend({
     type: z.union([
         z.literal("museum").describe("Museum Question"),
@@ -226,6 +232,7 @@ const hidingZoneMatchingQuestionsSchema = baseMatchingQuestionSchema.extend({
 
 export const matchingQuestionSchema = z.union([
     londonBoroughMatchingQuestionsSchema.describe(NO_GROUP),
+    thamesMatchingQuestionSchema.describe(NO_GROUP),
     ordinaryMatchingQuestionSchema.describe(NO_GROUP),
     hidingZoneMatchingQuestionsSchema.describe("Hiding Zone Mode"),
     homeGameMatchingQuestionsSchema.describe("Hiding Zone Mode"),

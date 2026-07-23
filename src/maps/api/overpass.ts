@@ -250,6 +250,22 @@ export const fetchLondonBoroughs = async () => {
     return data;
 };
 
+// Source: Ordnance Survey OS Open Rivers ("River Thames" named reaches,
+// Wandsworth to Wapping), via the OS Data Hub / Esri UK Living Atlas
+// FeatureServer. Contains OS data (c) Crown copyright and database right,
+// licensed under the Open Government Licence v3. Bundled locally (and
+// trimmed down to a single connected line) so the question works offline
+// and doesn't depend on a live lookup.
+export const fetchThamesLine = async () => {
+    const response = await cacheFetch(
+        import.meta.env.BASE_URL + "/thames.geojson",
+        "Loading the Thames...",
+        CacheType.PERMANENT_CACHE,
+    );
+    const data = await response.json();
+    return data;
+};
+
 export const fetchCuratedMuseums = async () => {
     const response = await cacheFetch(
         import.meta.env.BASE_URL + "/curated-museums.geojson",

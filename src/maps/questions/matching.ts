@@ -1,5 +1,12 @@
 import * as turf from "@turf/turf";
-import type { FeatureCollection, MultiPolygon, Point, Polygon } from "geojson";
+import type {
+    Feature,
+    FeatureCollection,
+    LineString,
+    MultiPolygon,
+    Point,
+    Polygon,
+} from "geojson";
 import _ from "lodash";
 import osmtogeojson from "osmtogeojson";
 import { toast } from "react-toastify";
@@ -17,13 +24,14 @@ import {
     fetchCuratedMuseums,
     fetchCuratedParks,
     fetchLondonBoroughs,
+    fetchThamesLine,
     findPlacesInZone,
     LOCATION_FIRST_TAG,
     nearestToQuestion,
     prettifyLocation,
     trainLineNodeFinder,
 } from "@/maps/api";
-import { holedMask, modifyMapData } from "@/maps/geo-utils";
+import { holedMask, modifyMapData, riverNorthPolygon } from "@/maps/geo-utils";
 import { geoSpatialVoronoi } from "@/maps/geo-utils";
 import type {
     APILocations,
@@ -145,6 +153,17 @@ export const determineMatchingBoundary = _.memoize(
 
                 break;
             }
+            case "thames": {
+                const river = (await fetchThamesLine())
+                    .features[0] as Feature<LineString>;
+
+                // Always the same canonical (north-side) polygon, regardless
+                // of which side the marker is on - adjustPerMatching flips
+                // `same` instead, so modifyMapData never has to take the
+                // holedMask of an already-complemented polygon.
+                boundary = riverNorthPolygon(river);
+                break;
+            }
             case "museum-full":
             case "hospital-full":
             case "cinema-full":
@@ -189,6 +208,15 @@ export const adjustPerMatching = async (
 
     if (boundary === false) {
         return mapData;
+    }
+
+    if (question.type === "thames") {
+        const point = turf.point([question.lng, question.lat]);
+        const same = turf.booleanPointInPolygon(point, boundary)
+            ? question.same
+            : !question.same;
+
+        return modifyMapData(mapData, boundary, same);
     }
 
     return modifyMapData(mapData, boundary, question.same);
@@ -335,6 +363,10 @@ export const hiderifyMatching = async (question: MatchingQuestion) => {
 
 export const matchingPlanningPolygon = async (question: MatchingQuestion) => {
     try {
+        if (question.type === "thames") {
+            return (await fetchThamesLine()).features[0] as Feature<LineString>;
+        }
+
         const boundary = await determineMatchingBoundary(question);
 
         if (boundary === false) {
