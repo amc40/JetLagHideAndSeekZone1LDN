@@ -174,9 +174,6 @@ const ordinaryMatchingQuestionSchema = baseMatchingQuestionSchema.extend({
     type: z
         .union([
             z
-                .literal("major-city")
-                .describe("Major City (1,000,000+ people) In Zone Question"),
-            z
                 .literal("museum-full")
                 .describe("Museum Question (Small+Medium Games)"),
             z
@@ -195,7 +192,7 @@ const ordinaryMatchingQuestionSchema = baseMatchingQuestionSchema.extend({
                 .literal("park-full")
                 .describe("Park Question (Small+Medium Games)"),
         ])
-        .default("major-city"),
+        .default("museum-full"),
 });
 
 const londonBoroughMatchingQuestionsSchema = baseMatchingQuestionSchema.extend({
@@ -242,9 +239,6 @@ const ordinaryMeasuringQuestionSchema = baseMeasuringQuestionSchema.extend({
     type: z
         .union([
             z
-                .literal("city")
-                .describe("Major City (1,000,000+ people) Question"),
-            z
                 .literal("highspeed-measure-shinkansen")
                 .describe("High-Speed Rail Question"),
             z
@@ -269,7 +263,7 @@ const ordinaryMeasuringQuestionSchema = baseMeasuringQuestionSchema.extend({
                 .literal("park-full")
                 .describe("Park Question (Small+Medium Games)"),
         ])
-        .default("city"),
+        .default("highspeed-measure-shinkansen"),
 });
 
 const hidingZoneMeasuringQuestionsSchema = baseMeasuringQuestionSchema.extend({
