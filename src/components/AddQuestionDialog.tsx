@@ -60,17 +60,6 @@ export const AddQuestionDialog = ({
         return true;
     };
 
-    const runAddTentacles = () => {
-        const map = leafletMapContext.get();
-        if (!map) return false;
-        const center = map.getCenter();
-        addQuestion({
-            id: "tentacles",
-            data: { lat: center.lat, lng: center.lng },
-        });
-        return true;
-    };
-
     const runAddMatching = () => {
         const map = leafletMapContext.get();
         if (!map) return false;
@@ -151,14 +140,6 @@ export const AddQuestionDialog = ({
                         disabled={$isLoading}
                     >
                         Add Thermometer
-                    </SidebarMenuButton>
-                    <SidebarMenuButton
-                        onClick={() => {
-                            if (runAddTentacles()) closeAll();
-                        }}
-                        disabled={$isLoading}
-                    >
-                        Add Tentacles
                     </SidebarMenuButton>
                     <SidebarMenuButton
                         onClick={() => {

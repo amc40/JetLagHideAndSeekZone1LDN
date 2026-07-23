@@ -1279,14 +1279,10 @@ async function selectionProcess(
         if (
             (question.id === "measuring" || question.id === "matching") &&
             (question.data.type === "aquarium" ||
-                question.data.type === "zoo" ||
-                question.data.type === "theme_park" ||
-                question.data.type === "peak" ||
                 question.data.type === "museum" ||
                 question.data.type === "hospital" ||
                 question.data.type === "cinema" ||
                 question.data.type === "library" ||
-                question.data.type === "golf_course" ||
                 question.data.type === "consulate" ||
                 question.data.type === "park")
         ) {
