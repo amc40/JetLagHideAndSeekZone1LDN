@@ -225,6 +225,16 @@ export const fetchCuratedConsulates = async () => {
     return data;
 };
 
+export const fetchCuratedAquariums = async () => {
+    const response = await cacheFetch(
+        import.meta.env.BASE_URL + "/curated-aquariums.geojson",
+        "Loading curated aquariums...",
+        CacheType.PERMANENT_CACHE,
+    );
+    const data = await response.json();
+    return data;
+};
+
 // Source: Greater London Authority "London Borough" boundary file
 // (statistical-gis-boundaries-london), via the London Datastore. Derived from
 // Ordnance Survey / ONS data and licensed under the Open Government Licence v3.

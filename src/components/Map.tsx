@@ -308,18 +308,6 @@ export const Map = ({ className }: { className?: string }) => {
                         },
                     },
                     {
-                        text: "Add Tentacles",
-                        callback: (e: any) => {
-                            addQuestion({
-                                id: "tentacles",
-                                data: {
-                                    lat: e.latlng.lat,
-                                    lng: e.latlng.lng,
-                                },
-                            });
-                        },
-                    },
-                    {
                         text: "Add Matching",
                         callback: (e: any) => {
                             addQuestion({
@@ -339,23 +327,6 @@ export const Map = ({ className }: { className?: string }) => {
                                 data: {
                                     lat: e.latlng.lat,
                                     lng: e.latlng.lng,
-                                },
-                            });
-                        },
-                    },
-                    {
-                        text: "Exclude Country",
-                        callback: (e: any) => {
-                            addQuestion({
-                                id: "matching",
-                                data: {
-                                    lat: e.latlng.lat,
-                                    lng: e.latlng.lng,
-                                    same: false,
-                                    cat: {
-                                        adminLevel: 2,
-                                    },
-                                    type: "zone",
                                 },
                             });
                         },

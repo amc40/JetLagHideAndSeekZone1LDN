@@ -1,5 +1,4 @@
 import * as turf from "@turf/turf";
-import type { Feature, MultiPolygon } from "geojson";
 import _ from "lodash";
 import { toast } from "react-toastify";
 
@@ -11,7 +10,7 @@ import {
     trainStations,
 } from "@/lib/context";
 import {
-    fetchCoastline,
+    fetchCuratedAquariums,
     fetchCuratedCinemas,
     fetchCuratedConsulates,
     fetchCuratedHighspeed,
@@ -32,32 +31,9 @@ import type {
     MeasuringQuestion,
 } from "@/maps/schema";
 
-const bboxExtension = (
-    bBox: [number, number, number, number],
-    distance: number,
-): [number, number, number, number] => {
-    const buffered = turf.bbox(
-        turf.buffer(turf.bboxPolygon(bBox), Math.abs(distance), {
-            units: "miles",
-        })!,
-    );
-
-    const originalDeltaLat = bBox[3] - bBox[1];
-    const originalDeltaLng = bBox[2] - bBox[0];
-
-    return [
-        buffered[0] - originalDeltaLng,
-        buffered[1] - originalDeltaLat,
-        buffered[2] + originalDeltaLng,
-        buffered[3] + originalDeltaLat,
-    ];
-};
-
 export const determineMeasuringBoundary = async (
     question: MeasuringQuestion,
 ) => {
-    const bBox = turf.bbox(mapGeoJSON.get()!);
-
     switch (question.type) {
         case "highspeed-measure-shinkansen": {
             const curated = await fetchCuratedHighspeed();
@@ -66,92 +42,11 @@ export const determineMeasuringBoundary = async (
                     .features[0],
             ];
         }
-        case "coastline": {
-            const coastline = turf.lineToPolygon(
-                await fetchCoastline(),
-            ) as Feature<MultiPolygon>;
-
-            const distanceToCoastline = turf.pointToPolygonDistance(
-                turf.point([question.lng, question.lat]),
-                coastline,
-                {
-                    units: "miles",
-                    method: "geodesic",
-                },
-            );
-
-            return [
-                turf.difference(
-                    turf.featureCollection([
-                        turf.bboxPolygon(bBox),
-                        turf.buffer(
-                            turf.bboxClip(
-                                coastline,
-                                bBox
-                                    ? bboxExtension(
-                                          bBox as any,
-                                          distanceToCoastline,
-                                      )
-                                    : [-180, -90, 180, 90],
-                            ),
-                            distanceToCoastline,
-                            {
-                                units: "miles",
-                                steps: 64,
-                            },
-                        )!,
-                    ]),
-                )!,
-            ];
-        }
-        case "airport":
-            return [
-                turf.combine(
-                    turf.featureCollection(
-                        _.uniqBy(
-                            (
-                                await findPlacesInZone(
-                                    '["aeroway"="aerodrome"]["iata"]', // Only commercial airports have IATA codes,
-                                    "Finding airports...",
-                                )
-                            ).elements,
-                            (feature: any) => feature.tags.iata,
-                        ).map((x: any) =>
-                            turf.point([
-                                x.center ? x.center.lon : x.lon,
-                                x.center ? x.center.lat : x.lat,
-                            ]),
-                        ),
-                    ),
-                ).features[0],
-            ];
-        case "city":
-            return [
-                turf.combine(
-                    turf.featureCollection(
-                        (
-                            await findPlacesInZone(
-                                '[place=city]["population"~"^[1-9]+[0-9]{6}$"]', // The regex is faster than (if:number(t["population"])>1000000)
-                                "Finding cities...",
-                            )
-                        ).elements.map((x: any) =>
-                            turf.point([
-                                x.center ? x.center.lon : x.lon,
-                                x.center ? x.center.lat : x.lat,
-                            ]),
-                        ),
-                    ),
-                ).features[0],
-            ];
         case "aquarium-full":
-        case "zoo-full":
-        case "theme_park-full":
-        case "peak-full":
         case "museum-full":
         case "hospital-full":
         case "cinema-full":
         case "library-full":
-        case "golf_course-full":
         case "consulate-full":
         case "park-full": {
             const location = question.type.split("-full")[0] as APILocations;
@@ -160,7 +55,8 @@ export const determineMeasuringBoundary = async (
                 location === "hospital" ||
                 location === "park" ||
                 location === "cinema" ||
-                location === "museum"
+                location === "museum" ||
+                location === "aquarium"
             ) {
                 const curated =
                     location === "hospital"
@@ -169,7 +65,9 @@ export const determineMeasuringBoundary = async (
                           ? await fetchCuratedParks()
                           : location === "cinema"
                             ? await fetchCuratedCinemas()
-                            : await fetchCuratedMuseums();
+                            : location === "aquarium"
+                              ? await fetchCuratedAquariums()
+                              : await fetchCuratedMuseums();
                 if (curated.features?.length > 0) {
                     return [
                         turf.combine(turf.featureCollection(curated.features))
@@ -231,14 +129,10 @@ export const determineMeasuringBoundary = async (
             ];
         }
         case "aquarium":
-        case "zoo":
-        case "theme_park":
-        case "peak":
         case "museum":
         case "hospital":
         case "cinema":
         case "library":
-        case "golf_course":
         case "consulate":
         case "park":
         case "mcdonalds":
@@ -293,14 +187,10 @@ export const hiderifyMeasuring = async (question: MeasuringQuestion) => {
     if (
         [
             "aquarium",
-            "zoo",
-            "theme_park",
-            "peak",
             "museum",
             "hospital",
             "cinema",
             "library",
-            "golf_course",
             "consulate",
             "park",
         ].includes(question.type)
