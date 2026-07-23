@@ -1,0 +1,16 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.1185929, 51.5028354]
+            },
+            "properties": {
+                "id": "node/266843474",
+                "name": "London Aquarium"
+            }
+        }
+    ]
+}

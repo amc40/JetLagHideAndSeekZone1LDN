@@ -10,6 +10,7 @@ import {
     trainStations,
 } from "@/lib/context";
 import {
+    fetchCuratedAquariums,
     fetchCuratedCinemas,
     fetchCuratedConsulates,
     fetchCuratedHighspeed,
@@ -54,7 +55,8 @@ export const determineMeasuringBoundary = async (
                 location === "hospital" ||
                 location === "park" ||
                 location === "cinema" ||
-                location === "museum"
+                location === "museum" ||
+                location === "aquarium"
             ) {
                 const curated =
                     location === "hospital"
@@ -63,7 +65,9 @@ export const determineMeasuringBoundary = async (
                           ? await fetchCuratedParks()
                           : location === "cinema"
                             ? await fetchCuratedCinemas()
-                            : await fetchCuratedMuseums();
+                            : location === "aquarium"
+                              ? await fetchCuratedAquariums()
+                              : await fetchCuratedMuseums();
                 if (curated.features?.length > 0) {
                     return [
                         turf.combine(turf.featureCollection(curated.features))
