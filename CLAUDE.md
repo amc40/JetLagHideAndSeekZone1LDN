@@ -26,7 +26,7 @@ Node.js <25 is required. Deploy is automated to GitHub Pages via GitHub Actions 
 All application state is managed via **nanostores**. Persistent atoms (using `@nanostores/persistent`) survive page reloads via `localStorage`. Key atoms:
 
 - `questions` — array of all added questions, persisted and decoded via Zod schema
-- `mapGeoLocation` — the selected OSM region (default: Japan)
+- `mapGeoLocation` — the selected OSM region (default: London)
 - `mapGeoJSON` — the current computed map boundary (polygon clipped by questions)
 - `polyGeoJSON` — optional custom drawn polygon overriding the OSM boundary
 - `hiderMode` — when set to a lat/lng, auto-computes question answers for that location
