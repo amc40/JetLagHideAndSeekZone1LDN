@@ -1,11 +1,5 @@
 import * as turf from "@turf/turf";
-import type {
-    Feature,
-    FeatureCollection,
-    MultiPolygon,
-    Point,
-    Polygon,
-} from "geojson";
+import type { FeatureCollection, MultiPolygon, Point, Polygon } from "geojson";
 import _ from "lodash";
 import osmtogeojson from "osmtogeojson";
 import { toast } from "react-toastify";
@@ -23,14 +17,13 @@ import {
     fetchCuratedMuseums,
     fetchCuratedParks,
     fetchLondonBoroughs,
-    findAdminBoundary,
     findPlacesInZone,
     LOCATION_FIRST_TAG,
     nearestToQuestion,
     prettifyLocation,
     trainLineNodeFinder,
 } from "@/maps/api";
-import { holedMask, modifyMapData, safeUnion } from "@/maps/geo-utils";
+import { holedMask, modifyMapData } from "@/maps/geo-utils";
 import { geoSpatialVoronoi } from "@/maps/geo-utils";
 import type {
     APILocations,
@@ -40,22 +33,6 @@ import type {
 
 export const findMatchingPlaces = async (question: MatchingQuestion) => {
     switch (question.type) {
-        case "airport": {
-            return _.uniqBy(
-                (
-                    await findPlacesInZone(
-                        '["aeroway"="aerodrome"]["iata"]', // Only commercial airports have IATA codes,
-                        "Finding airports...",
-                    )
-                ).elements,
-                (feature: any) => feature.tags.iata,
-            ).map((x) =>
-                turf.point([
-                    x.center ? x.center.lon : x.lon,
-                    x.center ? x.center.lat : x.lat,
-                ]),
-            );
-        }
         case "major-city": {
             return (
                 await findPlacesInZone(
@@ -69,15 +46,10 @@ export const findMatchingPlaces = async (question: MatchingQuestion) => {
                 ]),
             );
         }
-        case "aquarium-full":
-        case "zoo-full":
-        case "theme_park-full":
-        case "peak-full":
         case "museum-full":
         case "hospital-full":
         case "cinema-full":
         case "library-full":
-        case "golf_course-full":
         case "consulate-full":
         case "park-full": {
             const location = question.type.split("-full")[0] as APILocations;
@@ -156,15 +128,10 @@ export const determineMatchingBoundary = _.memoize(
         let boundary: any;
 
         switch (question.type) {
-            case "aquarium":
-            case "zoo":
-            case "theme_park":
-            case "peak":
             case "museum":
             case "hospital":
             case "cinema":
             case "library":
-            case "golf_course":
             case "consulate":
             case "park":
             case "same-first-letter-station":
@@ -191,87 +158,11 @@ export const determineMatchingBoundary = _.memoize(
 
                 break;
             }
-            case "zone": {
-                boundary = await findAdminBoundary(
-                    question.lat,
-                    question.lng,
-                    question.cat.adminLevel,
-                );
-
-                if (!boundary) {
-                    toast.error("No boundary found for this zone");
-                    throw new Error("No boundary found");
-                }
-                break;
-            }
-            case "letter-zone": {
-                const zone = await findAdminBoundary(
-                    question.lat,
-                    question.lng,
-                    question.cat.adminLevel,
-                );
-
-                if (!zone) {
-                    toast.error("No boundary found for this zone");
-                    throw new Error("No boundary found");
-                }
-
-                let englishName = zone.properties?.["name:en"];
-
-                if (!englishName) {
-                    const name = zone.properties?.name;
-
-                    if (/^[a-zA-Z]$/.test(name[0])) {
-                        englishName = name;
-                    } else {
-                        toast.error("No English name found for this zone");
-                        throw new Error("No English name");
-                    }
-                }
-
-                const letter = englishName[0].toUpperCase();
-
-                boundary = turf.featureCollection(
-                    osmtogeojson(
-                        await findPlacesInZone(
-                            `[admin_level=${question.cat.adminLevel}]["name:en"~"^${letter}.+"]`, // Regex is faster than filtering afterward
-                            `Finding zones that start with the same letter (${letter})...`,
-                            "relation",
-                            "geom",
-                            [
-                                `[admin_level=${question.cat.adminLevel}]["name"~"^${letter}.+"]`,
-                            ], // Regex is faster than filtering afterward
-                        ),
-                    ).features.filter(
-                        (x): x is Feature<Polygon | MultiPolygon> =>
-                            x.geometry &&
-                            (x.geometry.type === "Polygon" ||
-                                x.geometry.type === "MultiPolygon"),
-                    ),
-                );
-
-                // It's either simplify or crash. Technically this could be bad if someone's hiding zone was inside multiple zones, but that's unlikely.
-                boundary = safeUnion(
-                    turf.simplify(boundary, {
-                        tolerance: 0.001,
-                        highQuality: true,
-                        mutate: true,
-                    }),
-                );
-
-                break;
-            }
-            case "airport":
             case "major-city":
-            case "aquarium-full":
-            case "zoo-full":
-            case "theme_park-full":
-            case "peak-full":
             case "museum-full":
             case "hospital-full":
             case "cinema-full":
             case "library-full":
-            case "golf_course-full":
             case "consulate-full":
             case "park-full": {
                 const data = await findMatchingPlaces(question);
@@ -291,12 +182,11 @@ export const determineMatchingBoundary = _.memoize(
 
         return boundary;
     },
-    (question: MatchingQuestion & { cat?: unknown }) =>
+    (question: MatchingQuestion) =>
         JSON.stringify({
             type: question.type,
             lat: question.lat,
             lng: question.lng,
-            cat: question.cat,
             entirety: polyGeoJSON.get()
                 ? polyGeoJSON.get()
                 : mapGeoLocation.get(),
@@ -326,15 +216,10 @@ export const hiderifyMatching = async (question: MatchingQuestion) => {
 
     if (
         [
-            "aquarium",
-            "zoo",
-            "theme_park",
-            "peak",
             "museum",
             "hospital",
             "cinema",
             "library",
-            "golf_course",
             "consulate",
             "park",
         ].includes(question.type)
