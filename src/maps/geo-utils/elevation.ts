@@ -195,5 +195,39 @@ export const computeSeaLevelBand = async (
     return belowBand;
 };
 
+/** One WGS84 polygon per elevation band, for the map's elevation overlay
+ * layer. `breaks` must be strictly increasing and should bound the full
+ * min/max range of the bundled grid; each returned feature's
+ * `properties.elevation` is turf's `"low-high"` band label. */
+export const computeElevationBands = async (
+    breaks: number[],
+): Promise<Feature<Polygon | MultiPolygon>[]> => {
+    const pointGrid = await buildElevationPointGrid();
+    const bands = turf.isobands(pointGrid, breaks, { zProperty: "elevation" });
+
+    for (const band of bands.features) {
+        turf.coordEach(band, (coord) => {
+            const [lng, lat] = osgb36ToWgs84(coord[0], coord[1]);
+            coord[0] = lng;
+            coord[1] = lat;
+        });
+    }
+
+    return bands.features as Feature<Polygon | MultiPolygon>[];
+};
+
+// Breaks (metres above sea level) for the elevation overlay layer, and a
+// validated single-hue sequential ramp (light = low/near sea level, dark =
+// high) - see `node scripts/validate_palette.js` in the dataviz skill, run
+// with `--ordinal` against these 5 colours: all checks pass.
+export const ELEVATION_BAND_BREAKS = [-10, 20, 50, 90, 140, 200];
+export const ELEVATION_BAND_COLORS = [
+    "#86b6ef",
+    "#5598e7",
+    "#2a78d6",
+    "#1c5cab",
+    "#104281",
+];
+
 export const ELEVATION_DATA_ATTRIBUTION =
     "Contains OS data © Crown copyright and database right (OS Terrain 50, Open Government Licence v3.0)";

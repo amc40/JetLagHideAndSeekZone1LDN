@@ -7,6 +7,8 @@ import { expect, test } from "vitest";
 import {
     bilinearElevation,
     computeBelowElevationBand,
+    ELEVATION_BAND_BREAKS,
+    ELEVATION_BAND_COLORS,
     elevationGridMeta,
     osgb36ToWgs84,
     wgs84ToOSGB36,
@@ -132,4 +134,24 @@ test("computeBelowElevationBand returns false when nothing is below the referenc
 
     const band = computeBelowElevationBand(pointGrid, -10, 0, 100);
     expect(band).toBe(false);
+});
+
+test("elevation overlay bands and legend colours line up", () => {
+    // One colour per gap between consecutive breaks.
+    expect(ELEVATION_BAND_COLORS.length).toBe(ELEVATION_BAND_BREAKS.length - 1);
+
+    // Breaks must be strictly increasing for turf.isobands.
+    for (let i = 1; i < ELEVATION_BAND_BREAKS.length; i++) {
+        expect(ELEVATION_BAND_BREAKS[i]).toBeGreaterThan(
+            ELEVATION_BAND_BREAKS[i - 1],
+        );
+    }
+
+    // Breaks must cover the real bundled data range.
+    expect(ELEVATION_BAND_BREAKS[0]).toBeLessThanOrEqual(
+        elevationGridMeta.minElevationMetres,
+    );
+    expect(
+        ELEVATION_BAND_BREAKS[ELEVATION_BAND_BREAKS.length - 1],
+    ).toBeGreaterThanOrEqual(elevationGridMeta.maxElevationMetres);
 });

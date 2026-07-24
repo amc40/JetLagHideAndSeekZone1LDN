@@ -350,3 +350,12 @@ export const mapOverlays = persistentAtom<string[]>("mapOverlays", [], {
     encode: JSON.stringify,
     decode: JSON.parse,
 });
+
+export const showElevationOverlay = persistentAtom<boolean>(
+    "showElevationOverlay",
+    false,
+    {
+        encode: JSON.stringify,
+        decode: JSON.parse,
+    },
+);

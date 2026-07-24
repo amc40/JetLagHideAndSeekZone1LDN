@@ -35,6 +35,7 @@ import { hiderifyQuestion } from "@/maps";
 import { clearCache, determineMapBoundaries } from "@/maps/api";
 
 import { DraggableMarkers } from "./DraggableMarkers";
+import { ElevationOverlay } from "./ElevationOverlay";
 import { MapOverlayMarkers } from "./MapOverlayMarkers";
 import { TransitStopMarkers } from "./TransitStopMarkers";
 
@@ -362,6 +363,7 @@ export const Map = ({ className }: { className?: string }) => {
                 ]}
             >
                 {getTileLayer($baseTileLayer, $thunderforestApiKey)}
+                <ElevationOverlay />
                 <TransitStopMarkers />
                 <MapOverlayMarkers />
                 <DraggableMarkers />
