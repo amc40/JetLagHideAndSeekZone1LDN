@@ -46,7 +46,6 @@ import {
     polyGeoJSON,
     questions,
     save,
-    showHiderRadius,
     showTutorial,
     triggerLocalRefresh,
 } from "@/lib/context";
@@ -81,7 +80,6 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
     const $animateMapMovements = useStore(animateMapMovements);
     const $autoZoom = useStore(autoZoom);
     const $hiderMode = useStore(hiderMode);
-    const $showHiderRadius = useStore(showHiderRadius);
     const $autoSave = useStore(autoSave);
     const $hidingZone = useStore(hidingZone);
     const $planningMode = useStore(planningModeEnabled);
@@ -349,17 +347,6 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                         label="Hider Location"
                                         stationsOnly
                                     />
-                                    <SidebarMenuItem className="flex w-full min-h-11 flex-row items-center justify-between gap-2 cursor-pointer">
-                                        <span className="text-base font-medium">
-                                            Show hider radius?
-                                        </span>
-                                        <Checkbox
-                                            checked={$showHiderRadius}
-                                            onCheckedChange={(checked) =>
-                                                showHiderRadius.set(!!checked)
-                                            }
-                                        />
-                                    </SidebarMenuItem>
                                     {!autoSave && (
                                         <SidebarMenuItem>
                                             <SidebarMenuButton
