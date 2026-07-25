@@ -112,6 +112,25 @@ export const PasteQuestionButton = () => {
             return false;
         }
 
+        // Read the clipboard first, before any other `await` (e.g. fetching
+        // the hider's GPS location below). Safari - the engine behind every
+        // iOS browser - only allows navigator.clipboard.readText() within a
+        // brief "user activation" window tied directly to the click; once
+        // something else is awaited in between (like a real geolocation
+        // fetch), that window closes and the read is silently rejected with
+        // no permission prompt at all. Chrome/Android has no such window and
+        // remembers clipboard permission once granted, which is why the same
+        // paste can work there but not on iOS.
+        let text: string;
+        try {
+            text = await navigator.clipboard.readText();
+        } catch {
+            toast.error(
+                "Couldn't read the clipboard - try tapping the button again right after copying",
+            );
+            return false;
+        }
+
         const isHider = hiderMode.get() !== false;
         const answerLocation = isHider
             ? await getHiderAnswerLocation()
@@ -119,7 +138,7 @@ export const PasteQuestionButton = () => {
 
         try {
             await toast.promise(
-                navigator.clipboard.readText().then(async (text) => {
+                (async () => {
                     const parsed = parseJsonLenient(text);
 
                     // Preserve the pasted question's `key` (rather than
@@ -164,9 +183,9 @@ export const PasteQuestionButton = () => {
                     $questions[existingIndex] = validated;
                     questionModified(existingIndex);
                     return "updated" as const;
-                }),
+                })(),
                 {
-                    pending: "Reading from clipboard",
+                    pending: "Adding question from clipboard",
                     success: {
                         render: ({ data: outcome }) => {
                             switch (outcome) {

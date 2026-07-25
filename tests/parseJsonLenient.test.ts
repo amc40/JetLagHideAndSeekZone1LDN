@@ -45,6 +45,50 @@ test("recovers curly-quoted JSON with a trailing footer, as iOS Notes/Mail might
     expect(parseJsonLenient(data)).toEqual({ a: 1, b: "hello" });
 });
 
+test("recovers JSON with invisible zero-width/watermark characters injected between tokens, as some messaging apps do when text is copied", () => {
+    const data =
+        '{\u200B"a"\u200C:\u200D1,\uFEFF"b"\u2060:"hel\u200Blo"\u200E}\u200F';
+    expect(parseJsonLenient(data)).toEqual({ a: 1, b: "hello" });
+});
+
+test("recovers JSON where a negative number's hyphen-minus was swapped for a Unicode minus sign", () => {
+    const data = '{"lng":\u22120.126}';
+    expect(parseJsonLenient(data)).toEqual({ lng: -0.126 });
+});
+
+test("recovers JSON where a regular space was swapped for a non-breaking space", () => {
+    const data = '{\u00A0"a":\u00A01\u00A0}';
+    expect(parseJsonLenient(data)).toEqual({ a: 1 });
+});
+
+test("recovers a full question pasted from Messenger with an invisible watermark and Unicode minus sign in the coordinates", () => {
+    const data =
+        "> (Radius) Are you within 1 kilometer of me?\n\n" +
+        "{\n" +
+        '    "id": "radius",\n' +
+        '    "key": 0.519876936108416,\n' +
+        '    "data": {\n' +
+        `        "lat": 51.5051132262692,\n` +
+        `        "lng": \u22120.12634277343750003,\n` +
+        '        "drag": true,\n' +
+        '        "color": "red",\n' +
+        '        "collapsed": false,\n' +
+        '        "hidden": false,\n' +
+        '        "radius": 1,\n' +
+        '        "unit": "kilometers",\n' +
+        '        "within":\u200B true\n' +
+        "    }\n" +
+        "}";
+
+    const parsed = parseJsonLenient(data);
+    expect(() =>
+        questionSchema.parse({ ...(parsed as object), key: Math.random() }),
+    ).not.toThrow();
+    expect((parsed as { data: { lng: number } }).data.lng).toBeCloseTo(
+        -0.12634277343750003,
+    );
+});
+
 test("extractJsonObject returns input unchanged when no object is present", () => {
     expect(extractJsonObject("no braces here")).toBe("no braces here");
 });

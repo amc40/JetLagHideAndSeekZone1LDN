@@ -55,54 +55,55 @@ export function extractJsonObject(text: string): string {
 }
 
 /**
- * Un-does iOS "Smart Punctuation" (Notes, Mail, Messages, and some
- * keyboards silently swap straight quotes for curly ones as text passes
- * through them), which otherwise breaks JSON.parse on text that looks
- * identical to the user. Android has no equivalent behavior.
+ * Cleans up text mangling introduced by the apps a pasted question often
+ * passes through on mobile before it reaches this app - none of it is
+ * visible to the user, so a pasted question that "looks" valid can still
+ * fail JSON.parse:
+ *  - iOS "Smart Punctuation" (Notes, Mail, Messages, some keyboards) swaps
+ *    straight quotes for curly ones.
+ *  - Some keyboards/autocorrect swap a plain hyphen-minus for a Unicode
+ *    dash or minus sign, which corrupts negative coordinates.
+ *  - Messaging apps (e.g. Messenger) are known to inject invisible
+ *    zero-width/bidi-control characters into copied text (often used as a
+ *    steganographic watermark to trace leaks), which land silently between
+ *    JSON tokens and break parsing.
+ *  - A non-breaking space is sometimes substituted for a regular space,
+ *    which JSON does not accept as whitespace.
+ * Android has no equivalent of any of this.
  */
-function normalizeSmartQuotes(text: string): string {
-    return text.replace(/[‘’‚‛]/g, "'").replace(/[“”„‟]/g, '"');
+function sanitizeMobilePasteText(text: string): string {
+    return text
+        .replace(/[\u2018\u2019\u201A\u201B]/g, "'")
+        .replace(/[\u201C\u201D\u201E\u201F]/g, '"')
+        .replace(/[\u2010-\u2015\u2212]/g, "-")
+        .replace(/\u00A0/g, " ")
+        .replace(/[\u200B-\u200F\u202A-\u202E\u2060-\u2064\uFEFF\u00AD]/g, "");
 }
 
 /**
  * Parses JSON, tolerating leading/trailing text around the object (e.g. a
  * footer some apps append when sharing text) by retrying against the first
  * balanced `{...}` substring if the initial parse fails, and tolerating
- * curly quotes substituted in by iOS apps along the way.
+ * invisible/mangled characters introduced by mobile apps along the way.
  */
 export function parseJsonLenient(text: string): unknown {
-    try {
-        return JSON.parse(text);
-    } catch (e) {
-        const extracted = extractJsonObject(text);
-        if (extracted !== text) {
-            try {
-                return JSON.parse(extracted);
-            } catch {
-                // fall through to the smart-quote retry below
-            }
+    const attempts = [
+        text,
+        extractJsonObject(text),
+        sanitizeMobilePasteText(text),
+        sanitizeMobilePasteText(extractJsonObject(text)),
+    ];
+
+    let firstError: unknown;
+    for (const attempt of attempts) {
+        try {
+            return JSON.parse(attempt);
+        } catch (e) {
+            firstError ??= e;
         }
-
-        const normalized = normalizeSmartQuotes(text);
-        if (normalized !== text) {
-            try {
-                return JSON.parse(normalized);
-            } catch {
-                // fall through
-            }
-
-            const normalizedExtracted = extractJsonObject(normalized);
-            if (normalizedExtracted !== normalized) {
-                try {
-                    return JSON.parse(normalizedExtracted);
-                } catch {
-                    // fall through to throw the original error below
-                }
-            }
-        }
-
-        throw e;
     }
+
+    throw firstError;
 }
 
 export const mapToObj = <T, K extends string, V>(
