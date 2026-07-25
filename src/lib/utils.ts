@@ -170,11 +170,14 @@ export async function fetchFromPastebin(pasteId: string): Promise<string> {
 /**
  * Open native share sheet or fallback to sending to clipboard
  * @param url URL to share
+ * @param text Optional human-readable text to share alongside the URL (e.g.
+ * a summary of the questions in the shared hiding zone)
  * @param forceClipboard Whether to force usage of the clipboard (instead of share sheet)
  * @returns `true` for native success, `false` for both native and fallback failure and `"clipboard"` for clipboard success
  */
 export async function shareOrFallback(
     url: string,
+    text = "",
     forceClipboard = false,
 ): Promise<boolean | "clipboard"> {
     if (forceClipboard) {
@@ -183,17 +186,17 @@ export async function shareOrFallback(
             return false;
         }
 
-        navigator.clipboard.writeText(url);
+        navigator.clipboard.writeText(text + url);
         return "clipboard";
     }
 
-    if (!navigator.share) return shareOrFallback(url, true); // Fallback to clipboard
+    if (!navigator.share) return shareOrFallback(url, text, true); // Fallback to clipboard
 
     return await navigator
-        .share({ url })
+        .share({ url, text: text || undefined })
         .then(() => true)
         .catch(() => {
             // Try again with clipboard
-            return shareOrFallback(url, true);
+            return shareOrFallback(url, text, true);
         });
 }
