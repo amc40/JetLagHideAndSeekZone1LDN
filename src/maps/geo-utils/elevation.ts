@@ -57,7 +57,10 @@ export const worldToGridCoords = (easting: number, northing: number) => {
 
 let gridPromise: Promise<Int16Array> | null = null;
 
-const loadGrid = (): Promise<Int16Array> => {
+// Exported (only) so the app can warm the permanent cache for this file on
+// load, alongside the curated geojson datasets - see Map.tsx. Otherwise it's
+// fetched lazily the first time a Sea Level Measuring question is added.
+export const loadGrid = (): Promise<Int16Array> => {
     if (!gridPromise) {
         gridPromise = (async () => {
             const response = await cacheFetch(
