@@ -8,7 +8,7 @@ import type {
 } from "geojson";
 import proj4 from "proj4";
 
-import { cacheFetch, CacheType } from "@/maps/api";
+import { cacheFetch, CacheType, versionedPublicUrl } from "@/maps/api";
 
 import elevationGridMetaJson from "./elevation-grid.json";
 
@@ -61,7 +61,7 @@ const loadGrid = (): Promise<Int16Array> => {
     if (!gridPromise) {
         gridPromise = (async () => {
             const response = await cacheFetch(
-                import.meta.env.BASE_URL + "/elevation-london.bin",
+                versionedPublicUrl("elevation-london.bin"),
                 "Loading elevation data...",
                 CacheType.PERMANENT_CACHE,
             );

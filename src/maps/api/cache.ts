@@ -11,6 +11,21 @@ const determinePermanentCache = _.memoize(() =>
 
 const inFlightFetches = new Map<string, Promise<Response>>();
 
+// `cacheFetch` below caches responses keyed only by URL, with no expiry -
+// fine for one-off Overpass query results, but for bundled public/ data
+// files (curated stations, coastline, elevation grid, ...) it means a
+// browser that cached one before a content update keeps serving the stale
+// copy forever. Appending the file's build-time content hash as a query
+// param makes an updated file a new cache key, so it's fetched fresh
+// automatically on the next deploy - without ever touching
+// localStorage-backed game state, which the Cache API never sees.
+export const versionedPublicUrl = (filename: string) => {
+    const version = import.meta.env.DATA_FILE_VERSIONS?.[filename];
+    return `${import.meta.env.BASE_URL}/${filename}${
+        version ? `?v=${version}` : ""
+    }`;
+};
+
 export const determineCache = async (cacheType: CacheType) => {
     switch (cacheType) {
         case CacheType.CACHE:
