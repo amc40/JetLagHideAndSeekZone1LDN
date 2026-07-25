@@ -306,7 +306,7 @@ export const QuestionCard = ({
                                         <Button
                                             variant="ghost"
                                             disabled={$isLoading}
-                                            className="w-full justify-start gap-2 px-2 text-destructive hover:text-destructive hover:bg-destructive/10"
+                                            className="w-full justify-start gap-2 px-2 text-red-600 hover:text-red-600 hover:bg-destructive/10 dark:text-red-400 dark:hover:text-red-400"
                                         >
                                             <VscTrash className="size-4" />
                                             Delete question
