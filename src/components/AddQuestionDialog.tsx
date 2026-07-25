@@ -42,7 +42,7 @@ export const AddQuestionDialog = ({
         const map = leafletMapContext.get();
         if (!map) return false;
         const center = map.getCenter();
-        const destination = turf.destination([center.lng, center.lat], 2, 90, {
+        const destination = turf.destination([center.lng, center.lat], 1, 90, {
             units: "kilometers",
         });
 
