@@ -6,6 +6,8 @@ import { SidebarMenuButton } from "@/components/ui/sidebar-l";
 import {
     followMeLocation,
     hiderMode,
+    hidingRadius,
+    hidingRadiusUnits,
     isLoading,
     mapGeoJSON,
     polyGeoJSON,
@@ -22,6 +24,25 @@ import { questionSchema } from "@/maps/schema";
 type Location = { latitude: number; longitude: number };
 
 const warnIfOutsideSelectedZone = (location: Location) => {
+    const $hiderMode = hiderMode.get();
+
+    // Outside the hider's declared hiding radius around their station,
+    // even if still within the wider play area.
+    if ($hiderMode !== false) {
+        const distance = turf.distance(
+            turf.point([location.longitude, location.latitude]),
+            turf.point([$hiderMode.longitude, $hiderMode.latitude]),
+            { units: hidingRadiusUnits.get() },
+        );
+        if (distance > hidingRadius.get()) {
+            toast.warning(
+                "Your location is outside your hiding radius from your station",
+            );
+            return;
+        }
+    }
+
+    // Outside the wider selected play area entirely.
     const zone = mapGeoJSON.get() ?? polyGeoJSON.get() ?? TFL_ZONE_1_POLYGON;
 
     try {
