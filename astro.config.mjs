@@ -104,6 +104,7 @@ export default defineConfig({
             },
         }),
         AstroPWA({
+            registerType: "autoUpdate",
             manifest: {
                 name: "Jet Lag Hide and Seek Map Generator",
                 short_name: "Map Generator",
