@@ -1,5 +1,6 @@
 import * as turf from "@turf/turf";
 import fs from "fs";
+import type { Feature, Point } from "geojson";
 import path from "path";
 import { describe, expect, test } from "vitest";
 
@@ -23,11 +24,11 @@ describe("curated POIs are within TFL_ZONE_1_POLYGON", () => {
         );
 
         const outside = fc.features.filter(
-            (f: turf.Feature) => !turf.booleanPointInPolygon(f, zonePolygon),
+            (f: Feature<Point>) => !turf.booleanPointInPolygon(f, zonePolygon),
         );
 
         const names = outside.map(
-            (f: turf.Feature) => f.properties?.name ?? f.properties?.id,
+            (f: Feature<Point>) => f.properties?.name ?? f.properties?.id,
         );
         expect(names).toEqual([]);
     });
