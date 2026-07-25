@@ -71,14 +71,13 @@ export const PasteQuestionButton = () => {
             await toast.promise(
                 navigator.clipboard.readText().then(async (text) => {
                     const parsed = parseJsonLenient(text);
-                    const question =
-                        parsed &&
-                        typeof parsed === "object" &&
-                        !Array.isArray(parsed)
-                            ? { ...parsed, key: Math.random() }
-                            : parsed;
 
-                    const validated = questionSchema.parse(question);
+                    // Preserve the pasted question's `key` (rather than
+                    // minting a new one) so it can be matched against a
+                    // question we already have below - the schema only
+                    // generates a fresh key when the pasted JSON doesn't
+                    // include one at all.
+                    const validated = questionSchema.parse(parsed);
 
                     // If hider mode is on, answer the pasted question
                     // immediately and lock it so it doesn't get
@@ -103,10 +102,7 @@ export const PasteQuestionButton = () => {
                         return false;
                     }
 
-                    $questions[existingIndex] = {
-                        ...validated,
-                        key: $questions[existingIndex].key,
-                    };
+                    $questions[existingIndex] = validated;
                     questionModified(existingIndex);
                     return true;
                 }),

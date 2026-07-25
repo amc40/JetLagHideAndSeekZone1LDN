@@ -7,8 +7,8 @@ import {
 import type { Question } from "@/maps/schema";
 
 const radiusQuestion = (
+    key: number,
     overrides: Partial<Extract<Question, { id: "radius" }>["data"]> = {},
-    key = Math.random(),
 ): Question => ({
     id: "radius",
     key,
@@ -26,30 +26,28 @@ const radiusQuestion = (
     },
 });
 
-test("matches the same question before and after it's been answered", () => {
-    const unanswered = radiusQuestion();
-    const answered = radiusQuestion(
-        { drag: false, within: false },
-        unanswered.key + 1,
-    );
+test("matches the same question (by key) before and after it's been answered", () => {
+    const unanswered = radiusQuestion(0.8844037764051809);
+    const answered = radiusQuestion(0.8844037764051809, {
+        drag: false,
+        within: false,
+    });
 
     expect(questionsMatch(unanswered, answered)).toBe(true);
 });
 
-test("does not match questions with different locations or parameters", () => {
-    const a = radiusQuestion();
-    const differentLocation = radiusQuestion({ lat: 51.5 });
-    const differentRadius = radiusQuestion({ radius: 3 });
+test("does not match a different question that happens to share the same data", () => {
+    const a = radiusQuestion(0.1);
+    const b = radiusQuestion(0.2);
 
-    expect(questionsMatch(a, differentLocation)).toBe(false);
-    expect(questionsMatch(a, differentRadius)).toBe(false);
+    expect(questionsMatch(a, b)).toBe(false);
 });
 
-test("does not match questions of a different type", () => {
-    const radius = radiusQuestion();
+test("does not match the same key across different question types", () => {
+    const radius = radiusQuestion(0.5);
     const thermometer: Question = {
         id: "thermometer",
-        key: Math.random(),
+        key: 0.5,
         data: {
             latA: 51.5,
             lngA: -0.1,
@@ -68,14 +66,14 @@ test("does not match questions of a different type", () => {
 });
 
 test("findMatchingQuestionIndex locates the re-shared copy in a list", () => {
-    const existing = radiusQuestion();
-    const rePasted = radiusQuestion(
-        { drag: false, within: false },
-        existing.key + 1,
-    );
+    const existing = radiusQuestion(0.8844037764051809);
+    const rePasted = radiusQuestion(0.8844037764051809, {
+        drag: false,
+        within: false,
+    });
 
     expect(findMatchingQuestionIndex([existing], rePasted)).toBe(0);
-    expect(
-        findMatchingQuestionIndex([existing], radiusQuestion({ lat: 0 })),
-    ).toBe(-1);
+    expect(findMatchingQuestionIndex([existing], radiusQuestion(0.999))).toBe(
+        -1,
+    );
 });
