@@ -1,14 +1,12 @@
 import { toast } from "react-toastify";
 
-import { describeQuestionsSummary } from "@/lib/describeQuestion";
 import { compress, shareOrFallback, uploadToPastebin } from "@/lib/utils";
-import type { Questions } from "@/maps/schema";
 
 export const HIDING_ZONE_COMPRESSED_URL_PARAM = "hzc";
 export const PASTEBIN_URL_PARAM = "pb";
 
 export const shareHidingZone = async (
-    hidingZone: { questions: Questions } & Record<string, unknown>,
+    hidingZone: unknown,
     alwaysUsePastebin: boolean,
     pastebinApiKey: string,
 ) => {
@@ -54,10 +52,8 @@ export const shareHidingZone = async (
         }
     }
 
-    const summary = describeQuestionsSummary(hidingZone.questions);
-
     // Show platform native share sheet if possible
-    await shareOrFallback(shareUrl, summary).then((result) => {
+    await shareOrFallback(shareUrl).then((result) => {
         if (result === false) {
             return toast.error(
                 `Clipboard not supported. Try manually copying/pasting: ${shareUrl}`,

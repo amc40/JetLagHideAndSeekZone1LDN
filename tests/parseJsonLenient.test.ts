@@ -64,7 +64,7 @@ Sent from Firefox 🦊 https://mzl.la/43doGMX`;
     ).not.toThrow();
 });
 
-test("recovers the hiding zone JSON from behind the human-readable header produced by Copy Hiding Zone, even with a share footer appended", () => {
+test("recovers a single question's JSON from behind the human-readable header produced when sharing/copying it individually, even with a share footer appended", () => {
     const radiusQuestion: Question = {
         id: "radius",
         key: 1,
@@ -81,21 +81,17 @@ test("recovers the hiding zone JSON from behind the human-readable header produc
         },
     };
 
-    const hidingZone = {
-        type: "Feature",
-        properties: {},
-        geometry: { type: "Polygon", coordinates: [] },
-        questions: [radiusQuestion],
-    };
-
-    // What the "Copy Hiding Zone" button actually puts on the clipboard:
-    // the human-readable header, then the raw JSON, then (if the user
-    // shares it through an app that appends one) a footer.
+    // What the per-question "Copy to Clipboard"/"Share question" actions in
+    // cards/base.tsx put on the clipboard: the human-readable header (which
+    // can only be built unambiguously for a single question), then the raw
+    // JSON, then (if the user shares it through an app that appends one) a
+    // footer. Whole hiding zones (multiple questions) don't get this header
+    // - see shareHidingZone/OptionDrawers' "Copy Hiding Zone".
     const clipboardText =
         describeQuestionsSummary([radiusQuestion]) +
-        JSON.stringify(hidingZone) +
+        JSON.stringify(radiusQuestion) +
         "\n\nSent from Firefox 🦊 https://mzl.la/43doGMX";
 
     expect(clipboardText.startsWith("> (Radius)")).toBe(true);
-    expect(parseJsonLenient(clipboardText)).toEqual(hidingZone);
+    expect(parseJsonLenient(clipboardText)).toEqual(radiusQuestion);
 });
