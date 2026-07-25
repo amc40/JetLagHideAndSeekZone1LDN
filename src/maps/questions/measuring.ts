@@ -185,8 +185,11 @@ export const adjustPerMeasuring = async (
     return modifyMapData(mapData, buffer, question.hiderCloser);
 };
 
-export const hiderifyMeasuring = async (question: MeasuringQuestion) => {
-    const $hiderMode = hiderMode.get();
+export const hiderifyMeasuring = async (
+    question: MeasuringQuestion,
+    location?: { latitude: number; longitude: number },
+) => {
+    const $hiderMode = location ?? hiderMode.get();
     if ($hiderMode === false) {
         return question;
     }

@@ -24,20 +24,29 @@ import type { Question, Questions } from "./schema";
 
 export * from "./geo-utils";
 
-export const hiderifyQuestion = async (question: Question) => {
+export const hiderifyQuestion = async (
+    question: Question,
+    location?: { latitude: number; longitude: number },
+) => {
     if (question.data.drag) {
         switch (question.id) {
             case "radius":
-                question.data = hiderifyRadius(question.data);
+                question.data = hiderifyRadius(question.data, location);
                 break;
             case "thermometer":
-                question.data = await hiderifyThermometer(question.data);
+                question.data = await hiderifyThermometer(
+                    question.data,
+                    location,
+                );
                 break;
             case "matching":
-                question.data = await hiderifyMatching(question.data);
+                question.data = await hiderifyMatching(question.data, location);
                 break;
             case "measuring":
-                question.data = await hiderifyMeasuring(question.data);
+                question.data = await hiderifyMeasuring(
+                    question.data,
+                    location,
+                );
                 break;
         }
     }

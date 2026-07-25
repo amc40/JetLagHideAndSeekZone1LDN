@@ -213,8 +213,11 @@ export const adjustPerMatching = async (
     return modifyMapData(mapData, boundary, question.same);
 };
 
-export const hiderifyMatching = async (question: MatchingQuestion) => {
-    const $hiderMode = hiderMode.get();
+export const hiderifyMatching = async (
+    question: MatchingQuestion,
+    location?: { latitude: number; longitude: number },
+) => {
+    const $hiderMode = location ?? hiderMode.get();
     if ($hiderMode === false) {
         return question;
     }

@@ -27,8 +27,11 @@ export const adjustPerThermometer = (
     }
 };
 
-export const hiderifyThermometer = (question: ThermometerQuestion) => {
-    const $hiderMode = hiderMode.get();
+export const hiderifyThermometer = (
+    question: ThermometerQuestion,
+    location?: { latitude: number; longitude: number },
+) => {
+    const $hiderMode = location ?? hiderMode.get();
     if ($hiderMode === false) {
         return question;
     }

@@ -231,6 +231,13 @@ export const followMe = persistentAtom<boolean>("followMe", false, {
     encode: JSON.stringify,
     decode: JSON.parse,
 });
+// The live position Follow Me is currently tracking, kept separate from
+// hiderMode so a hider's fixed station pin never moves just because their
+// device's GPS is being watched.
+export const followMeLocation = atom<{
+    latitude: number;
+    longitude: number;
+} | null>(null);
 
 export const pastebinApiKey = persistentAtom<string>("pastebinApiKey", "");
 export const alwaysUsePastebin = persistentAtom<boolean>(
