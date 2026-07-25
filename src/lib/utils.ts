@@ -55,9 +55,20 @@ export function extractJsonObject(text: string): string {
 }
 
 /**
+ * Un-does iOS "Smart Punctuation" (Notes, Mail, Messages, and some
+ * keyboards silently swap straight quotes for curly ones as text passes
+ * through them), which otherwise breaks JSON.parse on text that looks
+ * identical to the user. Android has no equivalent behavior.
+ */
+function normalizeSmartQuotes(text: string): string {
+    return text.replace(/[‘’‚‛]/g, "'").replace(/[“”„‟]/g, '"');
+}
+
+/**
  * Parses JSON, tolerating leading/trailing text around the object (e.g. a
  * footer some apps append when sharing text) by retrying against the first
- * balanced `{...}` substring if the initial parse fails.
+ * balanced `{...}` substring if the initial parse fails, and tolerating
+ * curly quotes substituted in by iOS apps along the way.
  */
 export function parseJsonLenient(text: string): unknown {
     try {
@@ -68,9 +79,28 @@ export function parseJsonLenient(text: string): unknown {
             try {
                 return JSON.parse(extracted);
             } catch {
-                // fall through to throw the original error below
+                // fall through to the smart-quote retry below
             }
         }
+
+        const normalized = normalizeSmartQuotes(text);
+        if (normalized !== text) {
+            try {
+                return JSON.parse(normalized);
+            } catch {
+                // fall through
+            }
+
+            const normalizedExtracted = extractJsonObject(normalized);
+            if (normalizedExtracted !== normalized) {
+                try {
+                    return JSON.parse(normalizedExtracted);
+                } catch {
+                    // fall through to throw the original error below
+                }
+            }
+        }
+
         throw e;
     }
 }

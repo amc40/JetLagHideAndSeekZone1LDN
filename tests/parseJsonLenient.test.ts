@@ -35,6 +35,16 @@ test("throws the original error when no valid JSON can be found", () => {
     expect(() => parseJsonLenient("not json at all")).toThrow();
 });
 
+test("recovers JSON mangled by iOS Smart Punctuation swapping straight quotes for curly ones", () => {
+    const data = "{“a”:1,“b”:“hello”}";
+    expect(parseJsonLenient(data)).toEqual({ a: 1, b: "hello" });
+});
+
+test("recovers curly-quoted JSON with a trailing footer, as iOS Notes/Mail might produce", () => {
+    const data = "{“a”:1,“b”:“hello”}\n\nSent from my iPhone";
+    expect(parseJsonLenient(data)).toEqual({ a: 1, b: "hello" });
+});
+
 test("extractJsonObject returns input unchanged when no object is present", () => {
     expect(extractJsonObject("no braces here")).toBe("no braces here");
 });
