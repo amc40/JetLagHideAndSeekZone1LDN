@@ -1,5 +1,6 @@
 import { useStore } from "@nanostores/react";
 import { SidebarCloseIcon, Trash2Icon } from "lucide-react";
+import { VscShare } from "react-icons/vsc";
 
 import {
     AlertDialog,
@@ -24,12 +25,16 @@ import {
     SidebarMenuItem,
 } from "@/components/ui/sidebar-l";
 import {
+    alwaysUsePastebin,
     autoSave,
+    hidingZone,
     isLoading,
+    pastebinApiKey,
     questions,
     save,
     triggerLocalRefresh,
 } from "@/lib/context";
+import { shareHidingZone } from "@/lib/shareHidingZone";
 
 import { AddQuestionDialog } from "./AddQuestionDialog";
 import {
@@ -44,6 +49,9 @@ export const QuestionSidebar = () => {
     const $questions = useStore(questions);
     const $autoSave = useStore(autoSave);
     const $isLoading = useStore(isLoading);
+    const $hidingZone = useStore(hidingZone);
+    const $alwaysUsePastebin = useStore(alwaysUsePastebin);
+    const $pastebinApiKey = useStore(pastebinApiKey);
 
     return (
         <Sidebar
@@ -53,6 +61,23 @@ export const QuestionSidebar = () => {
             <div className="flex items-center justify-between">
                 <h2 className="ml-4 mt-4 font-poppins text-2xl">Questions</h2>
                 <div className="flex items-center gap-1 mr-1">
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        className="md:hidden"
+                        disabled={$isLoading}
+                        title="Share hiding zone"
+                        aria-label="Share hiding zone"
+                        onClick={() =>
+                            shareHidingZone(
+                                $hidingZone,
+                                $alwaysUsePastebin,
+                                $pastebinApiKey,
+                            )
+                        }
+                    >
+                        <VscShare />
+                    </Button>
                     {$questions.length > 0 && (
                         <AlertDialog>
                             <AlertDialogTrigger asChild>
