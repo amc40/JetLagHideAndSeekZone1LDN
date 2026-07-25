@@ -66,19 +66,24 @@ export const MeasuringQuestionComponent = ({
             break;
         case "aquarium":
         case "hospital":
-        case "peak":
         case "museum":
-        case "theme_park":
-        case "zoo":
         case "cinema":
         case "library":
-        case "golf_course":
         case "consulate":
         case "park":
             questionSpecific = (
                 <span className="px-2 text-center text-orange-500">
                     This question will only influence the map when you click on
                     a hiding zone in the hiding zone sidebar.
+                </span>
+            );
+            break;
+        case "sea-level":
+            questionSpecific = (
+                <span className="px-2 text-center text-orange-500">
+                    Elevation data only covers Greater London (OS Terrain 50,
+                    100m resolution). This question has no effect outside that
+                    area.
                 </span>
             );
             break;

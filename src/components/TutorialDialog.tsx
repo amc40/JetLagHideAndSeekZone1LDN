@@ -18,7 +18,6 @@ import {
     MatchingQuestionComponent,
     MeasuringQuestionComponent,
     RadiusQuestionComponent,
-    TentacleQuestionComponent,
     ThermometerQuestionComponent,
 } from "./QuestionCards";
 
@@ -77,9 +76,8 @@ const tutorialSteps: TutorialStep[] = [
                 to adding questions.
                 <br />
                 <br />
-                <strong>1. Question Creation:</strong> Add and configure the 5
-                question types (Radius, Thermometer, Tentacles, Matching,
-                Measuring)
+                <strong>1. Question Creation:</strong> Add and configure the 4
+                question types (Radius, Thermometer, Matching, Measuring)
                 <br />
                 <br />
                 <strong>2. Sharing:</strong> Share the questions and game
@@ -153,15 +151,11 @@ const tutorialSteps: TutorialStep[] = [
                 point A or point B?&rdquo;
                 <br />
                 <br />
-                <strong>3. TENTACLES:</strong> &ldquo;What specific location
-                within X distance of the seekers is the hider closest to?&rdquo;
-                <br />
-                <br />
-                <strong>4. MATCHING:</strong> &ldquo;Does the hider share the
+                <strong>3. MATCHING:</strong> &ldquo;Does the hider share the
                 same property as this reference point?&rdquo;
                 <br />
                 <br />
-                <strong>5. MEASURING:</strong> &ldquo;Is the hider
+                <strong>4. MEASURING:</strong> &ldquo;Is the hider
                 closer/farther than the seeker to this feature?&rdquo;
                 <br />
                 <br />
@@ -195,8 +189,8 @@ const tutorialSteps: TutorialStep[] = [
                                 drag: true,
                                 lat: 35.6762,
                                 lng: 139.6503,
-                                radius: 10,
-                                unit: "miles",
+                                radius: 2,
+                                unit: "kilometers",
                                 color: "blue",
                                 within: false,
                                 hidden: false,
@@ -209,7 +203,7 @@ const tutorialSteps: TutorialStep[] = [
                 decimals)
                 <br />
                 <br />
-                <strong>Units:</strong> Miles, kilometers, or meters
+                <strong>Units:</strong> Kilometers, meters, or miles
                 <br />
                 <br />
                 <strong>Position:</strong> Drag the marker on the map or input
@@ -278,51 +272,6 @@ const tutorialSteps: TutorialStep[] = [
         position: "center",
     },
     {
-        title: "Tentacles Questions: Location Discovery",
-        content: (
-            <>
-                Tentacles questions identify specific locations within a radius,
-                perfect for narrowing down exact hiding spots:
-                <br />
-                <br />
-                <SidebarGroup className="text-foreground">
-                    <SidebarMenu>
-                        <TentacleQuestionComponent
-                            questionKey={Math.random()}
-                            data={{
-                                collapsed: false,
-                                drag: true,
-                                lat: 35.6762,
-                                lng: 139.6503,
-                                radius: 15,
-                                unit: "miles",
-                                color: "red",
-                                locationType: "theme_park",
-                                location: false,
-                                hidden: false,
-                            }}
-                        />
-                    </SidebarMenu>
-                </SidebarGroup>
-                <br />
-                <strong>Location Types:</strong>
-                <br />• <strong>15-Mile Radius:</strong> Theme Parks, Zoos,
-                Aquariums
-                <br />• <strong>1-Mile Radius:</strong> Museums, Hospitals,
-                Cinemas, Libraries
-                <br />
-                <br />
-                <strong>Radius Control:</strong> Adjusts the search area for
-                finding locations
-                <br />
-                <br />
-                <strong>Smart Detection:</strong> Automatically finds all
-                qualifying locations within the radius using OpenStreetMap data
-            </>
-        ),
-        position: "center",
-    },
-    {
         title: "Matching Questions: Property Comparison (Part 1)",
         content: (
             <>
@@ -342,32 +291,16 @@ const tutorialSteps: TutorialStep[] = [
                                 lng: 139.6503,
                                 color: "blue",
                                 same: true,
-                                type: "airport",
+                                type: "london-borough",
                                 hidden: false,
                             }}
                         />
                     </SidebarMenu>
                 </SidebarGroup>
                 <br />
-                <strong>Zone-Based Matching:</strong>
-                <br />• <strong>Same Zone:</strong> Administrative regions
-                (prefectures, states, etc.)
-                <br />• <strong>Same First Letter of Zone:</strong> Zones
-                starting with the same letter
-                <br />• <strong>Zone Levels:</strong> OSM administrative levels
-                3-10 for different granularities
-                <br />
-                <br />
-                <strong>Airport Matching:</strong>
-                <br />• Compares nearest commercial airports (those with IATA
-                codes)
-                <br />• Uses Voronoi diagrams to determine airport catchment
-                areas
-                <br />
-                <br />
-                <strong>City Matching:</strong>
-                <br />• Compares nearest major cities (1,000,000+ population)
-                <br />• Useful for large-scale geographic questions
+                <strong>London Borough Matching:</strong>
+                <br />• <strong>Same Borough:</strong> Whether the hider is in
+                the same London borough as the reference point
             </>
         ),
         position: "center",
@@ -381,9 +314,8 @@ const tutorialSteps: TutorialStep[] = [
                 These require the game area to be relatively small (alternatives
                 also exist that function with Hiding Zone Mode for larger
                 games):
-                <br />• Aquariums, Zoos, Theme Parks
-                <br />• Mountains, Museums, Hospitals, Cinemas
-                <br />• Libraries, Golf Courses, Foreign Consulates, Parks
+                <br />• Museums, Hospitals, Cinemas
+                <br />• Libraries, Foreign Consulates, Parks
                 <br />
                 <br />
                 <strong>Hiding Zone Mode Variations:</strong>
@@ -418,7 +350,7 @@ const tutorialSteps: TutorialStep[] = [
                                 lng: 139.6503,
                                 color: "green",
                                 hiderCloser: true,
-                                type: "coastline",
+                                type: "highspeed-measure-shinkansen",
                                 hidden: false,
                             }}
                         />
@@ -426,23 +358,21 @@ const tutorialSteps: TutorialStep[] = [
                 </SidebarGroup>
                 <br />
                 <strong>Geographic Features:</strong>
-                <br />• <strong>Coastline:</strong> Distance to nearest coast
-                using detailed coastline data
-                <br />• <strong>Commercial Airports:</strong> Distance to
-                nearest airport with IATA code
-                <br />• <strong>Major Cities:</strong> Distance to cities with
-                1M+ population
                 <br />• <strong>High-Speed Rail:</strong> Distance to St Pancras
                 (HS1&apos;s only Zone 1 station)
+                <br />• <strong>Sea Level:</strong> Whether the hider is at a
+                higher or lower elevation above sea level than where the
+                question was asked. Uses an offline Ordnance Survey elevation
+                model (OS Terrain 50, 100m resolution) and only has an effect
+                within Greater London.
                 <br />
                 <br />
                 <strong>Full Game Variations:</strong>
                 <br />
                 Same location types as Matching questions but focused on
                 distance rather than categorization:
-                <br />• Aquariums, Zoos, Theme Parks, Mountains,
-                <br />• Museums, Hospitals, Cinemas, Libraries
-                <br />• Golf Courses, Foreign Consulates, Parks
+                <br />• Aquariums, Museums, Hospitals, Cinemas
+                <br />• Libraries, Foreign Consulates, Parks
                 <br />
                 <br />
                 <strong>Closer/Farther Logic:</strong> Toggle whether the hider
@@ -556,8 +486,8 @@ const tutorialSteps: TutorialStep[] = [
                 <br />
                 <br />
                 <strong>Unit Preferences:</strong>
-                <br />• <strong>Default Unit:</strong> Miles, kilometers, or
-                meters for new questions. This becomes the default for all new
+                <br />• <strong>Default Unit:</strong> Kilometers, meters, or
+                miles for new questions. This becomes the default for all new
                 questions. Choose based on your region&apos;s conventions.
                 <br />• Affects all distance-based questions and measurements
                 throughout the entire game
@@ -647,6 +577,10 @@ const tutorialSteps: TutorialStep[] = [
                 <br />• Accounts for Earth&apos;s curvature and ellipsoid shape
                 <br />• Typical accuracy within 1-2 meters for positioning
                 <br />• Coastline data accuracy approximately ±100 meters
+                <br />• Sea Level elevation data (Greater London only) is
+                accurate to approximately ±100 meters horizontally; contains OS
+                data &copy; Crown copyright and database right, under the Open
+                Government Licence v3.0
                 <br />• Administrative boundary simplification may affect
                 precision
                 <br />
@@ -683,8 +617,6 @@ const tutorialSteps: TutorialStep[] = [
                 (inside/outside)
                 <br />• <strong>Thermometer:</strong> Relative distance
                 comparison (warmer/colder)
-                <br />• <strong>Tentacles:</strong> Specific location
-                identification by category
                 <br />• <strong>Matching:</strong> Property comparison (same
                 zone, nearest airport, etc...)
                 <br />• <strong>Measuring:</strong> Distance comparison relative

@@ -15,9 +15,9 @@ export const UnitSelect = ({
         <Select
             trigger="Unit"
             options={{
-                miles: "Miles",
                 kilometers: "Kilometers",
                 meters: "Meters",
+                miles: "Miles",
             }}
             disabled={disabled}
             value={unit}

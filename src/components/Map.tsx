@@ -35,6 +35,7 @@ import { hiderifyQuestion } from "@/maps";
 import { clearCache, determineMapBoundaries } from "@/maps/api";
 
 import { DraggableMarkers } from "./DraggableMarkers";
+import { ElevationOverlay } from "./ElevationOverlay";
 import { MapOverlayMarkers } from "./MapOverlayMarkers";
 import { TransitStopMarkers } from "./TransitStopMarkers";
 
@@ -43,7 +44,7 @@ const getTileLayer = (tileLayer: string, thunderforestApiKey: string) => {
         case "light":
             return (
                 <TileLayer
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors; &copy; <a href="https://carto.com/attributions">CARTO</a>; Powered by Esri and Turf.js; Borough boundaries &copy; <a href="https://data.london.gov.uk/dataset/statistical-gis-boundary-files-london">GLA</a>, contains OS data &copy; Crown copyright and database right'
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors; &copy; <a href="https://carto.com/attributions">CARTO</a>; Powered by Esri and Turf.js; Borough boundaries &copy; <a href="https://data.london.gov.uk/dataset/statistical-gis-boundary-files-london">GLA</a>; river data: <a href="https://www.ordnancesurvey.co.uk/products/os-open-rivers">OS Open Rivers</a>; elevation data: OS Terrain 50; contains OS data &copy; Crown copyright and database right, <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/">OGL v3</a>'
                     url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
                     subdomains="abcd"
                     maxZoom={20} // This technically should be 6, but once the ratelimiting starts this can take over
@@ -55,7 +56,7 @@ const getTileLayer = (tileLayer: string, thunderforestApiKey: string) => {
         case "dark":
             return (
                 <TileLayer
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors; &copy; <a href="https://carto.com/attributions">CARTO</a>; Powered by Esri and Turf.js; Borough boundaries &copy; <a href="https://data.london.gov.uk/dataset/statistical-gis-boundary-files-london">GLA</a>, contains OS data &copy; Crown copyright and database right'
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors; &copy; <a href="https://carto.com/attributions">CARTO</a>; Powered by Esri and Turf.js; Borough boundaries &copy; <a href="https://data.london.gov.uk/dataset/statistical-gis-boundary-files-london">GLA</a>; river data: <a href="https://www.ordnancesurvey.co.uk/products/os-open-rivers">OS Open Rivers</a>; elevation data: OS Terrain 50; contains OS data &copy; Crown copyright and database right, <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/">OGL v3</a>'
                     url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
                     subdomains="abcd"
                     maxZoom={20} // This technically should be 6, but once the ratelimiting starts this can take over
@@ -69,7 +70,7 @@ const getTileLayer = (tileLayer: string, thunderforestApiKey: string) => {
                 return (
                     <TileLayer
                         url={`https://tile.thunderforest.com/transport/{z}/{x}/{y}.png?apikey=${thunderforestApiKey}`}
-                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors; &copy; <a href="http://www.thunderforest.com/">Thunderforest</a>; Powered by Esri and Turf.js; Borough boundaries &copy; <a href="https://data.london.gov.uk/dataset/statistical-gis-boundary-files-london">GLA</a>, contains OS data &copy; Crown copyright and database right'
+                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors; &copy; <a href="http://www.thunderforest.com/">Thunderforest</a>; Powered by Esri and Turf.js; Borough boundaries &copy; <a href="https://data.london.gov.uk/dataset/statistical-gis-boundary-files-london">GLA</a>; river data: <a href="https://www.ordnancesurvey.co.uk/products/os-open-rivers">OS Open Rivers</a>; elevation data: OS Terrain 50; contains OS data &copy; Crown copyright and database right, <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/">OGL v3</a>'
                         maxZoom={22}
                         minZoom={2}
                         noWrap
@@ -82,7 +83,7 @@ const getTileLayer = (tileLayer: string, thunderforestApiKey: string) => {
                 return (
                     <TileLayer
                         url={`https://tile.thunderforest.com/neighbourhood/{z}/{x}/{y}.png?apikey=${thunderforestApiKey}`}
-                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors; &copy; <a href="http://www.thunderforest.com/">Thunderforest</a>; Powered by Esri and Turf.js; Borough boundaries &copy; <a href="https://data.london.gov.uk/dataset/statistical-gis-boundary-files-london">GLA</a>, contains OS data &copy; Crown copyright and database right'
+                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors; &copy; <a href="http://www.thunderforest.com/">Thunderforest</a>; Powered by Esri and Turf.js; Borough boundaries &copy; <a href="https://data.london.gov.uk/dataset/statistical-gis-boundary-files-london">GLA</a>; river data: <a href="https://www.ordnancesurvey.co.uk/products/os-open-rivers">OS Open Rivers</a>; elevation data: OS Terrain 50; contains OS data &copy; Crown copyright and database right, <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/">OGL v3</a>'
                         maxZoom={22}
                         minZoom={2}
                         noWrap
@@ -93,7 +94,7 @@ const getTileLayer = (tileLayer: string, thunderforestApiKey: string) => {
         case "osmcarto":
             return (
                 <TileLayer
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors; Powered by Esri and Turf.js; Borough boundaries &copy; <a href="https://data.london.gov.uk/dataset/statistical-gis-boundary-files-london">GLA</a>, contains OS data &copy; Crown copyright and database right'
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors; Powered by Esri and Turf.js; Borough boundaries &copy; <a href="https://data.london.gov.uk/dataset/statistical-gis-boundary-files-london">GLA</a>; river data: <a href="https://www.ordnancesurvey.co.uk/products/os-open-rivers">OS Open Rivers</a>; elevation data: OS Terrain 50; contains OS data &copy; Crown copyright and database right, <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/">OGL v3</a>'
                     url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
                     maxZoom={19}
                     minZoom={2}
@@ -104,7 +105,7 @@ const getTileLayer = (tileLayer: string, thunderforestApiKey: string) => {
 
     return (
         <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors; &copy; <a href="https://carto.com/attributions">CARTO</a>; Powered by Esri and Turf.js; Borough boundaries &copy; <a href="https://data.london.gov.uk/dataset/statistical-gis-boundary-files-london">GLA</a>, contains OS data &copy; Crown copyright and database right'
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors; &copy; <a href="https://carto.com/attributions">CARTO</a>; Powered by Esri and Turf.js; Borough boundaries &copy; <a href="https://data.london.gov.uk/dataset/statistical-gis-boundary-files-london">GLA</a>; river data: <a href="https://www.ordnancesurvey.co.uk/products/os-open-rivers">OS Open Rivers</a>; elevation data: OS Terrain 50; contains OS data &copy; Crown copyright and database right, <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/">OGL v3</a>'
             url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
             subdomains="abcd"
             maxZoom={20} // This technically should be 6, but once the ratelimiting starts this can take over
@@ -308,18 +309,6 @@ export const Map = ({ className }: { className?: string }) => {
                         },
                     },
                     {
-                        text: "Add Tentacles",
-                        callback: (e: any) => {
-                            addQuestion({
-                                id: "tentacles",
-                                data: {
-                                    lat: e.latlng.lat,
-                                    lng: e.latlng.lng,
-                                },
-                            });
-                        },
-                    },
-                    {
                         text: "Add Matching",
                         callback: (e: any) => {
                             addQuestion({
@@ -339,23 +328,6 @@ export const Map = ({ className }: { className?: string }) => {
                                 data: {
                                     lat: e.latlng.lat,
                                     lng: e.latlng.lng,
-                                },
-                            });
-                        },
-                    },
-                    {
-                        text: "Exclude Country",
-                        callback: (e: any) => {
-                            addQuestion({
-                                id: "matching",
-                                data: {
-                                    lat: e.latlng.lat,
-                                    lng: e.latlng.lng,
-                                    same: false,
-                                    cat: {
-                                        adminLevel: 2,
-                                    },
-                                    type: "zone",
                                 },
                             });
                         },
@@ -391,6 +363,7 @@ export const Map = ({ className }: { className?: string }) => {
                 ]}
             >
                 {getTileLayer($baseTileLayer, $thunderforestApiKey)}
+                <ElevationOverlay />
                 <TransitStopMarkers />
                 <MapOverlayMarkers />
                 <DraggableMarkers />

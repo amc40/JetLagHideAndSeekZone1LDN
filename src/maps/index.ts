@@ -16,11 +16,6 @@ import {
     radiusPlanningPolygon,
 } from "./questions/radius";
 import {
-    adjustPerTentacle,
-    hiderifyTentacles,
-    tentaclesPlanningPolygon,
-} from "./questions/tentacles";
-import {
     adjustPerThermometer,
     hiderifyThermometer,
     thermometerPlanningPolygon,
@@ -37,9 +32,6 @@ export const hiderifyQuestion = async (question: Question) => {
                 break;
             case "thermometer":
                 question.data = await hiderifyThermometer(question.data);
-                break;
-            case "tentacles":
-                question.data = await hiderifyTentacles(question.data);
                 break;
             case "matching":
                 question.data = await hiderifyMatching(question.data);
@@ -63,8 +55,6 @@ export const determinePlanningPolygon = async (
                 return radiusPlanningPolygon(question.data);
             case "thermometer":
                 return thermometerPlanningPolygon(question.data);
-            case "tentacles":
-                return tentaclesPlanningPolygon(question.data);
             case "matching":
                 return matchingPlanningPolygon(question.data);
             case "measuring":
@@ -87,14 +77,6 @@ export async function adjustMapGeoDataForQuestion(
                 return await adjustPerRadius(question.data, mapGeoData);
             case "thermometer":
                 return await adjustPerThermometer(question.data, mapGeoData);
-            case "tentacles":
-                if (question.data.location === false) {
-                    return adjustPerRadius(
-                        { ...question.data, within: false },
-                        mapGeoData,
-                    );
-                }
-                return await adjustPerTentacle(question.data, mapGeoData);
             case "matching":
                 return await adjustPerMatching(question.data, mapGeoData);
             case "measuring":

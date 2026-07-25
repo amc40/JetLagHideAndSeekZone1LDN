@@ -36,7 +36,6 @@ import {
     MatchingQuestionComponent,
     MeasuringQuestionComponent,
     RadiusQuestionComponent,
-    TentacleQuestionComponent,
     ThermometerQuestionComponent,
 } from "./QuestionCards";
 
@@ -155,14 +154,6 @@ export const QuestionSidebar = () => {
                             case "thermometer":
                                 return (
                                     <ThermometerQuestionComponent
-                                        data={question.data}
-                                        key={question.key}
-                                        questionKey={question.key}
-                                    />
-                                );
-                            case "tentacles":
-                                return (
-                                    <TentacleQuestionComponent
                                         data={question.data}
                                         key={question.key}
                                         questionKey={question.key}

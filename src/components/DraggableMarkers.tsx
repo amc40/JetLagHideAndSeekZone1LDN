@@ -20,7 +20,6 @@ import {
     MatchingQuestionComponent,
     MeasuringQuestionComponent,
     RadiusQuestionComponent,
-    TentacleQuestionComponent,
     ThermometerQuestionComponent,
 } from "./QuestionCards";
 import { Button } from "./ui/button";
@@ -113,15 +112,6 @@ const ColoredMarker = ({
                             case "radius":
                                 return (
                                     <RadiusQuestionComponent
-                                        key={q.key}
-                                        data={q.data}
-                                        questionKey={q.key}
-                                        sub={sub}
-                                    />
-                                );
-                            case "tentacles":
-                                return (
-                                    <TentacleQuestionComponent
                                         key={q.key}
                                         data={q.data}
                                         questionKey={q.key}
@@ -221,7 +211,6 @@ export const DraggableMarkers = () => {
 
                 switch (question.id) {
                     case "radius":
-                    case "tentacles":
                     case "matching":
                     case "measuring":
                         return (

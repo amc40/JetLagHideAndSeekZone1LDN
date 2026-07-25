@@ -53,52 +53,6 @@ export const MatchingQuestionComponent = ({
     let questionSpecific = <></>;
 
     switch (data.type) {
-        case "zone":
-        case "letter-zone":
-            questionSpecific = (
-                <>
-                    <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
-                        <Select
-                            trigger="OSM Zone"
-                            options={{
-                                2: "OSM Zone 2 (Country)",
-                                3: "OSM Zone 3 (region in Japan)",
-                                4: "OSM Zone 4 (prefecture in Japan)",
-                                5: "OSM Zone 5",
-                                6: "OSM Zone 6",
-                                7: "OSM Zone 7",
-                                8: "OSM Zone 8",
-                                9: "OSM Zone 9",
-                                10: "OSM Zone 10",
-                            }}
-                            value={data.cat.adminLevel.toString()}
-                            onValueChange={(value) =>
-                                questionModified(
-                                    (data.cat.adminLevel = parseInt(value) as
-                                        | 2
-                                        | 3
-                                        | 4
-                                        | 5
-                                        | 6
-                                        | 7
-                                        | 8
-                                        | 9
-                                        | 10),
-                                )
-                            }
-                            disabled={!data.drag || $isLoading}
-                        />
-                    </SidebarMenuItem>
-                    {data.type === "letter-zone" && (
-                        <span className="px-2 text-center text-orange-500">
-                            Warning: The zone data has been simplified by
-                            &plusmn;360 feet (100 meters) in order for the
-                            browser to not crash.
-                        </span>
-                    )}
-                </>
-            );
-            break;
         case "same-train-line":
             questionSpecific = (
                 <span className="px-2 text-center text-orange-500">
@@ -109,15 +63,10 @@ export const MatchingQuestionComponent = ({
                 </span>
             );
             break;
-        case "aquarium":
         case "hospital":
-        case "peak":
         case "museum":
-        case "theme_park":
-        case "zoo":
         case "cinema":
         case "library":
-        case "golf_course":
         case "consulate":
         case "park":
             questionSpecific = (
@@ -201,10 +150,6 @@ export const MatchingQuestionComponent = ({
                             data.same = true;
                         }
 
-                        // The category should be defined such that no error is thrown if this is a zone question.
-                        if (!(data as any).cat) {
-                            (data as any).cat = { adminLevel: 3 };
-                        }
                         questionModified((data.type = value));
                     }}
                     disabled={!data.drag || $isLoading}

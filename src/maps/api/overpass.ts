@@ -224,6 +224,16 @@ export const fetchCuratedConsulates = async () => {
     return data;
 };
 
+export const fetchCuratedAquariums = async () => {
+    const response = await cacheFetch(
+        import.meta.env.BASE_URL + "/curated-aquariums.geojson",
+        "Loading curated aquariums...",
+        CacheType.PERMANENT_CACHE,
+    );
+    const data = await response.json();
+    return data;
+};
+
 // Source: Greater London Authority "London Borough" boundary file
 // (statistical-gis-boundaries-london), via the London Datastore. Derived from
 // Ordnance Survey / ONS data and licensed under the Open Government Licence v3.
@@ -233,6 +243,22 @@ export const fetchLondonBoroughs = async () => {
     const response = await cacheFetch(
         import.meta.env.BASE_URL + "/london-boroughs.geojson",
         "Loading London boroughs...",
+        CacheType.PERMANENT_CACHE,
+    );
+    const data = await response.json();
+    return data;
+};
+
+// Source: Ordnance Survey OS Open Rivers ("River Thames" named reaches,
+// Wandsworth to Wapping), via the OS Data Hub / Esri UK Living Atlas
+// FeatureServer. Contains OS data (c) Crown copyright and database right,
+// licensed under the Open Government Licence v3. Bundled locally (and
+// trimmed down to a single connected line) so the question works offline
+// and doesn't depend on a live lookup.
+export const fetchThamesLine = async () => {
+    const response = await cacheFetch(
+        import.meta.env.BASE_URL + "/thames.geojson",
+        "Loading the Thames...",
         CacheType.PERMANENT_CACHE,
     );
     const data = await response.json();
