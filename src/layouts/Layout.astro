@@ -128,6 +128,11 @@ const { className } = Astro.props;
         />
 
         {pwaInfo && <Fragment set:html={pwaInfo.webManifest.linkTag} />}
+        <!-- Registers the service worker (see src/pwa.ts) so the app shell
+             and precached assets (arcgis-assets, elevation-london.bin, ...)
+             are actually available offline, not just cached opportunistically
+             by the app's own runtime fetch calls. -->
+        <script src="../pwa.ts"></script>
     </head>
     <body class:list={[className, "dark"]}>
         <slot />
