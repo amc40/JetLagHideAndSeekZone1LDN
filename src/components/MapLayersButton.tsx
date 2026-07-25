@@ -11,6 +11,7 @@ import {
     baseTileLayer,
     mapLayersDrawerOpen,
     mapOverlays,
+    showElevationOverlay,
     showTransitStops,
     thunderforestApiKey,
 } from "@/lib/context";
@@ -29,6 +30,7 @@ const MapLayersSettings = () => {
     const $thunderforestApiKey = useStore(thunderforestApiKey);
     const $showTransitStops = useStore(showTransitStops);
     const $mapOverlays = useStore(mapOverlays);
+    const $showElevationOverlay = useStore(showElevationOverlay);
 
     return (
         <>
@@ -77,6 +79,18 @@ const MapLayersSettings = () => {
                     checked={$showTransitStops}
                     onCheckedChange={() =>
                         showTransitStops.set(!$showTransitStops)
+                    }
+                />
+            </label>
+            <Separator className="bg-slate-300" />
+            <label className="flex flex-row min-h-11 items-center justify-between gap-2 cursor-pointer">
+                <span className="text-base font-medium">
+                    Show elevation (Greater London)?
+                </span>
+                <Checkbox
+                    checked={$showElevationOverlay}
+                    onCheckedChange={() =>
+                        showElevationOverlay.set(!$showElevationOverlay)
                     }
                 />
             </label>

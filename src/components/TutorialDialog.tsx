@@ -360,6 +360,11 @@ const tutorialSteps: TutorialStep[] = [
                 <strong>Geographic Features:</strong>
                 <br />• <strong>High-Speed Rail:</strong> Distance to St Pancras
                 (HS1&apos;s only Zone 1 station)
+                <br />• <strong>Sea Level:</strong> Whether the hider is at a
+                higher or lower elevation above sea level than where the
+                question was asked. Uses an offline Ordnance Survey elevation
+                model (OS Terrain 50, 100m resolution) and only has an effect
+                within Greater London.
                 <br />
                 <br />
                 <strong>Full Game Variations:</strong>
@@ -572,6 +577,10 @@ const tutorialSteps: TutorialStep[] = [
                 <br />• Accounts for Earth&apos;s curvature and ellipsoid shape
                 <br />• Typical accuracy within 1-2 meters for positioning
                 <br />• Coastline data accuracy approximately ±100 meters
+                <br />• Sea Level elevation data (Greater London only) is
+                accurate to approximately ±100 meters horizontally; contains OS
+                data &copy; Crown copyright and database right, under the Open
+                Government Licence v3.0
                 <br />• Administrative boundary simplification may affect
                 precision
                 <br />

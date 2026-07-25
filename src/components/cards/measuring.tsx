@@ -78,6 +78,15 @@ export const MeasuringQuestionComponent = ({
                 </span>
             );
             break;
+        case "sea-level":
+            questionSpecific = (
+                <span className="px-2 text-center text-orange-500">
+                    Elevation data only covers Greater London (OS Terrain 50,
+                    100m resolution). This question has no effect outside that
+                    area.
+                </span>
+            );
+            break;
     }
 
     return (

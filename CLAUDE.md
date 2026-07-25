@@ -68,6 +68,7 @@ The project uses **`@arcgis/core`** for geodesically accurate buffers (as oppose
 - **Overpass API** (`overpass.ts`) — fetches OSM features (airports, train stations, amenities, admin boundaries). Has a fallback server (`overpass.private.coffee`). Uses the **Cache API** (3 separate caches: per-question, per-zone, permanent) to avoid redundant network requests.
 - **Geocoder** — Photon/Komoot API for place-name search in `PlacePicker`
 - **`coastline50.geojson`** in `/public/` — bundled coastline data served locally
+- **`elevation-london.bin`** in `/public/` — bundled OS Terrain 50 elevation grid (100m resolution, decimetre-precision Int16, covering a 40km×40km box around Greater London) backing the "Sea Level" Measuring question. See `src/maps/geo-utils/elevation.ts` for the runtime lookup/isoband logic and `src/maps/geo-utils/elevation-grid.json` for its metadata (bounds, licence, attribution). Regenerate both via `pnpm generate:elevation` (`scripts/generate-elevation-data.mjs`), which downloads the source data from the OS Data Hub — Contains OS data © Crown copyright and database right, Open Government Licence v3.0.
 
 **Node-side Overpass scripts** (`scripts/fetch-poi-candidates.mjs`, `scripts/generate-curated-pois.mjs`, used by the `curate-pois` skill) talk to `overpass-api.de` directly from Node rather than a browser, which surfaces two gotchas that don't affect the in-browser app:
 
