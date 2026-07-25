@@ -54,7 +54,7 @@ const ColoredMarker = ({
     const [open, setOpen] = useState(false);
 
     return (
-        <Dialog open={open} onOpenChange={setOpen}>
+        <Dialog open={open} onOpenChange={setOpen} modal={false}>
             <Marker
                 position={[latitude, longitude]}
                 icon={
