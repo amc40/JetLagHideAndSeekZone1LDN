@@ -66,6 +66,7 @@ export const QuestionCard = ({
     const $questions = useStore(questions);
     const $isLoading = useStore(isLoading);
     const copyButtonRef = useRef<HTMLButtonElement>(null);
+    const isSharingRef = useRef(false);
 
     const toggleCollapse = () => {
         if (setCollapsed) {
@@ -153,7 +154,21 @@ export const QuestionCard = ({
                                             Share question JSON
                                         </Button>
                                     </DialogTrigger>
-                                    <DialogContent>
+                                    <DialogContent
+                                        onInteractOutside={(e) => {
+                                            // The native share sheet opened by
+                                            // navigator.share() below blurs the
+                                            // page, which Radix treats as a
+                                            // focus-outside interaction and
+                                            // closes this dialog before the
+                                            // share sheet can appear. Ignore
+                                            // outside interactions while a
+                                            // share is in flight.
+                                            if (isSharingRef.current) {
+                                                e.preventDefault();
+                                            }
+                                        }}
+                                    >
                                         <DialogHeader>
                                             <DialogTitle className="text-2xl">
                                                 Share this Question!
@@ -185,6 +200,8 @@ export const QuestionCard = ({
                                                                 null,
                                                                 4,
                                                             );
+                                                        isSharingRef.current =
+                                                            true;
                                                         navigator
                                                             .share({
                                                                 title: "Jet Lag Hide and Seek Question",
@@ -193,6 +210,10 @@ export const QuestionCard = ({
                                                             .catch(() => {
                                                                 // User cancelled or share failed; the
                                                                 // clipboard option below still works.
+                                                            })
+                                                            .finally(() => {
+                                                                isSharingRef.current =
+                                                                    false;
                                                             });
                                                     }}
                                                 >
