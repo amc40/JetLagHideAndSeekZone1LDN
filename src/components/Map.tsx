@@ -170,7 +170,7 @@ export const Map = ({ className }: { className?: string }) => {
             fetchCuratedMuseums,
             loadElevationGrid,
         ]) {
-            fetcher().catch((err) =>
+            fetcher(true).catch((err) =>
                 console.error("Failed to preload curated data", err),
             );
         }

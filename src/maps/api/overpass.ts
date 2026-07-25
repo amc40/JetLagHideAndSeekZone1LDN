@@ -51,90 +51,90 @@ export const getOverpassData = async (
     return data;
 };
 
-export const fetchCoastline = async () => {
+export const fetchCoastline = async (silent = false) => {
     const response = await cacheFetch(
         versionedPublicUrl("coastline50.geojson"),
-        "Fetching coastline data...",
+        silent ? undefined : "Fetching coastline data...",
         CacheType.PERMANENT_CACHE,
     );
     const data = await response.json();
     return data;
 };
 
-export const fetchCuratedStations = async () => {
+export const fetchCuratedStations = async (silent = false) => {
     const response = await cacheFetch(
         versionedPublicUrl("curated-stations.geojson"),
-        "Loading curated stations...",
+        silent ? undefined : "Loading curated stations...",
         CacheType.PERMANENT_CACHE,
     );
     const data = await response.json();
     return data;
 };
 
-export const fetchCuratedHospitals = async () => {
+export const fetchCuratedHospitals = async (silent = false) => {
     const response = await cacheFetch(
         versionedPublicUrl("curated-hospitals.geojson"),
-        "Loading curated hospitals...",
+        silent ? undefined : "Loading curated hospitals...",
         CacheType.PERMANENT_CACHE,
     );
     const data = await response.json();
     return data;
 };
 
-export const fetchCuratedParks = async () => {
+export const fetchCuratedParks = async (silent = false) => {
     const response = await cacheFetch(
         versionedPublicUrl("curated-parks.geojson"),
-        "Loading curated parks...",
+        silent ? undefined : "Loading curated parks...",
         CacheType.PERMANENT_CACHE,
     );
     const data = await response.json();
     return data;
 };
 
-export const fetchCuratedCinemas = async () => {
+export const fetchCuratedCinemas = async (silent = false) => {
     const response = await cacheFetch(
         versionedPublicUrl("curated-cinemas.geojson"),
-        "Loading curated cinemas...",
+        silent ? undefined : "Loading curated cinemas...",
         CacheType.PERMANENT_CACHE,
     );
     const data = await response.json();
     return data;
 };
 
-export const fetchCuratedHighspeed = async () => {
+export const fetchCuratedHighspeed = async (silent = false) => {
     const response = await cacheFetch(
         versionedPublicUrl("curated-highspeed.geojson"),
-        "Loading curated high-speed rail stations...",
+        silent ? undefined : "Loading curated high-speed rail stations...",
         CacheType.PERMANENT_CACHE,
     );
     const data = await response.json();
     return data;
 };
 
-export const fetchCuratedConsulates = async () => {
+export const fetchCuratedConsulates = async (silent = false) => {
     const response = await cacheFetch(
         versionedPublicUrl("curated-consulates.geojson"),
-        "Loading curated consulates...",
+        silent ? undefined : "Loading curated consulates...",
         CacheType.PERMANENT_CACHE,
     );
     const data = await response.json();
     return data;
 };
 
-export const fetchCuratedAquariums = async () => {
+export const fetchCuratedAquariums = async (silent = false) => {
     const response = await cacheFetch(
         versionedPublicUrl("curated-aquariums.geojson"),
-        "Loading curated aquariums...",
+        silent ? undefined : "Loading curated aquariums...",
         CacheType.PERMANENT_CACHE,
     );
     const data = await response.json();
     return data;
 };
 
-export const fetchCuratedLibraries = async () => {
+export const fetchCuratedLibraries = async (silent = false) => {
     const response = await cacheFetch(
         versionedPublicUrl("curated-libraries.geojson"),
-        "Loading curated libraries...",
+        silent ? undefined : "Loading curated libraries...",
         CacheType.PERMANENT_CACHE,
     );
     const data = await response.json();
@@ -146,10 +146,10 @@ export const fetchCuratedLibraries = async () => {
 // Ordnance Survey / ONS data and licensed under the Open Government Licence v3.
 // Bundled locally so borough matching works offline and doesn't depend on a
 // live admin-boundary lookup.
-export const fetchLondonBoroughs = async () => {
+export const fetchLondonBoroughs = async (silent = false) => {
     const response = await cacheFetch(
         versionedPublicUrl("london-boroughs.geojson"),
-        "Loading London boroughs...",
+        silent ? undefined : "Loading London boroughs...",
         CacheType.PERMANENT_CACHE,
     );
     const data = await response.json();
@@ -162,20 +162,20 @@ export const fetchLondonBoroughs = async () => {
 // licensed under the Open Government Licence v3. Bundled locally (and
 // trimmed down to a single connected line) so the question works offline
 // and doesn't depend on a live lookup.
-export const fetchThamesLine = async () => {
+export const fetchThamesLine = async (silent = false) => {
     const response = await cacheFetch(
         versionedPublicUrl("thames.geojson"),
-        "Loading the Thames...",
+        silent ? undefined : "Loading the Thames...",
         CacheType.PERMANENT_CACHE,
     );
     const data = await response.json();
     return data;
 };
 
-export const fetchCuratedMuseums = async () => {
+export const fetchCuratedMuseums = async (silent = false) => {
     const response = await cacheFetch(
         versionedPublicUrl("curated-museums.geojson"),
-        "Loading curated museums...",
+        silent ? undefined : "Loading curated museums...",
         CacheType.PERMANENT_CACHE,
     );
     const data = await response.json();
