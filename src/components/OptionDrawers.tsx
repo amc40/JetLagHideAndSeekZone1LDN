@@ -328,6 +328,11 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                             </label>
                             {$hiderMode !== false && (
                                 <SidebarMenu>
+                                    <p className="text-sm text-muted-foreground self-start">
+                                        Turn on <strong>Follow Me (GPS)</strong>{" "}
+                                        below to answer questions from your live
+                                        location instead of this saved one.
+                                    </p>
                                     <LatitudeLongitude
                                         latitude={$hiderMode.latitude}
                                         longitude={$hiderMode.longitude}

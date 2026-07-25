@@ -32,6 +32,7 @@ import {
 } from "@/lib/context";
 
 import { AddQuestionDialog } from "./AddQuestionDialog";
+import { PasteQuestionButton } from "./PasteQuestionButton";
 import {
     MatchingQuestionComponent,
     MeasuringQuestionComponent,
@@ -109,6 +110,9 @@ export const QuestionSidebar = () => {
             <SidebarGroup>
                 <SidebarGroupContent>
                     <SidebarMenu data-tutorial-id="add-questions-buttons">
+                        <SidebarMenuItem>
+                            <PasteQuestionButton />
+                        </SidebarMenuItem>
                         <SidebarMenuItem>
                             <AddQuestionDialog>
                                 <SidebarMenuButton

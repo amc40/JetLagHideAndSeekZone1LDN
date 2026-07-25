@@ -476,6 +476,14 @@ export const Map = ({ className }: { className?: string }) => {
                     marker.addTo(map);
                     followMeMarkerRef.current = marker;
                 }
+
+                // While hider mode is on, Follow Me doubles as the hider's
+                // live location feed rather than running a second
+                // geolocation subscription.
+                const $hiderMode = hiderMode.get();
+                if ($hiderMode !== false) {
+                    hiderMode.set({ latitude: lat, longitude: lng });
+                }
             },
             () => {
                 toast.error("Unable to access your location.");
