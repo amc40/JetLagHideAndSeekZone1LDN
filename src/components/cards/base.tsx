@@ -67,6 +67,8 @@ export const QuestionCard = ({
     const $questions = useStore(questions);
     const $isLoading = useStore(isLoading);
     const copyButtonRef = useRef<HTMLButtonElement>(null);
+    const isSharingRef = useRef(false);
+    const [shareDialogOpen, setShareDialogOpen] = useState(false);
 
     const toggleCollapse = () => {
         if (setCollapsed) {
@@ -130,6 +132,25 @@ export const QuestionCard = ({
                             <MoreActionsMenu
                                 disabled={$isLoading}
                                 label="More question actions"
+                                onInteractOutside={(e) => {
+                                    // The "Share this Question!" Dialog below
+                                    // is portalled into a separate container
+                                    // (for Leaflet z-index reasons), which
+                                    // breaks this Popover's containment check
+                                    // for "is this interaction inside me" —
+                                    // it dismisses itself (unmounting the
+                                    // Dialog with it) the moment that Dialog
+                                    // opens or the native share sheet blurs
+                                    // the page. Ignore outside interactions
+                                    // while the Dialog is open or a share is
+                                    // in flight.
+                                    if (
+                                        shareDialogOpen ||
+                                        isSharingRef.current
+                                    ) {
+                                        e.preventDefault();
+                                    }
+                                }}
                             >
                                 <MoreActionsMenuItem
                                     icon={
@@ -144,7 +165,10 @@ export const QuestionCard = ({
                                 >
                                     {hidden ? "Show question" : "Hide question"}
                                 </MoreActionsMenuItem>
-                                <Dialog>
+                                <Dialog
+                                    open={shareDialogOpen}
+                                    onOpenChange={setShareDialogOpen}
+                                >
                                     <DialogTrigger asChild>
                                         <Button
                                             variant="ghost"
@@ -154,7 +178,13 @@ export const QuestionCard = ({
                                             Share question JSON
                                         </Button>
                                     </DialogTrigger>
-                                    <DialogContent>
+                                    <DialogContent
+                                        onInteractOutside={(e) => {
+                                            if (isSharingRef.current) {
+                                                e.preventDefault();
+                                            }
+                                        }}
+                                    >
                                         <DialogHeader>
                                             <DialogTitle className="text-2xl">
                                                 Share this Question!
@@ -186,6 +216,8 @@ export const QuestionCard = ({
                                                                 null,
                                                                 4,
                                                             );
+                                                        isSharingRef.current =
+                                                            true;
                                                         navigator
                                                             .share({
                                                                 title: "Jet Lag Hide and Seek Question",
@@ -213,7 +245,11 @@ export const QuestionCard = ({
                                                                         "Sharing failed. Try Copy to Clipboard instead.",
                                                                     );
                                                                 },
-                                                            );
+                                                            )
+                                                            .finally(() => {
+                                                                isSharingRef.current =
+                                                                    false;
+                                                            });
                                                     }}
                                                 >
                                                     <VscShare className="size-4" />
