@@ -1,6 +1,8 @@
 import { expect, test } from "vitest";
 
+import { describeQuestionsSummary } from "@/lib/describeQuestion";
 import { extractJsonObject, parseJsonLenient } from "@/lib/utils";
+import type { Question } from "@/maps/schema";
 import { questionSchema } from "@/maps/schema";
 
 test("parses plain JSON unchanged", () => {
@@ -60,4 +62,40 @@ Sent from Firefox 🦊 https://mzl.la/43doGMX`;
     expect(() =>
         questionSchema.parse({ ...(parsed as object), key: Math.random() }),
     ).not.toThrow();
+});
+
+test("recovers the hiding zone JSON from behind the human-readable header produced by Copy Hiding Zone, even with a share footer appended", () => {
+    const radiusQuestion: Question = {
+        id: "radius",
+        key: 1,
+        data: {
+            lat: 51.5,
+            lng: -0.1,
+            drag: true,
+            color: "blue",
+            collapsed: false,
+            hidden: false,
+            radius: 2,
+            unit: "kilometers",
+            within: true,
+        },
+    };
+
+    const hidingZone = {
+        type: "Feature",
+        properties: {},
+        geometry: { type: "Polygon", coordinates: [] },
+        questions: [radiusQuestion],
+    };
+
+    // What the "Copy Hiding Zone" button actually puts on the clipboard:
+    // the human-readable header, then the raw JSON, then (if the user
+    // shares it through an app that appends one) a footer.
+    const clipboardText =
+        describeQuestionsSummary([radiusQuestion]) +
+        JSON.stringify(hidingZone) +
+        "\n\nSent from Firefox 🦊 https://mzl.la/43doGMX";
+
+    expect(clipboardText.startsWith("> (Radius)")).toBe(true);
+    expect(parseJsonLenient(clipboardText)).toEqual(hidingZone);
 });
