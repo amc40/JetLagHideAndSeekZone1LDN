@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 
 import { SidebarMenuButton } from "@/components/ui/sidebar-l";
 import {
-    hiderLiveLocationEnabled,
+    followMe,
     hiderMode,
     isLoading,
     questionModified,
@@ -13,10 +13,10 @@ import { hiderifyQuestion } from "@/maps";
 import { questionSchema } from "@/maps/schema";
 
 // One-off GPS fetch used to answer a question as the hider. Only called
-// when hider mode is on and the hider isn't already sharing their live
-// location (in which case hiderMode is kept up to date continuously, see
-// setHiderLiveLocationEnabled). Falls back silently to the hider's
-// currently saved location on failure or denial.
+// when hider mode is on and "Follow Me (GPS)" isn't already on (in which
+// case Map.tsx's watchPosition keeps hiderMode up to date continuously).
+// Falls back silently to the hider's currently saved location on failure
+// or denial.
 const shareOneOffHiderLocation = async () => {
     const $hiderMode = hiderMode.get();
     if ($hiderMode === false) return;
@@ -61,7 +61,7 @@ export const PasteQuestionButton = () => {
             return false;
         }
 
-        if (hiderMode.get() !== false && !hiderLiveLocationEnabled.get()) {
+        if (hiderMode.get() !== false && !followMe.get()) {
             await shareOneOffHiderLocation();
         }
 

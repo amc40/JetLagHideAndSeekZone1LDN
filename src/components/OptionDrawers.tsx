@@ -30,10 +30,8 @@ import {
     autoZoom,
     defaultUnit,
     disabledStations,
-    disableHiderMode,
     displayHidingZonesOptions,
     followMe,
-    hiderLiveLocationEnabled,
     hiderMode,
     hidingRadius,
     hidingRadiusUnits,
@@ -48,7 +46,6 @@ import {
     polyGeoJSON,
     questions,
     save,
-    setHiderLiveLocationEnabled,
     showTutorial,
     triggerLocalRefresh,
 } from "@/lib/context";
@@ -89,7 +86,6 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
     const $animateMapMovements = useStore(animateMapMovements);
     const $autoZoom = useStore(autoZoom);
     const $hiderMode = useStore(hiderMode);
-    const $hiderLiveLocationEnabled = useStore(hiderLiveLocationEnabled);
     const $autoSave = useStore(autoSave);
     const $hidingZone = useStore(hidingZone);
     const $planningMode = useStore(planningModeEnabled);
@@ -326,28 +322,18 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                                 },
                                             );
                                         } else {
-                                            disableHiderMode();
+                                            hiderMode.set(false);
                                         }
                                     }}
                                 />
                             </label>
                             {$hiderMode !== false && (
                                 <SidebarMenu>
-                                    <label className="flex w-full min-h-11 flex-row items-center justify-between gap-2 cursor-pointer">
-                                        <span className="text-base font-medium">
-                                            Share live location?
-                                        </span>
-                                        <Checkbox
-                                            checked={$hiderLiveLocationEnabled}
-                                            onCheckedChange={() => {
-                                                setHiderLiveLocationEnabled(
-                                                    !$hiderLiveLocationEnabled,
-                                                    (message) =>
-                                                        toast.error(message),
-                                                );
-                                            }}
-                                        />
-                                    </label>
+                                    <p className="text-sm text-muted-foreground self-start">
+                                        Turn on <strong>Follow Me (GPS)</strong>{" "}
+                                        below to answer questions from your live
+                                        location instead of this saved one.
+                                    </p>
                                     <LatitudeLongitude
                                         latitude={$hiderMode.latitude}
                                         longitude={$hiderMode.longitude}
