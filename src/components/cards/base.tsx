@@ -36,6 +36,7 @@ import {
     SidebarMenu,
 } from "@/components/ui/sidebar-l";
 import { isLoading, questions } from "@/lib/context";
+import { describeQuestionsSummary } from "@/lib/describeQuestion";
 import { cn } from "@/lib/utils";
 
 export const QuestionCard = ({
@@ -136,18 +137,24 @@ export const QuestionCard = ({
                                         title="Share question"
                                         aria-label="Share question"
                                         onClick={() => {
+                                            const question = $questions.find(
+                                                (q) => q.key === questionKey,
+                                            );
                                             const questionJSON = JSON.stringify(
-                                                $questions.find(
-                                                    (q) =>
-                                                        q.key === questionKey,
-                                                ),
+                                                question,
                                                 null,
                                                 4,
                                             );
+                                            const summary = question
+                                                ? describeQuestionsSummary([
+                                                      question,
+                                                  ])
+                                                : "";
                                             navigator
                                                 .share({
                                                     title: "Jet Lag Hide and Seek Question",
-                                                    text: questionJSON,
+                                                    text:
+                                                        summary + questionJSON,
                                                 })
                                                 .then(() => {
                                                     toast.success(
@@ -221,17 +228,25 @@ export const QuestionCard = ({
                                             className="mb-2 sm:mb-0 transition-colors"
                                             ref={copyButtonRef}
                                             onClick={() => {
+                                                const question =
+                                                    $questions.find(
+                                                        (q) =>
+                                                            q.key ===
+                                                            questionKey,
+                                                    );
+                                                const summary = question
+                                                    ? describeQuestionsSummary([
+                                                          question,
+                                                      ])
+                                                    : "";
                                                 navigator.clipboard
                                                     .writeText(
-                                                        JSON.stringify(
-                                                            $questions.find(
-                                                                (q) =>
-                                                                    q.key ===
-                                                                    questionKey,
+                                                        summary +
+                                                            JSON.stringify(
+                                                                question,
+                                                                null,
+                                                                4,
                                                             ),
-                                                            null,
-                                                            4,
-                                                        ),
                                                     )
                                                     .then(() => {
                                                         if (

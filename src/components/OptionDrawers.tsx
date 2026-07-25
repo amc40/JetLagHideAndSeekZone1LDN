@@ -49,7 +49,6 @@ import {
     showTutorial,
     triggerLocalRefresh,
 } from "@/lib/context";
-import { describeQuestionsSummary } from "@/lib/describeQuestion";
 import {
     HIDING_ZONE_COMPRESSED_URL_PARAM,
     PASTEBIN_URL_PARAM,
@@ -456,9 +455,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                                 "Clipboard not supported",
                                             );
                                         navigator.clipboard.writeText(
-                                            describeQuestionsSummary(
-                                                $hidingZone.questions,
-                                            ) + JSON.stringify($hidingZone),
+                                            JSON.stringify($hidingZone),
                                         );
                                         toast.success(
                                             "Hiding zone copied successfully",
