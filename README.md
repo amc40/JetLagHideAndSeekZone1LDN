@@ -12,10 +12,10 @@ A tool to trivially generate interactive maps for viewing hiding possibilities i
     - Same occupance of custom zone
     - Same nearest of custom points
     - Same zone (i.e., same region or prefecture)
+    - Landmass (same side of the River Thames)
     - Same first letter of zone
     - Same nearest commercial airport
     - Same train line
-    - Same nearest major city
     - Same length of station's name
     - Same first letter of train station name
     - Same nearest park
@@ -33,7 +33,6 @@ A tool to trivially generate interactive maps for viewing hiding possibilities i
     - Distance to custom points/line/polygon
     - Distance to coastline
     - Distance to commercial airport
-    - Distance to major city
     - Distance to high-speed rail
     - Distance to rail station
     - Distance to 7-Eleven

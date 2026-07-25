@@ -73,6 +73,13 @@ const CATEGORIES = [
             new URL("../public/curated-museums.geojson", import.meta.url),
         ),
     },
+    {
+        name: "aquariums",
+        source: new URL("../src/data/curated-aquariums.mjs", import.meta.url),
+        output: fileURLToPath(
+            new URL("../public/curated-aquariums.geojson", import.meta.url),
+        ),
+    },
 ];
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -218,6 +225,14 @@ async function generateCategory({ name, source, output }) {
     );
 }
 
-for (const category of CATEGORIES) {
+// Optionally pass category names as CLI args to regenerate only those
+// (e.g. `node scripts/generate-curated-pois.mjs aquariums`), instead of
+// re-resolving every curated list against Overpass.
+const requestedNames = process.argv.slice(2);
+const categoriesToRun = requestedNames.length
+    ? CATEGORIES.filter((c) => requestedNames.includes(c.name))
+    : CATEGORIES;
+
+for (const category of categoriesToRun) {
     await generateCategory(category);
 }

@@ -14,7 +14,6 @@ Overpass and shipped as static GeoJSON, instead of querying Overpass live every
 session — should eventually be extended to the other POI categories the app
 queries live today, e.g.:
 
-- Airports, major cities (`matching.ts`/`measuring.ts` "airport"/"major-city")
 - McDonald's/7-Eleven (`measuring.ts` "mcdonalds"/"seven11")
 - Parks, museums, zoos, aquariums, golf courses, consulates, cinemas, libraries
   (the "-full" amenity variants in `matching.ts`/`measuring.ts`, and the

@@ -10,6 +10,7 @@ import {
     trainStations,
 } from "@/lib/context";
 import {
+    fetchCuratedAquariums,
     fetchCuratedCinemas,
     fetchCuratedConsulates,
     fetchCuratedHighspeed,
@@ -47,24 +48,6 @@ export const determineMeasuringBoundary = async (
                     .features[0],
             ];
         }
-        case "city":
-            return [
-                turf.combine(
-                    turf.featureCollection(
-                        (
-                            await findPlacesInZone(
-                                '[place=city]["population"~"^[1-9]+[0-9]{6}$"]', // The regex is faster than (if:number(t["population"])>1000000)
-                                "Finding cities...",
-                            )
-                        ).elements.map((x: any) =>
-                            turf.point([
-                                x.center ? x.center.lon : x.lon,
-                                x.center ? x.center.lat : x.lat,
-                            ]),
-                        ),
-                    ),
-                ).features[0],
-            ];
         case "aquarium-full":
         case "museum-full":
         case "hospital-full":
@@ -78,7 +61,8 @@ export const determineMeasuringBoundary = async (
                 location === "hospital" ||
                 location === "park" ||
                 location === "cinema" ||
-                location === "museum"
+                location === "museum" ||
+                location === "aquarium"
             ) {
                 const curated =
                     location === "hospital"
@@ -87,7 +71,9 @@ export const determineMeasuringBoundary = async (
                           ? await fetchCuratedParks()
                           : location === "cinema"
                             ? await fetchCuratedCinemas()
-                            : await fetchCuratedMuseums();
+                            : location === "aquarium"
+                              ? await fetchCuratedAquariums()
+                              : await fetchCuratedMuseums();
                 if (curated.features?.length > 0) {
                     return [
                         turf.combine(turf.featureCollection(curated.features))

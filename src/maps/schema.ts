@@ -174,9 +174,6 @@ const ordinaryMatchingQuestionSchema = baseMatchingQuestionSchema.extend({
     type: z
         .union([
             z
-                .literal("major-city")
-                .describe("Major City (1,000,000+ people) In Zone Question"),
-            z
                 .literal("museum-full")
                 .describe("Museum Question (Small+Medium Games)"),
             z
@@ -195,11 +192,17 @@ const ordinaryMatchingQuestionSchema = baseMatchingQuestionSchema.extend({
                 .literal("park-full")
                 .describe("Park Question (Small+Medium Games)"),
         ])
-        .default("major-city"),
+        .default("museum-full"),
 });
 
 const londonBoroughMatchingQuestionsSchema = baseMatchingQuestionSchema.extend({
     type: z.literal("london-borough").describe("Same London Borough Question"),
+});
+
+const thamesMatchingQuestionSchema = baseMatchingQuestionSchema.extend({
+    type: z
+        .literal("thames")
+        .describe("Landmass (North or South of River) Question"),
 });
 
 const homeGameMatchingQuestionsSchema = baseMatchingQuestionSchema.extend({
@@ -229,6 +232,7 @@ const hidingZoneMatchingQuestionsSchema = baseMatchingQuestionSchema.extend({
 
 export const matchingQuestionSchema = z.union([
     londonBoroughMatchingQuestionsSchema.describe(NO_GROUP),
+    thamesMatchingQuestionSchema.describe(NO_GROUP),
     ordinaryMatchingQuestionSchema.describe(NO_GROUP),
     hidingZoneMatchingQuestionsSchema.describe("Hiding Zone Mode"),
     homeGameMatchingQuestionsSchema.describe("Hiding Zone Mode"),
@@ -241,9 +245,6 @@ const baseMeasuringQuestionSchema = ordinaryBaseQuestionSchema.extend({
 const ordinaryMeasuringQuestionSchema = baseMeasuringQuestionSchema.extend({
     type: z
         .union([
-            z
-                .literal("city")
-                .describe("Major City (1,000,000+ people) Question"),
             z
                 .literal("highspeed-measure-shinkansen")
                 .describe("High-Speed Rail Question"),
@@ -272,7 +273,7 @@ const ordinaryMeasuringQuestionSchema = baseMeasuringQuestionSchema.extend({
                 .literal("sea-level")
                 .describe("Sea Level Question (Greater London Only)"),
         ])
-        .default("city"),
+        .default("highspeed-measure-shinkansen"),
 });
 
 const hidingZoneMeasuringQuestionsSchema = baseMeasuringQuestionSchema.extend({
