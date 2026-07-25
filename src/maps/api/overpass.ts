@@ -138,22 +138,6 @@ out center;
     return response;
 };
 
-export const findAdminBoundary = async (
-    latitude: number,
-    longitude: number,
-    adminLevel: 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10,
-) => {
-    const query = `
-[out:json];
-is_in(${latitude}, ${longitude})->.a;
-rel(pivot.a)["admin_level"="${adminLevel}"];
-out geom;
-    `;
-    const data = await getOverpassData(query, "Determining matching zone...");
-    const geo = osmtogeojson(data);
-    return geo.features?.[0];
-};
-
 export const fetchCoastline = async () => {
     const response = await cacheFetch(
         import.meta.env.BASE_URL + "/coastline50.geojson",
