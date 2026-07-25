@@ -58,7 +58,7 @@ export const MoreActionsMenuItem = ({
         className={cn(
             "w-full justify-start gap-2 px-2",
             destructive &&
-                "text-destructive hover:text-destructive hover:bg-destructive/10",
+                "text-red-600 hover:text-red-600 hover:bg-destructive/10 dark:text-red-400 dark:hover:text-red-400",
             className,
         )}
     >
