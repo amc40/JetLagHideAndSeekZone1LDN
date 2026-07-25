@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { polyGeoJSON } from "@/lib/context";
 import { TFL_ZONE_1_POLYGON } from "@/lib/map-presets";
 
-import { cacheFetch, determineCache } from "./cache";
+import { cacheFetch, determineCache, versionedPublicUrl } from "./cache";
 import { OVERPASS_API, OVERPASS_API_FALLBACK } from "./constants";
 import { CacheType } from "./types";
 
@@ -53,7 +53,7 @@ export const getOverpassData = async (
 
 export const fetchCoastline = async () => {
     const response = await cacheFetch(
-        import.meta.env.BASE_URL + "/coastline50.geojson",
+        versionedPublicUrl("coastline50.geojson"),
         "Fetching coastline data...",
         CacheType.PERMANENT_CACHE,
     );
@@ -63,7 +63,7 @@ export const fetchCoastline = async () => {
 
 export const fetchCuratedStations = async () => {
     const response = await cacheFetch(
-        import.meta.env.BASE_URL + "/curated-stations.geojson",
+        versionedPublicUrl("curated-stations.geojson"),
         "Loading curated stations...",
         CacheType.PERMANENT_CACHE,
     );
@@ -73,7 +73,7 @@ export const fetchCuratedStations = async () => {
 
 export const fetchCuratedHospitals = async () => {
     const response = await cacheFetch(
-        import.meta.env.BASE_URL + "/curated-hospitals.geojson",
+        versionedPublicUrl("curated-hospitals.geojson"),
         "Loading curated hospitals...",
         CacheType.PERMANENT_CACHE,
     );
@@ -83,7 +83,7 @@ export const fetchCuratedHospitals = async () => {
 
 export const fetchCuratedParks = async () => {
     const response = await cacheFetch(
-        import.meta.env.BASE_URL + "/curated-parks.geojson",
+        versionedPublicUrl("curated-parks.geojson"),
         "Loading curated parks...",
         CacheType.PERMANENT_CACHE,
     );
@@ -93,7 +93,7 @@ export const fetchCuratedParks = async () => {
 
 export const fetchCuratedCinemas = async () => {
     const response = await cacheFetch(
-        import.meta.env.BASE_URL + "/curated-cinemas.geojson",
+        versionedPublicUrl("curated-cinemas.geojson"),
         "Loading curated cinemas...",
         CacheType.PERMANENT_CACHE,
     );
@@ -103,7 +103,7 @@ export const fetchCuratedCinemas = async () => {
 
 export const fetchCuratedHighspeed = async () => {
     const response = await cacheFetch(
-        import.meta.env.BASE_URL + "/curated-highspeed.geojson",
+        versionedPublicUrl("curated-highspeed.geojson"),
         "Loading curated high-speed rail stations...",
         CacheType.PERMANENT_CACHE,
     );
@@ -113,7 +113,7 @@ export const fetchCuratedHighspeed = async () => {
 
 export const fetchCuratedConsulates = async () => {
     const response = await cacheFetch(
-        import.meta.env.BASE_URL + "/curated-consulates.geojson",
+        versionedPublicUrl("curated-consulates.geojson"),
         "Loading curated consulates...",
         CacheType.PERMANENT_CACHE,
     );
@@ -123,7 +123,7 @@ export const fetchCuratedConsulates = async () => {
 
 export const fetchCuratedAquariums = async () => {
     const response = await cacheFetch(
-        import.meta.env.BASE_URL + "/curated-aquariums.geojson",
+        versionedPublicUrl("curated-aquariums.geojson"),
         "Loading curated aquariums...",
         CacheType.PERMANENT_CACHE,
     );
@@ -133,7 +133,7 @@ export const fetchCuratedAquariums = async () => {
 
 export const fetchCuratedLibraries = async () => {
     const response = await cacheFetch(
-        import.meta.env.BASE_URL + "/curated-libraries.geojson",
+        versionedPublicUrl("curated-libraries.geojson"),
         "Loading curated libraries...",
         CacheType.PERMANENT_CACHE,
     );
@@ -148,7 +148,7 @@ export const fetchCuratedLibraries = async () => {
 // live admin-boundary lookup.
 export const fetchLondonBoroughs = async () => {
     const response = await cacheFetch(
-        import.meta.env.BASE_URL + "/london-boroughs.geojson",
+        versionedPublicUrl("london-boroughs.geojson"),
         "Loading London boroughs...",
         CacheType.PERMANENT_CACHE,
     );
@@ -164,7 +164,7 @@ export const fetchLondonBoroughs = async () => {
 // and doesn't depend on a live lookup.
 export const fetchThamesLine = async () => {
     const response = await cacheFetch(
-        import.meta.env.BASE_URL + "/thames.geojson",
+        versionedPublicUrl("thames.geojson"),
         "Loading the Thames...",
         CacheType.PERMANENT_CACHE,
     );
@@ -174,7 +174,7 @@ export const fetchThamesLine = async () => {
 
 export const fetchCuratedMuseums = async () => {
     const response = await cacheFetch(
-        import.meta.env.BASE_URL + "/curated-museums.geojson",
+        versionedPublicUrl("curated-museums.geojson"),
         "Loading curated museums...",
         CacheType.PERMANENT_CACHE,
     );

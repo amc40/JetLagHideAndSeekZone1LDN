@@ -8,7 +8,7 @@ import type {
 } from "geojson";
 import proj4 from "proj4";
 
-import { cacheFetch, CacheType } from "@/maps/api";
+import { cacheFetch, CacheType, versionedPublicUrl } from "@/maps/api";
 
 import elevationGridMetaJson from "./elevation-grid.json";
 
@@ -57,11 +57,14 @@ export const worldToGridCoords = (easting: number, northing: number) => {
 
 let gridPromise: Promise<Int16Array> | null = null;
 
-const loadGrid = (): Promise<Int16Array> => {
+// Exported (only) so the app can warm the permanent cache for this file on
+// load, alongside the curated geojson datasets - see Map.tsx. Otherwise it's
+// fetched lazily the first time a Sea Level Measuring question is added.
+export const loadGrid = (): Promise<Int16Array> => {
     if (!gridPromise) {
         gridPromise = (async () => {
             const response = await cacheFetch(
-                import.meta.env.BASE_URL + "/elevation-london.bin",
+                versionedPublicUrl("elevation-london.bin"),
                 "Loading elevation data...",
                 CacheType.PERMANENT_CACHE,
             );

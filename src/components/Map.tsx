@@ -48,6 +48,7 @@ import {
     fetchLondonBoroughs,
     fetchThamesLine,
 } from "@/maps/api";
+import { loadGrid as loadElevationGrid } from "@/maps/geo-utils";
 
 import { DraggableMarkers } from "./DraggableMarkers";
 import { ElevationOverlay } from "./ElevationOverlay";
@@ -167,6 +168,7 @@ export const Map = ({ className }: { className?: string }) => {
             fetchCuratedAquariums,
             fetchCuratedLibraries,
             fetchCuratedMuseums,
+            loadElevationGrid,
         ]) {
             fetcher().catch((err) =>
                 console.error("Failed to preload curated data", err),
