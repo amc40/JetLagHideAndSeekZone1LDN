@@ -7,6 +7,14 @@ body {
     margin: 0;
     width: 100%;
     height: 100%;
+    /* Without this, a pinch-zoom gesture that lands on fixed UI chrome
+       (MobileActionBar, sidebar triggers, etc.) zooms the whole browser
+       page instead of the map underneath, and is fiddly to undo on mobile.
+       Leaflet's own container sets its own touch-action: none/pinch-zoom
+       (see leaflet.css .leaflet-touch-drag/.leaflet-touch-zoom), which is
+       more restrictive and wins there regardless, so in-map pinch-to-zoom
+       is unaffected. */
+    touch-action: pan-x pan-y;
 }
 
 .leaflet-container {
