@@ -123,7 +123,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
         if (hidingZoneOld !== null) {
             // Legacy base64 encoding
             try {
-                loadHidingZone(atob(hidingZoneOld));
+                loadHidingZone(atob(hidingZoneOld), false);
                 // Remove hiding zone parameter after initial load
                 window.history.replaceState({}, "", window.location.pathname);
             } catch (e) {
@@ -133,7 +133,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
             // Modern compressed format
             decompress(hidingZoneCompressed).then((data) => {
                 try {
-                    loadHidingZone(data);
+                    loadHidingZone(data, false);
                     // Remove hiding zone parameter after initial load
                     window.history.replaceState(
                         {},
@@ -148,15 +148,12 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
             fetchFromPastebin(pastebinId)
                 .then((data) => {
                     try {
-                        loadHidingZone(data);
+                        loadHidingZone(data, false);
                         // Remove pb parameter after initial load
                         window.history.replaceState(
                             {},
                             "",
                             window.location.pathname,
-                        );
-                        toast.success(
-                            "Successfully loaded data from Pastebin link!",
                         );
                     } catch (e) {
                         toast.error(`Invalid data from Pastebin: ${e}`);
@@ -171,7 +168,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
         }
     }, []);
 
-    const loadHidingZone = (hidingZone: string) => {
+    const loadHidingZone = (hidingZone: string, showSuccessToast = true) => {
         try {
             const geojson = parseJsonLenient(hidingZone) as any;
 
@@ -218,9 +215,11 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                 permanentOverlay.set(null);
             }
 
-            toast.success("Hiding zone loaded successfully", {
-                autoClose: 2000,
-            });
+            if (showSuccessToast) {
+                toast.success("Hiding zone loaded successfully", {
+                    autoClose: 2000,
+                });
+            }
         } catch (e) {
             toast.error(`Invalid hiding zone settings: ${e}`);
         }
