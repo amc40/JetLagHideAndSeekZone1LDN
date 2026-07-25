@@ -18,11 +18,8 @@ import {
     fetchCuratedMuseums,
     fetchCuratedParks,
     findPlacesInZone,
-    findPlacesSpecificInZone,
     LOCATION_FIRST_TAG,
-    nearestToQuestion,
     prettifyLocation,
-    QuestionSpecificLocation,
 } from "@/maps/api";
 import {
     arcBufferToPoint,
@@ -31,11 +28,7 @@ import {
     holedMask,
     modifyMapData,
 } from "@/maps/geo-utils";
-import type {
-    APILocations,
-    HomeGameMeasuringQuestions,
-    MeasuringQuestion,
-} from "@/maps/schema";
+import type { APILocations, MeasuringQuestion } from "@/maps/schema";
 
 export const determineMeasuringBoundary = async (
     question: MeasuringQuestion,
@@ -134,15 +127,6 @@ export const determineMeasuringBoundary = async (
                 ).features[0],
             ];
         }
-        case "aquarium":
-        case "museum":
-        case "hospital":
-        case "cinema":
-        case "library":
-        case "consulate":
-        case "park":
-        case "mcdonalds":
-        case "seven11":
         case "rail-measure":
         case "sea-level":
             return false;
@@ -222,38 +206,6 @@ export const hiderifyMeasuring = async (question: MeasuringQuestion) => {
         return question;
     }
 
-    if (
-        [
-            "aquarium",
-            "museum",
-            "hospital",
-            "cinema",
-            "library",
-            "consulate",
-            "park",
-        ].includes(question.type)
-    ) {
-        const questionNearest = await nearestToQuestion(
-            question as HomeGameMeasuringQuestions,
-        );
-        const hiderNearest = await nearestToQuestion({
-            lat: $hiderMode.latitude,
-            lng: $hiderMode.longitude,
-            hiderCloser: true,
-            type: (question as HomeGameMeasuringQuestions).type,
-            drag: false,
-            color: "black",
-            collapsed: false,
-            hidden: false,
-        });
-
-        question.hiderCloser =
-            questionNearest.properties.distanceToPoint >
-            hiderNearest.properties.distanceToPoint;
-
-        return question;
-    }
-
     if (question.type === "rail-measure") {
         const stations = trainStations.get();
 
@@ -280,31 +232,6 @@ export const hiderifyMeasuring = async (question: MeasuringQuestion) => {
         const hiderDistance = turf.distance(hider, hiderNearest);
 
         question.hiderCloser = hiderDistance < distance;
-    }
-
-    if (question.type === "mcdonalds" || question.type === "seven11") {
-        const points = await findPlacesSpecificInZone(
-            question.type === "mcdonalds"
-                ? QuestionSpecificLocation.McDonalds
-                : QuestionSpecificLocation.Seven11,
-        );
-
-        const seeker = turf.point([question.lng, question.lat]);
-        const nearest = turf.nearestPoint(seeker, points as any);
-
-        const distance = turf.distance(seeker, nearest, {
-            units: "miles",
-        });
-
-        const hider = turf.point([$hiderMode.longitude, $hiderMode.latitude]);
-        const hiderNearest = turf.nearestPoint(hider, points as any);
-
-        const hiderDistance = turf.distance(hider, hiderNearest, {
-            units: "miles",
-        });
-
-        question.hiderCloser = hiderDistance < distance;
-        return question;
     }
 
     const $mapGeoJSON = mapGeoJSON.get();

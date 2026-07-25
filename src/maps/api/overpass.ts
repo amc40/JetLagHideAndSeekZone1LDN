@@ -11,17 +11,7 @@ import {
 import { safeUnion } from "@/maps/geo-utils";
 
 import { cacheFetch, determineCache } from "./cache";
-import {
-    LOCATION_FIRST_TAG,
-    OVERPASS_API,
-    OVERPASS_API_FALLBACK,
-} from "./constants";
-import type {
-    EncompassingTentacleQuestionSchema,
-    HomeGameMatchingQuestions,
-    HomeGameMeasuringQuestions,
-    QuestionSpecificLocation,
-} from "./types";
+import { OVERPASS_API, OVERPASS_API_FALLBACK } from "./constants";
 import { CacheType } from "./types";
 
 export const getOverpassData = async (
@@ -90,52 +80,6 @@ export const determineGeoJSON = async (
             (feature: any) => feature.geometry.type !== "Point",
         ),
     };
-};
-
-export const findTentacleLocations = async (
-    question: EncompassingTentacleQuestionSchema,
-    text: string = "Determining tentacle locations...",
-) => {
-    const query = `
-[out:json][timeout:25];
-nwr["${LOCATION_FIRST_TAG[question.locationType]}"="${question.locationType}"](around:${turf.convertLength(
-        question.radius,
-        question.unit,
-        "meters",
-    )}, ${question.lat}, ${question.lng});
-out center;
-    `;
-    const data = await getOverpassData(query, text);
-    const elements = data.elements;
-    const response = turf.points([]);
-    elements.forEach((element: any) => {
-        if (!element.tags["name"] && !element.tags["name:en"]) return;
-        if (element.lat && element.lon) {
-            const name = element.tags["name:en"] ?? element.tags["name"];
-            if (
-                response.features.find(
-                    (feature: any) => feature.properties.name === name,
-                )
-            )
-                return;
-            response.features.push(
-                turf.point([element.lon, element.lat], { name }),
-            );
-        }
-        if (!element.center || !element.center.lon || !element.center.lat)
-            return;
-        const name = element.tags["name:en"] ?? element.tags["name"];
-        if (
-            response.features.find(
-                (feature: any) => feature.properties.name === name,
-            )
-        )
-            return;
-        response.features.push(
-            turf.point([element.center.lon, element.center.lat], { name }),
-        );
-    });
-    return response;
 };
 
 export const fetchCoastline = async () => {
@@ -377,56 +321,6 @@ out ${outType};
         });
     }
     return data;
-};
-
-export const findPlacesSpecificInZone = async (
-    location: `${QuestionSpecificLocation}`,
-) => {
-    const locations = (
-        await findPlacesInZone(
-            location,
-            `Finding ${
-                location === '["brand:wikidata"="Q38076"]'
-                    ? "McDonald's"
-                    : "7-Elevens"
-            }...`,
-        )
-    ).elements;
-    return turf.featureCollection(
-        locations.map((x: any) =>
-            turf.point([
-                x.center ? x.center.lon : x.lon,
-                x.center ? x.center.lat : x.lat,
-            ]),
-        ),
-    );
-};
-
-export const nearestToQuestion = async (
-    question: HomeGameMatchingQuestions | HomeGameMeasuringQuestions,
-) => {
-    let radius = 30;
-    let instances: any = { features: [] };
-    while (instances.features.length === 0) {
-        instances = await findTentacleLocations(
-            {
-                lat: question.lat,
-                lng: question.lng,
-                radius: radius,
-                unit: "miles",
-                location: false,
-                locationType: question.type,
-                drag: false,
-                color: "black",
-                collapsed: false,
-                hidden: false,
-            },
-            "Finding matching locations...",
-        );
-        radius += 30;
-    }
-    const questionPoint = turf.point([question.lng, question.lat]);
-    return turf.nearestPoint(questionPoint, instances as any);
 };
 
 export const determineMapBoundaries = async () => {
