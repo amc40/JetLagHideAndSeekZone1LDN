@@ -1,6 +1,7 @@
 import { expect, test } from "vitest";
 
 import { extractJsonObject, parseJsonLenient } from "@/lib/utils";
+import { questionSchema } from "@/maps/schema";
 
 test("parses plain JSON unchanged", () => {
     const data = '{"a":1,"b":[1,2,3]}';
@@ -34,4 +35,29 @@ test("throws the original error when no valid JSON can be found", () => {
 
 test("extractJsonObject returns input unchanged when no object is present", () => {
     expect(extractJsonObject("no braces here")).toBe("no braces here");
+});
+
+test("parses a single pasted question with a Firefox share footer, as used by the Paste Question flow", () => {
+    const data = `{
+    "id": "radius",
+    "key": 0.639488280478519,
+    "data": {
+        "lat": 51.49987749431748,
+        "lng": -0.16994476318359375,
+        "drag": true,
+        "color": "orange",
+        "collapsed": false,
+        "hidden": false,
+        "radius": 1,
+        "unit": "kilometers",
+        "within": true
+    }
+}
+
+Sent from Firefox 🦊 https://mzl.la/43doGMX`;
+
+    const parsed = parseJsonLenient(data);
+    expect(() =>
+        questionSchema.parse({ ...(parsed as object), key: Math.random() }),
+    ).not.toThrow();
 });

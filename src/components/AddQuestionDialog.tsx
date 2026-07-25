@@ -20,6 +20,7 @@ import {
     questionModified,
     questions,
 } from "@/lib/context";
+import { parseJsonLenient } from "@/lib/utils";
 import { hiderifyQuestion } from "@/maps";
 import { questionSchema } from "@/maps/schema";
 
@@ -100,7 +101,7 @@ export const AddQuestionDialog = ({
         try {
             await toast.promise(
                 navigator.clipboard.readText().then(async (text) => {
-                    const parsed = JSON.parse(text);
+                    const parsed = parseJsonLenient(text);
                     const question =
                         parsed &&
                         typeof parsed === "object" &&
