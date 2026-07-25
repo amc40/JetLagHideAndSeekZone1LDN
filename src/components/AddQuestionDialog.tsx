@@ -12,7 +12,16 @@ import {
 } from "@/components/ui/dialog";
 import { SidebarContext, SidebarMenuButton } from "@/components/ui/sidebar-l";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { addQuestion, isLoading, leafletMapContext } from "@/lib/context";
+import {
+    addQuestion,
+    hiderMode,
+    isLoading,
+    leafletMapContext,
+    questionModified,
+    questions,
+} from "@/lib/context";
+import { hiderifyQuestion } from "@/maps";
+import { questionSchema } from "@/maps/schema";
 
 export const AddQuestionDialog = ({
     children,
@@ -90,7 +99,7 @@ export const AddQuestionDialog = ({
 
         try {
             await toast.promise(
-                navigator.clipboard.readText().then((text) => {
+                navigator.clipboard.readText().then(async (text) => {
                     const parsed = JSON.parse(text);
                     const question =
                         parsed &&
@@ -99,7 +108,17 @@ export const AddQuestionDialog = ({
                             ? { ...parsed, key: Math.random() }
                             : parsed;
 
-                    return addQuestion(question);
+                    const validated = questionSchema.parse(question);
+
+                    // If hider mode is on, answer the pasted question
+                    // immediately and lock it so it doesn't get
+                    // accidentally edited or re-answered later.
+                    if (hiderMode.get() !== false) {
+                        await hiderifyQuestion(validated);
+                        validated.data.drag = false;
+                    }
+
+                    return questionModified(questions.get().push(validated));
                 }),
                 {
                     pending: "Reading from clipboard",
