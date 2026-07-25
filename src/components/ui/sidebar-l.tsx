@@ -31,7 +31,13 @@ const SIDEBAR_TUTORIAL_STEPS = [4];
 // editing questions; draggable up to near-full-height for long question lists.
 // vaul only treats plain numbers as fractions of the viewport (0-1) —
 // string snap points are parsed as raw pixel values, not percentages.
-const SIDEBAR_MOBILE_SNAP_POINTS: (number | string)[] = [0.45, 0.9];
+// The top snap point must be 1: vaul translates the (fixed-height) drawer
+// down by (1 - snapPoint) * viewportHeight to reveal a lower fraction, but
+// never shrinks its height to match, so any snap point below 1 leaves that
+// same amount of the drawer's bottom permanently rendered below the
+// viewport — unscrollable-into-view — which was clipping the last question
+// card's action row.
+const SIDEBAR_MOBILE_SNAP_POINTS: (number | string)[] = [0.45, 1];
 export const MENU_ITEM_CLASSNAME =
     "flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm outline-none ring-sidebar-ring transition-[width,height,padding] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 group-has-[[data-sidebar=menu-action]]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:!size-8 group-data-[collapsible=icon]:!p-2 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0";
 
@@ -461,7 +467,7 @@ const SidebarContent = React.forwardRef<
             ref={ref}
             data-sidebar="content"
             className={cn(
-                "flex min-h-0 flex-1 flex-col gap-2 overflow-auto group-data-[collapsible=icon]:overflow-hidden",
+                "flex min-h-0 flex-1 flex-col gap-2 overflow-auto pb-[calc(1rem+env(safe-area-inset-bottom))] group-data-[collapsible=icon]:overflow-hidden",
                 className,
             )}
             {...props}
