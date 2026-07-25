@@ -19,16 +19,34 @@ const arcgisWasmPath = fileURLToPath(
         import.meta.url,
     ),
 );
-const additionalManifestEntries = existsSync(arcgisWasmPath)
-    ? [
-          {
-              url: `arcgis-assets/esri/geometry/support/pe-wasm.wasm`,
-              revision: createHash("md5")
-                  .update(readFileSync(arcgisWasmPath))
-                  .digest("hex"),
-          },
-      ]
-    : [];
+
+// The default Workbox globPatterns only picks up common web-asset
+// extensions (js/css/html/...), so binary/data files copied into public/
+// need to be added explicitly - otherwise they're only cached the first
+// time a page fetches them at runtime (via the app's own Cache API calls),
+// not precached on install. That's fine for data fetched from Overpass at
+// runtime, but anything the app needs to work offline from a cold install
+// (no prior visit) has to go in this list.
+const precacheDataFile = (relativePath) => {
+    const absolutePath = fileURLToPath(
+        new URL(`./public/${relativePath}`, import.meta.url),
+    );
+    return existsSync(absolutePath)
+        ? [
+              {
+                  url: relativePath,
+                  revision: createHash("md5")
+                      .update(readFileSync(absolutePath))
+                      .digest("hex"),
+              },
+          ]
+        : [];
+};
+
+const additionalManifestEntries = [
+    ...precacheDataFile("arcgis-assets/esri/geometry/support/pe-wasm.wasm"),
+    ...precacheDataFile("elevation-london.bin"),
+];
 
 /**
  * @param {RegExp} urlPattern
