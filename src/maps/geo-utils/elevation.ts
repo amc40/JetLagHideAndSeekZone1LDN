@@ -65,7 +65,7 @@ export const loadGrid = (): Promise<Int16Array> => {
         gridPromise = (async () => {
             const response = await cacheFetch(
                 versionedPublicUrl("elevation-london.bin"),
-                "Loading elevation data...",
+                undefined,
                 CacheType.PERMANENT_CACHE,
             );
             const buffer = await response.arrayBuffer();

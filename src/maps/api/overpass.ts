@@ -51,10 +51,13 @@ export const getOverpassData = async (
     return data;
 };
 
+// These fetch bundled static files from PERMANENT_CACHE, warmed on mount
+// (see Map.tsx) - by the time anything actually needs them they're expected
+// to already be cached, so they never show a loading toast.
 export const fetchCoastline = async () => {
     const response = await cacheFetch(
         versionedPublicUrl("coastline50.geojson"),
-        "Fetching coastline data...",
+        undefined,
         CacheType.PERMANENT_CACHE,
     );
     const data = await response.json();
@@ -64,7 +67,7 @@ export const fetchCoastline = async () => {
 export const fetchCuratedStations = async () => {
     const response = await cacheFetch(
         versionedPublicUrl("curated-stations.geojson"),
-        "Loading curated stations...",
+        undefined,
         CacheType.PERMANENT_CACHE,
     );
     const data = await response.json();
@@ -74,7 +77,7 @@ export const fetchCuratedStations = async () => {
 export const fetchCuratedHospitals = async () => {
     const response = await cacheFetch(
         versionedPublicUrl("curated-hospitals.geojson"),
-        "Loading curated hospitals...",
+        undefined,
         CacheType.PERMANENT_CACHE,
     );
     const data = await response.json();
@@ -84,7 +87,7 @@ export const fetchCuratedHospitals = async () => {
 export const fetchCuratedParks = async () => {
     const response = await cacheFetch(
         versionedPublicUrl("curated-parks.geojson"),
-        "Loading curated parks...",
+        undefined,
         CacheType.PERMANENT_CACHE,
     );
     const data = await response.json();
@@ -94,7 +97,7 @@ export const fetchCuratedParks = async () => {
 export const fetchCuratedCinemas = async () => {
     const response = await cacheFetch(
         versionedPublicUrl("curated-cinemas.geojson"),
-        "Loading curated cinemas...",
+        undefined,
         CacheType.PERMANENT_CACHE,
     );
     const data = await response.json();
@@ -104,7 +107,7 @@ export const fetchCuratedCinemas = async () => {
 export const fetchCuratedHighspeed = async () => {
     const response = await cacheFetch(
         versionedPublicUrl("curated-highspeed.geojson"),
-        "Loading curated high-speed rail stations...",
+        undefined,
         CacheType.PERMANENT_CACHE,
     );
     const data = await response.json();
@@ -114,7 +117,7 @@ export const fetchCuratedHighspeed = async () => {
 export const fetchCuratedConsulates = async () => {
     const response = await cacheFetch(
         versionedPublicUrl("curated-consulates.geojson"),
-        "Loading curated consulates...",
+        undefined,
         CacheType.PERMANENT_CACHE,
     );
     const data = await response.json();
@@ -124,7 +127,7 @@ export const fetchCuratedConsulates = async () => {
 export const fetchCuratedAquariums = async () => {
     const response = await cacheFetch(
         versionedPublicUrl("curated-aquariums.geojson"),
-        "Loading curated aquariums...",
+        undefined,
         CacheType.PERMANENT_CACHE,
     );
     const data = await response.json();
@@ -134,7 +137,7 @@ export const fetchCuratedAquariums = async () => {
 export const fetchCuratedLibraries = async () => {
     const response = await cacheFetch(
         versionedPublicUrl("curated-libraries.geojson"),
-        "Loading curated libraries...",
+        undefined,
         CacheType.PERMANENT_CACHE,
     );
     const data = await response.json();
@@ -149,7 +152,7 @@ export const fetchCuratedLibraries = async () => {
 export const fetchLondonBoroughs = async () => {
     const response = await cacheFetch(
         versionedPublicUrl("london-boroughs.geojson"),
-        "Loading London boroughs...",
+        undefined,
         CacheType.PERMANENT_CACHE,
     );
     const data = await response.json();
@@ -165,7 +168,7 @@ export const fetchLondonBoroughs = async () => {
 export const fetchThamesLine = async () => {
     const response = await cacheFetch(
         versionedPublicUrl("thames.geojson"),
-        "Loading the Thames...",
+        undefined,
         CacheType.PERMANENT_CACHE,
     );
     const data = await response.json();
@@ -175,7 +178,7 @@ export const fetchThamesLine = async () => {
 export const fetchCuratedMuseums = async () => {
     const response = await cacheFetch(
         versionedPublicUrl("curated-museums.geojson"),
-        "Loading curated museums...",
+        undefined,
         CacheType.PERMANENT_CACHE,
     );
     const data = await response.json();
