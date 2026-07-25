@@ -1,7 +1,6 @@
 import { useStore } from "@nanostores/react";
 import * as turf from "@turf/turf";
 import React from "react";
-import { toast } from "react-toastify";
 
 import {
     Dialog,
@@ -12,16 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { SidebarContext, SidebarMenuButton } from "@/components/ui/sidebar-l";
 import { useIsMobile } from "@/hooks/use-mobile";
-import {
-    addQuestion,
-    hiderMode,
-    isLoading,
-    leafletMapContext,
-    questionModified,
-    questions,
-} from "@/lib/context";
-import { hiderifyQuestion } from "@/maps";
-import { questionSchema } from "@/maps/schema";
+import { addQuestion, isLoading, leafletMapContext } from "@/lib/context";
 
 export const AddQuestionDialog = ({
     children,
@@ -91,49 +81,6 @@ export const AddQuestionDialog = ({
         return true;
     };
 
-    const runPasteQuestion = async () => {
-        if (!navigator || !navigator.clipboard) {
-            toast.error("Clipboard API not supported in your browser");
-            return false;
-        }
-
-        try {
-            await toast.promise(
-                navigator.clipboard.readText().then(async (text) => {
-                    const parsed = JSON.parse(text);
-                    const question =
-                        parsed &&
-                        typeof parsed === "object" &&
-                        !Array.isArray(parsed)
-                            ? { ...parsed, key: Math.random() }
-                            : parsed;
-
-                    const validated = questionSchema.parse(question);
-
-                    // If hider mode is on, answer the pasted question
-                    // immediately and lock it so it doesn't get
-                    // accidentally edited or re-answered later.
-                    if (hiderMode.get() !== false) {
-                        await hiderifyQuestion(validated);
-                        validated.data.drag = false;
-                    }
-
-                    return questionModified(questions.get().push(validated));
-                }),
-                {
-                    pending: "Reading from clipboard",
-                    success: "Question added from clipboard!",
-                    error: "No valid question found in clipboard",
-                },
-                { autoClose: 1000 },
-            );
-
-            return true;
-        } catch {
-            return false;
-        }
-    };
-
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>{children}</DialogTrigger>
@@ -175,15 +122,6 @@ export const AddQuestionDialog = ({
                         disabled={$isLoading}
                     >
                         Add Measuring
-                    </SidebarMenuButton>
-                    <SidebarMenuButton
-                        onClick={async () => {
-                            const ok = await runPasteQuestion();
-                            if (ok) closeAll();
-                        }}
-                        disabled={$isLoading}
-                    >
-                        Paste Question
                     </SidebarMenuButton>
                 </div>
             </DialogContent>
