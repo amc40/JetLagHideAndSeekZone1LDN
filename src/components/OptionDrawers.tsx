@@ -49,12 +49,18 @@ import {
     showTutorial,
     triggerLocalRefresh,
 } from "@/lib/context";
+import { describeQuestionsSummary } from "@/lib/describeQuestion";
 import {
     HIDING_ZONE_COMPRESSED_URL_PARAM,
     PASTEBIN_URL_PARAM,
     shareHidingZone,
 } from "@/lib/shareHidingZone";
-import { cn, decompress, fetchFromPastebin } from "@/lib/utils";
+import {
+    cn,
+    decompress,
+    fetchFromPastebin,
+    parseJsonLenient,
+} from "@/lib/utils";
 import { CacheType, clearCache } from "@/maps/api";
 import { questionsSchema } from "@/maps/schema";
 
@@ -168,7 +174,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
 
     const loadHidingZone = (hidingZone: string) => {
         try {
-            const geojson = JSON.parse(hidingZone);
+            const geojson = parseJsonLenient(hidingZone) as any;
 
             if (
                 geojson.properties &&
@@ -445,7 +451,9 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                                 "Clipboard not supported",
                                             );
                                         navigator.clipboard.writeText(
-                                            JSON.stringify($hidingZone),
+                                            describeQuestionsSummary(
+                                                $hidingZone.questions,
+                                            ) + JSON.stringify($hidingZone),
                                         );
                                         toast.success(
                                             "Hiding zone copied successfully",
@@ -538,8 +546,10 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                             const clipboard =
                                                 await navigator.clipboard.readText();
                                             const geojson =
-                                                JSON.parse(clipboard);
-                                            permanentOverlay.set(geojson);
+                                                parseJsonLenient(clipboard);
+                                            permanentOverlay.set(
+                                                geojson as any,
+                                            );
                                         } catch (e) {
                                             toast.error(
                                                 `Invalid GeoJSON overlay: ${e}`,

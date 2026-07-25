@@ -11,6 +11,70 @@ export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
 }
 
+/**
+ * Finds the first balanced `{...}` object in a string, correctly skipping
+ * over braces that appear inside string literals. Used to tolerate JSON
+ * pasted alongside extra text (e.g. an email/notes app's "Sent from ..."
+ * signature appended after the JSON).
+ */
+export function extractJsonObject(text: string): string {
+    const start = text.indexOf("{");
+    if (start === -1) return text;
+
+    let depth = 0;
+    let inString = false;
+    let escapeNext = false;
+
+    for (let i = start; i < text.length; i++) {
+        const char = text[i];
+
+        if (inString) {
+            if (escapeNext) {
+                escapeNext = false;
+            } else if (char === "\\") {
+                escapeNext = true;
+            } else if (char === '"') {
+                inString = false;
+            }
+            continue;
+        }
+
+        if (char === '"') {
+            inString = true;
+        } else if (char === "{") {
+            depth++;
+        } else if (char === "}") {
+            depth--;
+            if (depth === 0) {
+                return text.slice(start, i + 1);
+            }
+        }
+    }
+
+    return text;
+}
+
+/**
+ * Parses JSON, tolerating leading/trailing text around the object (e.g. a
+ * footer some apps append when sharing text) by retrying against the first
+ * balanced `{...}` substring if the initial parse fails.
+ */
+export function parseJsonLenient(text: string): unknown {
+    try {
+        return JSON.parse(text);
+    } catch (e) {
+        const extracted = extractJsonObject(text);
+        if (extracted !== text) {
+            try {
+                return JSON.parse(extracted);
+            } catch {
+                // fall through to throw the original error below
+            }
+        }
+        throw e;
+    }
+}
+
 export const mapToObj = <T, K extends string, V>(
     arr: T[],
     fn: (item: T) => [K, V],
