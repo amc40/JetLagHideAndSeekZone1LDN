@@ -106,10 +106,14 @@ export default defineConfig({
         AstroPWA({
             registerType: "autoUpdate",
             manifest: {
-                name: "Jet Lag Hide and Seek Map Generator",
-                short_name: "Map Generator",
+                name: "Zone 1 London Hider Map",
+                short_name: "Zone 1 LDN",
                 description:
                     "Automatically generate maps for Jet Lag The Game: Hide and Seek with ease! Simply name the questions and watch the map eliminate hundreds of possibilities in seconds.",
+                display: "standalone",
+                start_url: `/${base}/`,
+                scope: `/${base}/`,
+                background_color: "#1F2F3F",
                 icons: [
                     {
                         src: "/JLIcon.png",
