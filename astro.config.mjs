@@ -9,6 +9,8 @@ import tailwind from "@astrojs/tailwind";
 import AstroPWA from "@vite-pwa/astro";
 import { defineConfig } from "astro/config";
 
+import { ICON_COLORS } from "./src/maps/api/constants.ts";
+
 const base = "JetLagHideAndSeekZone1LDN";
 
 // The default Workbox globPatterns only picks up common web-asset
@@ -56,15 +58,12 @@ const additionalManifestEntries = [
     // (DraggableMarkers.tsx), so Vite's build never sees an import and the
     // default Workbox globPatterns (js/css/html) never picks up these PNGs.
     // Without this they 404 offline the first time a new question marker
-    // (a color the user hasn't dragged yet, so never runtime-cached) is added.
-    ...precacheDataFile("marker-icon-2x-black.png"),
-    ...precacheDataFile("marker-icon-2x-blue.png"),
-    ...precacheDataFile("marker-icon-2x-gold.png"),
-    ...precacheDataFile("marker-icon-2x-green.png"),
-    ...precacheDataFile("marker-icon-2x-grey.png"),
-    ...precacheDataFile("marker-icon-2x-orange.png"),
-    ...precacheDataFile("marker-icon-2x-red.png"),
-    ...precacheDataFile("marker-icon-2x-violet.png"),
+    // (a color the user hasn't dragged yet, so never runtime-cached) is
+    // added. Derived from ICON_COLORS so a new color added there is
+    // automatically precached too.
+    ...Object.keys(ICON_COLORS).flatMap((color) =>
+        precacheDataFile(`marker-icon-2x-${color}.png`),
+    ),
     ...precacheDataFile("marker-icon-2x.png"),
     ...precacheDataFile("marker-icon.png"),
     ...precacheDataFile("marker-shadow.png"),
