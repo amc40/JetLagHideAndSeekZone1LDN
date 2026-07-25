@@ -168,6 +168,38 @@ export const QuestionCard = ({
                                                 &ldquo;Questions&rdquo; sidebar.
                                             </DialogDescription>
                                         </DialogHeader>
+                                        {typeof navigator !== "undefined" &&
+                                            "share" in navigator && (
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    className="mb-2 sm:mb-0 transition-colors"
+                                                    onClick={() => {
+                                                        const questionJSON =
+                                                            JSON.stringify(
+                                                                $questions.find(
+                                                                    (q) =>
+                                                                        q.key ===
+                                                                        questionKey,
+                                                                ),
+                                                                null,
+                                                                4,
+                                                            );
+                                                        navigator
+                                                            .share({
+                                                                title: "Jet Lag Hide and Seek Question",
+                                                                text: questionJSON,
+                                                            })
+                                                            .catch(() => {
+                                                                // User cancelled or share failed; the
+                                                                // clipboard option below still works.
+                                                            });
+                                                    }}
+                                                >
+                                                    <VscShare className="size-4" />
+                                                    Share
+                                                </Button>
+                                            )}
                                         <Button
                                             variant="outline"
                                             size="sm"
