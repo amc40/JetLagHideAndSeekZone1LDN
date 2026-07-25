@@ -102,20 +102,35 @@ export const PasteQuestionButton = () => {
 
                     if (existingIndex === -1) {
                         questionModified($questions.push(validated));
-                        return false;
+                        return "added" as const;
+                    }
+
+                    // An unlocked (still-being-answered) paste is a stale or
+                    // in-progress copy - never let it clobber whatever we
+                    // already have for this question, locked or not. Only a
+                    // locked incoming copy (a settled answer) takes
+                    // precedence over the existing entry.
+                    if (validated.data.drag) {
+                        return "skipped" as const;
                     }
 
                     $questions[existingIndex] = validated;
                     questionModified(existingIndex);
-                    return true;
+                    return "updated" as const;
                 }),
                 {
                     pending: "Reading from clipboard",
                     success: {
-                        render: ({ data: wasUpdate }) =>
-                            wasUpdate
-                                ? "Question updated from clipboard!"
-                                : "Question added from clipboard!",
+                        render: ({ data: outcome }) => {
+                            switch (outcome) {
+                                case "updated":
+                                    return "Question updated from clipboard!";
+                                case "skipped":
+                                    return "Already have this question - clipboard copy is unanswered, ignoring";
+                                default:
+                                    return "Question added from clipboard!";
+                            }
+                        },
                     },
                     error: "No valid question found in clipboard",
                 },
