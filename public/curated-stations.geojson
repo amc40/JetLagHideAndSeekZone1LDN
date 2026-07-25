@@ -5,22 +5,28 @@
             "type": "Feature",
             "geometry": {
                 "type": "Point",
-                "coordinates": [-0.0722, 51.5152]
+                "coordinates": [-0.076, 51.514]
             },
             "properties": {
-                "id": "curated/aldgate-east-tube-station",
-                "name": "Aldgate East tube station"
+                "id": "curated/aldgate-tube-station",
+                "name": "Aldgate",
+                "modes": ["tube"],
+                "lines": ["Circle line", "Metropolitan line"],
+                "memberIds": ["curated/aldgate-tube-station"]
             }
         },
         {
             "type": "Feature",
             "geometry": {
                 "type": "Point",
-                "coordinates": [-0.076, 51.514]
+                "coordinates": [-0.0722, 51.5152]
             },
             "properties": {
-                "id": "curated/aldgate-tube-station",
-                "name": "Aldgate tube station"
+                "id": "curated/aldgate-east-tube-station",
+                "name": "Aldgate East",
+                "modes": ["tube"],
+                "lines": ["District line", "Hammersmith & City line"],
+                "memberIds": ["curated/aldgate-east-tube-station"]
             }
         },
         {
@@ -31,7 +37,10 @@
             },
             "properties": {
                 "id": "curated/angel-tube-station",
-                "name": "Angel tube station"
+                "name": "Angel",
+                "modes": ["tube"],
+                "lines": ["Northern line"],
+                "memberIds": ["curated/angel-tube-station"]
             }
         },
         {
@@ -42,7 +51,16 @@
             },
             "properties": {
                 "id": "curated/baker-street-tube-station",
-                "name": "Baker Street tube station"
+                "name": "Baker Street",
+                "modes": ["tube"],
+                "lines": [
+                    "Bakerloo line",
+                    "Circle line",
+                    "Hammersmith & City line",
+                    "Jubilee line",
+                    "Metropolitan line"
+                ],
+                "memberIds": ["curated/baker-street-tube-station"]
             }
         },
         {
@@ -53,7 +71,16 @@
             },
             "properties": {
                 "id": "curated/bank-and-monument-stations",
-                "name": "Bank and Monument stations"
+                "name": "Bank and Monument",
+                "modes": ["tube", "dlr"],
+                "lines": [
+                    "Central line",
+                    "Circle line",
+                    "DLR",
+                    "District line",
+                    "Northern line"
+                ],
+                "memberIds": ["curated/bank-and-monument-stations"]
             }
         },
         {
@@ -64,7 +91,15 @@
             },
             "properties": {
                 "id": "curated/barbican-tube-station",
-                "name": "Barbican tube station"
+                "name": "Barbican",
+                "modes": ["tube", "elizabeth"],
+                "lines": [
+                    "Circle line",
+                    "Elizabeth line",
+                    "Hammersmith & City line",
+                    "Metropolitan line"
+                ],
+                "memberIds": ["curated/barbican-tube-station"]
             }
         },
         {
@@ -75,18 +110,27 @@
             },
             "properties": {
                 "id": "curated/battersea-power-station-tube-station",
-                "name": "Battersea Power Station tube station"
+                "name": "Battersea Power Station",
+                "modes": ["tube"],
+                "lines": ["Northern line"],
+                "memberIds": ["curated/battersea-power-station-tube-station"]
             }
         },
         {
             "type": "Feature",
             "geometry": {
                 "type": "Point",
-                "coordinates": [-0.188, 51.512]
+                "coordinates": [-0.18761111, 51.51122222]
             },
             "properties": {
                 "id": "curated/bayswater-tube-station",
-                "name": "Bayswater tube station"
+                "name": "Bayswater",
+                "modes": ["tube"],
+                "lines": ["Central line", "Circle line", "District line"],
+                "memberIds": [
+                    "curated/bayswater-tube-station",
+                    "curated/queensway-tube-station"
+                ]
             }
         },
         {
@@ -97,7 +141,14 @@
             },
             "properties": {
                 "id": "curated/blackfriars-station",
-                "name": "Blackfriars station"
+                "name": "Blackfriars",
+                "modes": ["tube", "rail"],
+                "lines": [
+                    "Circle line",
+                    "District line",
+                    "Govia Thameslink Railway"
+                ],
+                "memberIds": ["curated/blackfriars-station"]
             }
         },
         {
@@ -108,7 +159,10 @@
             },
             "properties": {
                 "id": "curated/bond-street-station",
-                "name": "Bond Street station"
+                "name": "Bond Street",
+                "modes": ["tube", "elizabeth"],
+                "lines": ["Central line", "Elizabeth line", "Jubilee line"],
+                "memberIds": ["curated/bond-street-station"]
             }
         },
         {
@@ -119,7 +173,10 @@
             },
             "properties": {
                 "id": "curated/borough-tube-station",
-                "name": "Borough tube station"
+                "name": "Borough",
+                "modes": ["tube"],
+                "lines": ["Northern line"],
+                "memberIds": ["curated/borough-tube-station"]
             }
         },
         {
@@ -130,7 +187,16 @@
             },
             "properties": {
                 "id": "curated/cannon-street-station",
-                "name": "Cannon Street station"
+                "name": "Cannon Street",
+                "modes": ["tube", "rail", "dlr"],
+                "lines": [
+                    "Circle line",
+                    "DLR",
+                    "District line",
+                    "Northern line",
+                    "Southeastern"
+                ],
+                "memberIds": ["curated/cannon-street-station"]
             }
         },
         {
@@ -141,29 +207,33 @@
             },
             "properties": {
                 "id": "curated/chancery-lane-tube-station",
-                "name": "Chancery Lane tube station"
+                "name": "Chancery Lane",
+                "modes": ["tube"],
+                "lines": ["Central line"],
+                "memberIds": ["curated/chancery-lane-tube-station"]
             }
         },
         {
             "type": "Feature",
             "geometry": {
                 "type": "Point",
-                "coordinates": [-0.125, 51.508]
+                "coordinates": [-0.12486111, 51.508027780000006]
             },
             "properties": {
                 "id": "curated/charing-cross-railway-station",
-                "name": "Charing Cross railway station"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-0.12472222, 51.50805556]
-            },
-            "properties": {
-                "id": "curated/charing-cross-tube-station",
-                "name": "Charing Cross tube station"
+                "name": "Charing Cross",
+                "modes": ["tube", "rail"],
+                "lines": [
+                    "Bakerloo line",
+                    "Circle line",
+                    "District line",
+                    "Northern line",
+                    "Southeastern"
+                ],
+                "memberIds": [
+                    "curated/charing-cross-railway-station",
+                    "curated/charing-cross-tube-station"
+                ]
             }
         },
         {
@@ -174,7 +244,10 @@
             },
             "properties": {
                 "id": "curated/city-thameslink-railway-station",
-                "name": "City Thameslink railway station"
+                "name": "City Thameslink",
+                "modes": ["rail"],
+                "lines": ["Govia Thameslink Railway"],
+                "memberIds": ["curated/city-thameslink-railway-station"]
             }
         },
         {
@@ -185,7 +258,10 @@
             },
             "properties": {
                 "id": "curated/covent-garden-tube-station",
-                "name": "Covent Garden tube station"
+                "name": "Covent Garden",
+                "modes": ["tube"],
+                "lines": ["Piccadilly line"],
+                "memberIds": ["curated/covent-garden-tube-station"]
             }
         },
         {
@@ -196,51 +272,53 @@
             },
             "properties": {
                 "id": "curated/earl-s-court-tube-station",
-                "name": "Earl's Court tube station"
+                "name": "Earl's Court",
+                "modes": ["tube"],
+                "lines": ["District line", "Piccadilly line"],
+                "memberIds": ["curated/earl-s-court-tube-station"]
             }
         },
         {
             "type": "Feature",
             "geometry": {
                 "type": "Point",
-                "coordinates": [-0.170278, 51.520278]
+                "coordinates": [-0.169028, 51.520139]
             },
             "properties": {
                 "id": "curated/edgware-road-tube-station-bakerloo-line",
-                "name": "Edgware Road tube station (Bakerloo line)"
+                "name": "Edgware Road",
+                "modes": ["tube"],
+                "lines": [
+                    "Bakerloo line",
+                    "Circle line",
+                    "District line",
+                    "Hammersmith & City line"
+                ],
+                "memberIds": [
+                    "curated/edgware-road-tube-station-bakerloo-line",
+                    "curated/edgware-road-tube-station-circle-district-and-hammersmith-city-lines"
+                ]
             }
         },
         {
             "type": "Feature",
             "geometry": {
                 "type": "Point",
-                "coordinates": [-0.167778, 51.52]
-            },
-            "properties": {
-                "id": "curated/edgware-road-tube-station-circle-district-and-hammersmith-city-lines",
-                "name": "Edgware Road tube station (Circle, District and Hammersmith & City lines)"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-0.0998, 51.4944]
+                "coordinates": [-0.09975, 51.4944]
             },
             "properties": {
                 "id": "curated/elephant-castle-railway-station",
-                "name": "Elephant & Castle railway station"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-0.0997, 51.4944]
-            },
-            "properties": {
-                "id": "curated/elephant-castle-tube-station",
-                "name": "Elephant & Castle tube station"
+                "name": "Elephant & Castle",
+                "modes": ["tube", "rail"],
+                "lines": [
+                    "Bakerloo line",
+                    "Govia Thameslink Railway",
+                    "Northern line"
+                ],
+                "memberIds": [
+                    "curated/elephant-castle-railway-station",
+                    "curated/elephant-castle-tube-station"
+                ]
             }
         },
         {
@@ -251,7 +329,16 @@
             },
             "properties": {
                 "id": "curated/embankment-tube-station",
-                "name": "Embankment tube station"
+                "name": "Embankment",
+                "modes": ["tube", "rail"],
+                "lines": [
+                    "Bakerloo line",
+                    "Circle line",
+                    "District line",
+                    "Northern line",
+                    "Southeastern"
+                ],
+                "memberIds": ["curated/embankment-tube-station"]
             }
         },
         {
@@ -262,7 +349,21 @@
             },
             "properties": {
                 "id": "curated/euston-railway-station",
-                "name": "Euston railway station"
+                "name": "Euston",
+                "modes": ["tube", "rail", "overground"],
+                "lines": [
+                    "Avanti West Coast",
+                    "Caledonian Sleeper",
+                    "Lioness Line",
+                    "Lumo",
+                    "Northern line",
+                    "Victoria line",
+                    "West Midlands Trains"
+                ],
+                "memberIds": [
+                    "curated/euston-railway-station",
+                    "curated/euston-tube-station"
+                ]
             }
         },
         {
@@ -273,18 +374,15 @@
             },
             "properties": {
                 "id": "curated/euston-square-tube-station",
-                "name": "Euston Square tube station"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-0.1331, 51.5284]
-            },
-            "properties": {
-                "id": "curated/euston-tube-station",
-                "name": "Euston tube station"
+                "name": "Euston Square",
+                "modes": ["tube"],
+                "lines": [
+                    "Circle line",
+                    "Hammersmith & City line",
+                    "Metropolitan line",
+                    "Northern line"
+                ],
+                "memberIds": ["curated/euston-square-tube-station"]
             }
         },
         {
@@ -295,7 +393,16 @@
             },
             "properties": {
                 "id": "curated/farringdon-station",
-                "name": "Farringdon station"
+                "name": "Farringdon",
+                "modes": ["tube", "rail", "elizabeth"],
+                "lines": [
+                    "Circle line",
+                    "Elizabeth line",
+                    "Govia Thameslink Railway",
+                    "Hammersmith & City line",
+                    "Metropolitan line"
+                ],
+                "memberIds": ["curated/farringdon-station"]
             }
         },
         {
@@ -306,7 +413,10 @@
             },
             "properties": {
                 "id": "curated/fenchurch-street-railway-station",
-                "name": "Fenchurch Street railway station"
+                "name": "Fenchurch Street",
+                "modes": ["rail"],
+                "lines": ["c2c"],
+                "memberIds": ["curated/fenchurch-street-railway-station"]
             }
         },
         {
@@ -317,7 +427,10 @@
             },
             "properties": {
                 "id": "curated/gloucester-road-tube-station",
-                "name": "Gloucester Road tube station"
+                "name": "Gloucester Road",
+                "modes": ["tube"],
+                "lines": ["Circle line", "District line", "Piccadilly line"],
+                "memberIds": ["curated/gloucester-road-tube-station"]
             }
         },
         {
@@ -328,18 +441,32 @@
             },
             "properties": {
                 "id": "curated/goodge-street-tube-station",
-                "name": "Goodge Street tube station"
+                "name": "Goodge Street",
+                "modes": ["tube"],
+                "lines": ["Northern line"],
+                "memberIds": ["curated/goodge-street-tube-station"]
             }
         },
         {
             "type": "Feature",
             "geometry": {
                 "type": "Point",
-                "coordinates": [-0.1438, 51.5238]
+                "coordinates": [-0.1451, 51.52365]
             },
             "properties": {
                 "id": "curated/great-portland-street-tube-station",
-                "name": "Great Portland Street tube station"
+                "name": "Great Portland Street",
+                "modes": ["tube"],
+                "lines": [
+                    "Bakerloo line",
+                    "Circle line",
+                    "Hammersmith & City line",
+                    "Metropolitan line"
+                ],
+                "memberIds": [
+                    "curated/great-portland-street-tube-station",
+                    "curated/regent-s-park-tube-station"
+                ]
             }
         },
         {
@@ -350,7 +477,10 @@
             },
             "properties": {
                 "id": "curated/green-park-tube-station",
-                "name": "Green Park tube station"
+                "name": "Green Park",
+                "modes": ["tube"],
+                "lines": ["Jubilee line", "Piccadilly line", "Victoria line"],
+                "memberIds": ["curated/green-park-tube-station"]
             }
         },
         {
@@ -361,7 +491,10 @@
             },
             "properties": {
                 "id": "curated/high-street-kensington-tube-station",
-                "name": "High Street Kensington tube station"
+                "name": "High Street Kensington",
+                "modes": ["tube"],
+                "lines": ["Circle line", "District line"],
+                "memberIds": ["curated/high-street-kensington-tube-station"]
             }
         },
         {
@@ -372,7 +505,10 @@
             },
             "properties": {
                 "id": "curated/holborn-tube-station",
-                "name": "Holborn tube station"
+                "name": "Holborn",
+                "modes": ["tube"],
+                "lines": ["Central line", "Piccadilly line"],
+                "memberIds": ["curated/holborn-tube-station"]
             }
         },
         {
@@ -383,7 +519,10 @@
             },
             "properties": {
                 "id": "curated/hoxton-railway-station",
-                "name": "Hoxton railway station"
+                "name": "Hoxton",
+                "modes": ["overground"],
+                "lines": ["Windrush Line"],
+                "memberIds": ["curated/hoxton-railway-station"]
             }
         },
         {
@@ -394,7 +533,10 @@
             },
             "properties": {
                 "id": "curated/hyde-park-corner-tube-station",
-                "name": "Hyde Park Corner tube station"
+                "name": "Hyde Park Corner",
+                "modes": ["tube"],
+                "lines": ["Piccadilly line"],
+                "memberIds": ["curated/hyde-park-corner-tube-station"]
             }
         },
         {
@@ -405,7 +547,10 @@
             },
             "properties": {
                 "id": "curated/kennington-tube-station",
-                "name": "Kennington tube station"
+                "name": "Kennington",
+                "modes": ["tube"],
+                "lines": ["Northern line"],
+                "memberIds": ["curated/kennington-tube-station"]
             }
         },
         {
@@ -416,29 +561,44 @@
             },
             "properties": {
                 "id": "curated/kensington-olympia-station",
-                "name": "Kensington (Olympia) station"
+                "name": "Kensington (Olympia)",
+                "modes": ["tube", "rail", "overground"],
+                "lines": [
+                    "District line",
+                    "Govia Thameslink Railway",
+                    "Mildmay Line"
+                ],
+                "memberIds": ["curated/kensington-olympia-station"]
             }
         },
         {
             "type": "Feature",
             "geometry": {
                 "type": "Point",
-                "coordinates": [-0.1241, 51.5302]
+                "coordinates": [-0.12422592666666667, 51.53040000000001]
             },
             "properties": {
                 "id": "curated/king-s-cross-st-pancras-tube-station",
-                "name": "King's Cross St Pancras tube station"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-0.169, 51.4875]
-            },
-            "properties": {
-                "id": "curated/king-s-road-chelsea-railway-station",
-                "name": "King's Road Chelsea railway station"
+                "name": "King's Cross St Pancras",
+                "modes": ["tube", "rail"],
+                "lines": [
+                    "Circle line",
+                    "Eurostar",
+                    "Govia Thameslink Railway",
+                    "Grand Central",
+                    "Hammersmith & City line",
+                    "London North Eastern Railway",
+                    "Lumo",
+                    "Metropolitan line",
+                    "Northern line",
+                    "Piccadilly line",
+                    "Victoria line"
+                ],
+                "memberIds": [
+                    "curated/king-s-cross-st-pancras-tube-station",
+                    "curated/london-king-s-cross-railway-station",
+                    "curated/st-pancras-railway-station"
+                ]
             }
         },
         {
@@ -449,7 +609,10 @@
             },
             "properties": {
                 "id": "curated/knightsbridge-tube-station",
-                "name": "Knightsbridge tube station"
+                "name": "Knightsbridge",
+                "modes": ["tube"],
+                "lines": ["Piccadilly line"],
+                "memberIds": ["curated/knightsbridge-tube-station"]
             }
         },
         {
@@ -460,7 +623,10 @@
             },
             "properties": {
                 "id": "curated/lambeth-north-tube-station",
-                "name": "Lambeth North tube station"
+                "name": "Lambeth North",
+                "modes": ["tube"],
+                "lines": ["Bakerloo line"],
+                "memberIds": ["curated/lambeth-north-tube-station"]
             }
         },
         {
@@ -471,7 +637,10 @@
             },
             "properties": {
                 "id": "curated/lancaster-gate-tube-station",
-                "name": "Lancaster Gate tube station"
+                "name": "Lancaster Gate",
+                "modes": ["tube"],
+                "lines": ["Central line"],
+                "memberIds": ["curated/lancaster-gate-tube-station"]
             }
         },
         {
@@ -482,7 +651,10 @@
             },
             "properties": {
                 "id": "curated/leicester-square-tube-station",
-                "name": "Leicester Square tube station"
+                "name": "Leicester Square",
+                "modes": ["tube"],
+                "lines": ["Northern line", "Piccadilly line"],
+                "memberIds": ["curated/leicester-square-tube-station"]
             }
         },
         {
@@ -493,7 +665,18 @@
             },
             "properties": {
                 "id": "curated/liverpool-street-station",
-                "name": "Liverpool Street station"
+                "name": "Liverpool Street",
+                "modes": ["tube", "rail", "overground", "elizabeth"],
+                "lines": [
+                    "Central line",
+                    "Circle line",
+                    "Elizabeth line",
+                    "Greater Anglia",
+                    "Hammersmith & City line",
+                    "Metropolitan line",
+                    "Weaver Line"
+                ],
+                "memberIds": ["curated/liverpool-street-station"]
             }
         },
         {
@@ -504,51 +687,16 @@
             },
             "properties": {
                 "id": "curated/london-bridge-station",
-                "name": "London Bridge station"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-0.1233, 51.531]
-            },
-            "properties": {
-                "id": "curated/london-king-s-cross-railway-station",
-                "name": "London King's Cross railway station"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-0.1774, 51.5173]
-            },
-            "properties": {
-                "id": "curated/london-paddington-station",
-                "name": "London Paddington station"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-0.1441, 51.4952]
-            },
-            "properties": {
-                "id": "curated/london-victoria-station",
-                "name": "London Victoria station"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-0.1132, 51.5031]
-            },
-            "properties": {
-                "id": "curated/london-waterloo-station",
-                "name": "London Waterloo station"
+                "name": "London Bridge",
+                "modes": ["tube", "rail"],
+                "lines": [
+                    "Govia Thameslink Railway",
+                    "Jubilee line",
+                    "Northern line",
+                    "Southeastern",
+                    "Southern"
+                ],
+                "memberIds": ["curated/london-bridge-station"]
             }
         },
         {
@@ -559,7 +707,14 @@
             },
             "properties": {
                 "id": "curated/mansion-house-tube-station",
-                "name": "Mansion House tube station"
+                "name": "Mansion House",
+                "modes": ["tube"],
+                "lines": [
+                    "Circle line",
+                    "District line",
+                    "Waterloo & City line"
+                ],
+                "memberIds": ["curated/mansion-house-tube-station"]
             }
         },
         {
@@ -570,7 +725,10 @@
             },
             "properties": {
                 "id": "curated/marble-arch-tube-station",
-                "name": "Marble Arch tube station"
+                "name": "Marble Arch",
+                "modes": ["tube"],
+                "lines": ["Central line"],
+                "memberIds": ["curated/marble-arch-tube-station"]
             }
         },
         {
@@ -581,7 +739,10 @@
             },
             "properties": {
                 "id": "curated/marylebone-station",
-                "name": "Marylebone station"
+                "name": "Marylebone",
+                "modes": ["tube", "rail"],
+                "lines": ["Bakerloo line", "Chiltern Railways"],
+                "memberIds": ["curated/marylebone-station"]
             }
         },
         {
@@ -592,7 +753,17 @@
             },
             "properties": {
                 "id": "curated/moorgate-station",
-                "name": "Moorgate station"
+                "name": "Moorgate",
+                "modes": ["tube", "rail", "elizabeth"],
+                "lines": [
+                    "Circle line",
+                    "Elizabeth line",
+                    "Govia Thameslink Railway",
+                    "Hammersmith & City line",
+                    "Metropolitan line",
+                    "Northern line"
+                ],
+                "memberIds": ["curated/moorgate-station"]
             }
         },
         {
@@ -603,7 +774,10 @@
             },
             "properties": {
                 "id": "curated/nine-elms-tube-station",
-                "name": "Nine Elms tube station"
+                "name": "Nine Elms",
+                "modes": ["tube"],
+                "lines": ["Northern line"],
+                "memberIds": ["curated/nine-elms-tube-station"]
             }
         },
         {
@@ -614,7 +788,10 @@
             },
             "properties": {
                 "id": "curated/notting-hill-gate-tube-station",
-                "name": "Notting Hill Gate tube station"
+                "name": "Notting Hill Gate",
+                "modes": ["tube"],
+                "lines": ["Central line", "Circle line", "District line"],
+                "memberIds": ["curated/notting-hill-gate-tube-station"]
             }
         },
         {
@@ -625,7 +802,10 @@
             },
             "properties": {
                 "id": "curated/old-street-station",
-                "name": "Old Street station"
+                "name": "Old Street",
+                "modes": ["tube", "rail"],
+                "lines": ["Govia Thameslink Railway", "Northern line"],
+                "memberIds": ["curated/old-street-station"]
             }
         },
         {
@@ -636,29 +816,35 @@
             },
             "properties": {
                 "id": "curated/oxford-circus-tube-station",
-                "name": "Oxford Circus tube station"
+                "name": "Oxford Circus",
+                "modes": ["tube"],
+                "lines": ["Bakerloo line", "Central line", "Victoria line"],
+                "memberIds": ["curated/oxford-circus-tube-station"]
             }
         },
         {
             "type": "Feature",
             "geometry": {
                 "type": "Point",
-                "coordinates": [-0.1754, 51.5154]
+                "coordinates": [-0.1771, 51.5171]
             },
             "properties": {
-                "id": "curated/paddington-tube-station-bakerloo-circle-and-district-lines",
-                "name": "Paddington tube station (Bakerloo, Circle and District lines)"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-0.1785, 51.5186]
-            },
-            "properties": {
-                "id": "curated/paddington-tube-station-circle-and-hammersmith-city-lines",
-                "name": "Paddington tube station (Circle and Hammersmith & City lines)"
+                "id": "curated/london-paddington-station",
+                "name": "Paddington",
+                "modes": ["tube", "rail", "elizabeth"],
+                "lines": [
+                    "Bakerloo line",
+                    "Circle line",
+                    "District line",
+                    "Elizabeth line",
+                    "Great Western Railway",
+                    "Hammersmith & City line"
+                ],
+                "memberIds": [
+                    "curated/london-paddington-station",
+                    "curated/paddington-tube-station-bakerloo-circle-and-district-lines",
+                    "curated/paddington-tube-station-circle-and-hammersmith-city-lines"
+                ]
             }
         },
         {
@@ -669,7 +855,10 @@
             },
             "properties": {
                 "id": "curated/piccadilly-circus-tube-station",
-                "name": "Piccadilly Circus tube station"
+                "name": "Piccadilly Circus",
+                "modes": ["tube"],
+                "lines": ["Bakerloo line", "Piccadilly line"],
+                "memberIds": ["curated/piccadilly-circus-tube-station"]
             }
         },
         {
@@ -680,29 +869,10 @@
             },
             "properties": {
                 "id": "curated/pimlico-tube-station",
-                "name": "Pimlico tube station"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-0.18722222, 51.51044444]
-            },
-            "properties": {
-                "id": "curated/queensway-tube-station",
-                "name": "Queensway tube station"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-0.1464, 51.5235]
-            },
-            "properties": {
-                "id": "curated/regent-s-park-tube-station",
-                "name": "Regent's Park tube station"
+                "name": "Pimlico",
+                "modes": ["tube"],
+                "lines": ["Victoria line"],
+                "memberIds": ["curated/pimlico-tube-station"]
             }
         },
         {
@@ -713,7 +883,10 @@
             },
             "properties": {
                 "id": "curated/russell-square-tube-station",
-                "name": "Russell Square tube station"
+                "name": "Russell Square",
+                "modes": ["tube"],
+                "lines": ["Piccadilly line"],
+                "memberIds": ["curated/russell-square-tube-station"]
             }
         },
         {
@@ -724,7 +897,10 @@
             },
             "properties": {
                 "id": "curated/shoreditch-high-street-railway-station",
-                "name": "Shoreditch High Street railway station"
+                "name": "Shoreditch High Street",
+                "modes": ["overground"],
+                "lines": ["Windrush Line"],
+                "memberIds": ["curated/shoreditch-high-street-railway-station"]
             }
         },
         {
@@ -735,7 +911,10 @@
             },
             "properties": {
                 "id": "curated/sloane-square-tube-station",
-                "name": "Sloane Square tube station"
+                "name": "Sloane Square",
+                "modes": ["tube"],
+                "lines": ["Circle line", "District line"],
+                "memberIds": ["curated/sloane-square-tube-station"]
             }
         },
         {
@@ -746,7 +925,10 @@
             },
             "properties": {
                 "id": "curated/south-kensington-tube-station",
-                "name": "South Kensington tube station"
+                "name": "South Kensington",
+                "modes": ["tube"],
+                "lines": ["Circle line", "District line", "Piccadilly line"],
+                "memberIds": ["curated/south-kensington-tube-station"]
             }
         },
         {
@@ -757,7 +939,10 @@
             },
             "properties": {
                 "id": "curated/southwark-tube-station",
-                "name": "Southwark tube station"
+                "name": "Southwark",
+                "modes": ["tube", "rail"],
+                "lines": ["Jubilee line", "Southeastern"],
+                "memberIds": ["curated/southwark-tube-station"]
             }
         },
         {
@@ -768,18 +953,10 @@
             },
             "properties": {
                 "id": "curated/st-james-s-park-tube-station",
-                "name": "St James's Park tube station"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-0.12527778, 51.53]
-            },
-            "properties": {
-                "id": "curated/st-pancras-railway-station",
-                "name": "St Pancras railway station"
+                "name": "St James's Park",
+                "modes": ["tube"],
+                "lines": ["Circle line", "District line"],
+                "memberIds": ["curated/st-james-s-park-tube-station"]
             }
         },
         {
@@ -790,7 +967,10 @@
             },
             "properties": {
                 "id": "curated/st-paul-s-tube-station",
-                "name": "St Paul's tube station"
+                "name": "St Paul's",
+                "modes": ["tube"],
+                "lines": ["Central line"],
+                "memberIds": ["curated/st-paul-s-tube-station"]
             }
         },
         {
@@ -801,7 +981,10 @@
             },
             "properties": {
                 "id": "curated/temple-tube-station",
-                "name": "Temple tube station"
+                "name": "Temple",
+                "modes": ["tube"],
+                "lines": ["Circle line", "District line"],
+                "memberIds": ["curated/temple-tube-station"]
             }
         },
         {
@@ -812,29 +995,27 @@
             },
             "properties": {
                 "id": "curated/tottenham-court-road-station",
-                "name": "Tottenham Court Road station"
+                "name": "Tottenham Court Road",
+                "modes": ["tube", "elizabeth"],
+                "lines": ["Central line", "Elizabeth line", "Northern line"],
+                "memberIds": ["curated/tottenham-court-road-station"]
             }
         },
         {
             "type": "Feature",
             "geometry": {
                 "type": "Point",
-                "coordinates": [-0.0746, 51.5104]
+                "coordinates": [-0.0753, 51.5102]
             },
             "properties": {
                 "id": "curated/tower-gateway-dlr-station",
-                "name": "Tower Gateway DLR station"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-0.076, 51.51]
-            },
-            "properties": {
-                "id": "curated/tower-hill-tube-station",
-                "name": "Tower Hill tube station"
+                "name": "Tower Gateway",
+                "modes": ["tube", "rail", "dlr"],
+                "lines": ["Circle line", "DLR", "District line", "c2c"],
+                "memberIds": [
+                    "curated/tower-gateway-dlr-station",
+                    "curated/tower-hill-tube-station"
+                ]
             }
         },
         {
@@ -845,18 +1026,33 @@
             },
             "properties": {
                 "id": "curated/vauxhall-station",
-                "name": "Vauxhall station"
+                "name": "Vauxhall",
+                "modes": ["tube", "rail"],
+                "lines": ["South Western Railway", "Victoria line"],
+                "memberIds": ["curated/vauxhall-station"]
             }
         },
         {
             "type": "Feature",
             "geometry": {
                 "type": "Point",
-                "coordinates": [-0.1436, 51.4956]
+                "coordinates": [-0.14385, 51.495400000000004]
             },
             "properties": {
-                "id": "curated/victoria-tube-station",
-                "name": "Victoria tube station"
+                "id": "curated/london-victoria-station",
+                "name": "Victoria",
+                "modes": ["tube", "rail"],
+                "lines": [
+                    "Circle line",
+                    "District line",
+                    "Govia Thameslink Railway",
+                    "Southeastern",
+                    "Victoria line"
+                ],
+                "memberIds": [
+                    "curated/london-victoria-station",
+                    "curated/victoria-tube-station"
+                ]
             }
         },
         {
@@ -867,29 +1063,41 @@
             },
             "properties": {
                 "id": "curated/warren-street-tube-station",
-                "name": "Warren Street tube station"
+                "name": "Warren Street",
+                "modes": ["tube"],
+                "lines": [
+                    "Circle line",
+                    "Hammersmith & City line",
+                    "Metropolitan line",
+                    "Northern line",
+                    "Victoria line"
+                ],
+                "memberIds": ["curated/warren-street-tube-station"]
             }
         },
         {
             "type": "Feature",
             "geometry": {
                 "type": "Point",
-                "coordinates": [-0.111, 51.5037]
+                "coordinates": [-0.1124, 51.503099999999996]
             },
             "properties": {
-                "id": "curated/waterloo-east-railway-station",
-                "name": "Waterloo East railway station"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-0.113, 51.5025]
-            },
-            "properties": {
-                "id": "curated/waterloo-tube-station",
-                "name": "Waterloo tube station"
+                "id": "curated/london-waterloo-station",
+                "name": "Waterloo",
+                "modes": ["tube", "rail"],
+                "lines": [
+                    "Bakerloo line",
+                    "Jubilee line",
+                    "Northern line",
+                    "South Western Railway",
+                    "Southeastern",
+                    "Waterloo & City line"
+                ],
+                "memberIds": [
+                    "curated/london-waterloo-station",
+                    "curated/waterloo-east-railway-station",
+                    "curated/waterloo-tube-station"
+                ]
             }
         },
         {
@@ -900,7 +1108,10 @@
             },
             "properties": {
                 "id": "curated/westminster-tube-station",
-                "name": "Westminster tube station"
+                "name": "Westminster",
+                "modes": ["tube"],
+                "lines": ["Circle line", "District line", "Jubilee line"],
+                "memberIds": ["curated/westminster-tube-station"]
             }
         }
     ]

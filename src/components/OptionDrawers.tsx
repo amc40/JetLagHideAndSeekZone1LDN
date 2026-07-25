@@ -27,7 +27,6 @@ import {
     animateMapMovements,
     autoSave,
     autoZoom,
-    customStations,
     defaultUnit,
     disabledStations,
     displayHidingZonesOptions,
@@ -36,7 +35,6 @@ import {
     hidingRadius,
     hidingRadiusUnits,
     hidingZone,
-    includeDefaultStations,
     isLoading,
     leafletMapContext,
     mapGeoJSON,
@@ -50,7 +48,6 @@ import {
     save,
     showTutorial,
     triggerLocalRefresh,
-    useCustomStations,
 } from "@/lib/context";
 import {
     HIDING_ZONE_COMPRESSED_URL_PARAM,
@@ -216,21 +213,6 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
 
             if (geojson.zoneOptions) {
                 displayHidingZonesOptions.set(geojson.zoneOptions ?? []);
-            }
-
-            if (typeof geojson.useCustomStations === "boolean") {
-                useCustomStations.set(geojson.useCustomStations);
-            }
-
-            if (
-                geojson.customStations &&
-                geojson.customStations.constructor === Array
-            ) {
-                customStations.set(geojson.customStations);
-            }
-
-            if (typeof geojson.includeDefaultStations === "boolean") {
-                includeDefaultStations.set(geojson.includeDefaultStations);
             }
 
             if (geojson.permanentOverlay) {

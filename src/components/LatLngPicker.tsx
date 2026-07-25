@@ -101,8 +101,9 @@ const parseCoordinatesFromText = (
 
 type CuratedStation = { id: string; name: string; lat: number; lng: number };
 
+// Loaded once from the offline curated GeoJSON (no live lookup) and reused for
+// every search box.
 let curatedStationsPromise: Promise<CuratedStation[]> | null = null;
-
 const loadCuratedStations = (): Promise<CuratedStation[]> => {
     if (!curatedStationsPromise) {
         curatedStationsPromise = fetchCuratedStations()

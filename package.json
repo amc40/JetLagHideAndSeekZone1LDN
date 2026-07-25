@@ -13,6 +13,7 @@
         "typecheck": "astro check",
         "test": "vitest",
         "generate:pois": "node scripts/generate-curated-pois.mjs",
+        "generate:stations": "node scripts/generate-curated-stations.mjs",
         "generate:elevation": "node scripts/generate-elevation-data.mjs"
     },
     "dependencies": {

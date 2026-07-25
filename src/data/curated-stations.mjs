@@ -64,7 +64,6 @@ export default [
         lat: 51.5302,
         lon: -0.1241,
     },
-    { name: "King's Road Chelsea railway station", lat: 51.4875, lon: -0.169 },
     { name: "Knightsbridge tube station", lat: 51.50166667, lon: -0.16083333 },
     { name: "Lambeth North tube station", lat: 51.499, lon: -0.1118 },
     { name: "Lancaster Gate tube station", lat: 51.51175, lon: -0.175472 },

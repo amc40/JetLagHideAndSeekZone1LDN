@@ -6,7 +6,6 @@ import { atom, computed, onSet } from "nanostores";
 import { TFL_ZONE_1_POLYGON } from "@/lib/map-presets";
 import type {
     AdditionalMapGeoLocations,
-    CustomStation,
     OpenStreetMap,
     StationCircle,
 } from "@/maps/api";
@@ -130,46 +129,6 @@ onSet(trainStations, ({ newValue }) => {
     });
 });
 
-export const useCustomStations = persistentAtom<boolean>(
-    "useCustomStations",
-    false,
-    {
-        encode: JSON.stringify,
-        decode: JSON.parse,
-    },
-);
-export const customStations = persistentAtom<CustomStation[]>(
-    "customStations",
-    [],
-    {
-        encode: JSON.stringify,
-        decode: JSON.parse,
-    },
-);
-export const mergeDuplicates = persistentAtom<boolean>(
-    "removeDuplicates",
-    false,
-    {
-        encode: JSON.stringify,
-        decode: JSON.parse,
-    },
-);
-export const includeDefaultStations = persistentAtom<boolean>(
-    "includeDefaultStations",
-    false,
-    {
-        encode: JSON.stringify,
-        decode: JSON.parse,
-    },
-);
-export const curatedStationsLoaded = persistentAtom<boolean>(
-    "curatedStationsLoaded",
-    false,
-    {
-        encode: JSON.stringify,
-        decode: JSON.parse,
-    },
-);
 export const animateMapMovements = persistentAtom<boolean>(
     "animateMapMovements",
     false,
@@ -221,9 +180,6 @@ export const hidingZone = computed(
         hidingRadius,
         hidingRadiusUnits,
         displayHidingZonesOptions,
-        useCustomStations,
-        customStations,
-        includeDefaultStations,
         permanentOverlay,
     ],
     (
@@ -235,9 +191,6 @@ export const hidingZone = computed(
         radius,
         hidingRadiusUnits,
         zoneOptions,
-        useCustom,
-        $customStations,
-        includeDefault,
         $permanentOverlay,
     ) => {
         if (geo !== null) {
@@ -248,9 +201,6 @@ export const hidingZone = computed(
                 hidingRadius: radius,
                 hidingRadiusUnits,
                 zoneOptions: zoneOptions,
-                useCustomStations: useCustom,
-                customStations: $customStations,
-                includeDefaultStations: includeDefault,
                 permanentOverlay: $permanentOverlay,
             };
         } else {
@@ -264,9 +214,6 @@ export const hidingZone = computed(
                 hidingRadiusUnits,
                 alternateLocations: structuredClone(altLoc),
                 zoneOptions: zoneOptions,
-                useCustomStations: useCustom,
-                customStations: $customStations,
-                includeDefaultStations: includeDefault,
                 permanentOverlay: $permanentOverlay,
             };
         }

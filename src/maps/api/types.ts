@@ -1,6 +1,7 @@
 import type { Feature, Point, Polygon } from "geojson";
 import type { LatLngTuple } from "leaflet";
 
+import type { StationMode } from "@/maps/geo-utils/stationModes";
 import type { Question } from "@/maps/schema";
 
 export interface OpenStreetMap {
@@ -46,16 +47,17 @@ export enum CacheType {
     PERMANENT_CACHE = "jlhs-map-generator-permanent-cache",
 }
 
-export interface CustomStation {
-    id: string;
-    name?: string;
-    lat: number;
-    lng: number;
-}
-
 export interface StationPlaceProperties {
     id: string;
-    [key: string]: string | undefined;
+    name?: string;
+    "name:en"?: string;
+    // Baked into the curated station data: the transport modes served (drives
+    // the icons shown), the lines calling here (drives "same train line"), and
+    // every underlying OSM member id.
+    modes?: StationMode[];
+    lines?: string[];
+    memberIds?: string[];
+    [key: string]: unknown;
 }
 
 export type StationPlace = Feature<Point, StationPlaceProperties>;

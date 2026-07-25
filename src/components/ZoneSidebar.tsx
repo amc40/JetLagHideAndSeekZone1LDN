@@ -4,9 +4,7 @@ import type { Feature, FeatureCollection } from "geojson";
 import * as L from "leaflet";
 import _ from "lodash";
 import { SidebarCloseIcon } from "lucide-react";
-import osmtogeojson from "osmtogeojson";
 import { useEffect, useRef, useState } from "react";
-import { VscChevronDown } from "react-icons/vsc";
 import { toast } from "react-toastify";
 
 import {
@@ -21,39 +19,29 @@ import {
 import {
     animateMapMovements,
     autoZoom,
-    curatedStationsLoaded as curatedStationsLoadedAtom,
-    customStations as customStationsAtom,
     disabledStations,
     displayHidingZones,
-    displayHidingZonesOptions,
     displayHidingZonesStyle,
     hidingRadius,
     hidingRadiusUnits,
-    includeDefaultStations as includeDefaultStationsAtom,
     isLoading,
     leafletMapContext,
-    mergeDuplicates as mergeDuplicatesAtom,
     planningModeEnabled,
     questionFinishedMapData,
     questions,
     trainStations,
-    useCustomStations as useCustomStationsAtom,
 } from "@/lib/context";
+import { getStationModesIcon } from "@/lib/stationIcons";
 import { cn } from "@/lib/utils";
 import {
     BLANK_GEOJSON,
-    type CustomStation,
     fetchCuratedStations,
-    findPlacesInZone,
     findPlacesSpecificInZone,
     findTentacleLocations,
     nearestToQuestion,
-    normalizeToStationFeatures,
-    parseCustomStationsFromText,
     QuestionSpecificLocation,
     type StationCircle,
     type StationPlace,
-    trainLineNodeFinder,
 } from "@/maps/api";
 import {
     extractStationLabel,
@@ -61,8 +49,8 @@ import {
     geoSpatialVoronoi,
     holedMask,
     lngLatToText,
-    mergeDuplicateStation,
     safeUnion,
+    type StationMode,
 } from "@/maps/geo-utils";
 
 import { Button } from "./ui/button";
@@ -77,19 +65,14 @@ import {
 } from "./ui/command";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
-import { MultiSelect } from "./ui/multi-select";
 import { ScrollToTop } from "./ui/scroll-to-top";
 import { MENU_ITEM_CLASSNAME } from "./ui/sidebar-l";
 import { ToggleGroup, ToggleGroupItem } from "./ui/toggle-group";
 import { UnitSelect } from "./UnitSelect";
 
-function _previewText(count: number) {
-    return `${count} custom station${count === 1 ? "" : "s"} imported`;
-}
-
 // Above this, the "can drastically slow down your device" warning is worth
-// surfacing; below it (e.g. this fork's curated ~82-station default list)
-// it's just permanent noise.
+// surfacing; below it (e.g. a Zone 1 sweep of a few dozen stations) it's just
+// permanent noise.
 const SLOW_STATION_COUNT_THRESHOLD = 150;
 
 const DISPLAY_STYLE_OPTIONS: {
@@ -105,7 +88,6 @@ const DISPLAY_STYLE_OPTIONS: {
 export const ZoneSidebar = () => {
     const $displayHidingZones = useStore(displayHidingZones);
     const $questionFinishedMapData = useStore(questionFinishedMapData);
-    const $displayHidingZonesOptions = useStore(displayHidingZonesOptions);
     const $displayHidingZonesStyle = useStore(displayHidingZonesStyle);
     const $hidingRadius = useStore(hidingRadius);
     const $hidingRadiusUnits = useStore(hidingRadiusUnits);
@@ -113,49 +95,12 @@ export const ZoneSidebar = () => {
     const map = useStore(leafletMapContext);
     const stations = useStore(trainStations);
     const $disabledStations = useStore(disabledStations);
-    const useCustomStations = useStore(useCustomStationsAtom);
-    const mergeDuplicates = useStore(mergeDuplicatesAtom);
-    const includeDefaultStations = useStore(includeDefaultStationsAtom);
-    const $customStations = useStore(customStationsAtom);
-    const $curatedStationsLoaded = useStore(curatedStationsLoadedAtom);
     const [hidingZoneModeStationID, setHidingZoneModeStationID] =
         useState<string>("");
     const [stationSearch, setStationSearch] = useState<string>("");
     const isStationSearchActive = stationSearch.trim().length > 0;
     const setStations = trainStations.set;
     const sidebarRef = useRef<HTMLDivElement>(null);
-    const [importUrl, setImportUrl] = useState("");
-    const [setupOpen, setSetupOpen] = useState(false);
-
-    const loadCuratedStations = async () => {
-        try {
-            const data = await fetchCuratedStations();
-            const parsed: CustomStation[] = (data.features ?? []).map(
-                (f: any) => ({
-                    id:
-                        f.properties?.id ??
-                        `${f.geometry.coordinates[1]},${f.geometry.coordinates[0]}`,
-                    name: f.properties?.name,
-                    lat: f.geometry.coordinates[1],
-                    lng: f.geometry.coordinates[0],
-                }),
-            );
-            if (parsed.length > 0) {
-                customStationsAtom.set(parsed);
-                useCustomStationsAtom.set(true);
-                toast.success(`Loaded ${parsed.length} curated stations`);
-            }
-        } catch (e: any) {
-            toast.error(`Failed to load curated stations: ${e.message || e}`);
-        }
-    };
-
-    useEffect(() => {
-        if ($curatedStationsLoaded) return;
-        loadCuratedStations().finally(() =>
-            curatedStationsLoadedAtom.set(true),
-        );
-    }, [$curatedStationsLoaded]);
 
     const removeHidingZones = () => {
         if (!map) return;
@@ -195,11 +140,10 @@ export const ZoneSidebar = () => {
                   }
                 : undefined,
             pointToLayer(geoJsonPoint, latlng) {
+                const modes = (geoJsonPoint.properties?.modes ??
+                    []) as StationMode[];
                 const marker = L.marker(latlng, {
-                    icon: L.divIcon({
-                        html: `<div class="text-black bg-opacity-0"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" width="1em" height="1em" xmlns="http://www.w3.org/2000/svg"><path d="M96 0C43 0 0 43 0 96L0 352c0 48 35.2 87.7 81.1 94.9l-46 46C28.1 499.9 33.1 512 43 512l39.7 0c8.5 0 16.6-3.4 22.6-9.4L160 448l128 0 54.6 54.6c6 6 14.1 9.4 22.6 9.4l39.7 0c10 0 15-12.1 7.9-19.1l-46-46c46-7.1 81.1-46.9 81.1-94.9l0-256c0-53-43-96-96-96L96 0zM64 96c0-17.7 14.3-32 32-32l256 0c17.7 0 32 14.3 32 32l0 96c0 17.7-14.3 32-32 32L96 224c-17.7 0-32-14.3-32-32l0-96zM224 288a48 48 0 1 1 0 96 48 48 0 1 1 0-96z"></path></svg></div>`,
-                        className: "",
-                    }),
+                    icon: getStationModesIcon(modes, map.getZoom()),
                 });
 
                 marker.bindPopup(
@@ -228,89 +172,17 @@ export const ZoneSidebar = () => {
             isLoading.set(true);
 
             try {
-                const needsDefault =
-                    !useCustomStations || includeDefaultStations;
-                if (needsDefault && $displayHidingZonesOptions.length === 0) {
-                    toast.error("At least one place type must be selected");
-                    return;
-                }
-
-                let places: StationPlace[] = [];
-
-                if (!needsDefault) {
-                    // Custom only
-                    places = normalizeToStationFeatures(
-                        $customStations,
-                    ).features.map((f) => ({
+                // Stations come solely from the hand-curated list, with all
+                // metadata (modes/icons, lines, merged interchanges) baked in.
+                // Nothing is fetched live.
+                const curated = await fetchCuratedStations();
+                const places: StationPlace[] = (curated.features ?? []).map(
+                    (f: any) => ({
                         type: "Feature",
                         geometry: f.geometry,
-                        properties: {
-                            id:
-                                f.properties?.id ||
-                                `${(f.geometry as any).coordinates[1]},${(f.geometry as any).coordinates[0]}`,
-                            name: f.properties?.name,
-                        },
-                    }));
-                } else {
-                    // Fetch default, optionally merge custom
-                    // @ts-expect-error osmtogeojson always defines properties with an "id" string
-                    places = osmtogeojson(
-                        await findPlacesInZone(
-                            $displayHidingZonesOptions[0],
-                            "Finding stations. This may take a while. Do not press any buttons while this is processing. Don't worry, it will be cached.",
-                            "nwr",
-                            "center",
-                            $displayHidingZonesOptions.slice(1),
-                        ),
-                    ).features;
-
-                    if (
-                        useCustomStations &&
-                        $customStations.length > 0 &&
-                        includeDefaultStations
-                    ) {
-                        const customFeatures = normalizeToStationFeatures(
-                            $customStations,
-                        ).features.map(
-                            (f) =>
-                                ({
-                                    type: "Feature",
-                                    geometry: f.geometry,
-                                    properties: {
-                                        id:
-                                            f.properties?.id ||
-                                            `${f.geometry.coordinates[1]},${f.geometry.coordinates[0]}`,
-                                        name: f.properties?.name,
-                                    },
-                                }) as StationPlace,
-                        );
-                        const seen = new Set<string>();
-                        const merged: StationPlace[] = [];
-                        const add = (feat: StationPlace) => {
-                            const id = feat.properties.id as string | undefined;
-                            const key =
-                                id && id.includes("/")
-                                    ? `id:${id}`
-                                    : `pt:${feat.geometry.coordinates[1]},${feat.geometry.coordinates[0]}`;
-                            if (!seen.has(key)) {
-                                seen.add(key);
-                                merged.push(feat);
-                            }
-                        };
-                        places.forEach(add);
-                        customFeatures.forEach(add);
-                        places = merged;
-                    }
-                }
-
-                // merge duplicate stations if selected
-                if (mergeDuplicates) {
-                    places = mergeDuplicateStation(
-                        places,
-                        $hidingRadius,
-                        $hidingRadiusUnits,
-                    );
-                }
+                        properties: f.properties,
+                    }),
+                );
 
                 const unionized = safeUnion(
                     turf.simplify($questionFinishedMapData, {
@@ -358,46 +230,30 @@ export const ZoneSidebar = () => {
                         );
 
                         if (question.data.type === "same-train-line") {
-                            // Custom-only lists don't have reliable OSM IDs
-                            if (useCustomStations && !includeDefaultStations) {
+                            // Line memberships are baked into the curated data,
+                            // so "same line" = the stations share any line.
+                            const seekerLines = new Set(
+                                (nearestTrainStation.properties.lines ??
+                                    []) as string[],
+                            );
+                            if (seekerLines.size === 0) {
                                 toast.warning(
-                                    "'Same train line' isn't supported with custom-only station lists; skipping this filter.",
+                                    `No line data for ${extractStationName(
+                                        nearestTrainStation,
+                                    )}; skipping 'same train line' filter.`,
                                 );
-                            } else {
-                                const nid = nearestTrainStation.properties
-                                    .id as string | undefined;
-                                if (!nid || !nid.includes("/")) {
-                                    toast.warning(
-                                        "Nearest station has no OSM id; skipping 'same train line' filter.",
-                                    );
-                                    continue;
-                                }
-
-                                const nodes = await trainLineNodeFinder(nid);
-
-                                if (nodes.length === 0) {
-                                    toast.warning(
-                                        `No train line found for ${extractStationName(
-                                            nearestTrainStation,
-                                        )}`,
-                                    );
-                                    continue;
-                                } else {
-                                    circles = circles.filter((circle) => {
-                                        const idProp =
-                                            circle.properties.properties.id;
-                                        if (!idProp || !idProp.includes("/"))
-                                            return false;
-                                        const id = parseInt(
-                                            idProp.split("/")[1],
-                                        );
-
-                                        return question.data.same
-                                            ? nodes.includes(id)
-                                            : !nodes.includes(id);
-                                    });
-                                }
+                                continue;
                             }
+
+                            circles = circles.filter((circle) => {
+                                const lines = (circle.properties.properties
+                                    .lines ?? []) as string[];
+                                const shares = lines.some((line) =>
+                                    seekerLines.has(line),
+                                );
+
+                                return question.data.same ? shares : !shares;
+                            });
                         }
 
                         const englishName =
@@ -509,12 +365,8 @@ export const ZoneSidebar = () => {
     }, [
         $questionFinishedMapData,
         $displayHidingZones,
-        $displayHidingZonesOptions,
         $hidingRadius,
-        useCustomStations,
-        includeDefaultStations,
-        $customStations,
-        mergeDuplicates,
+        $hidingRadiusUnits,
     ]);
 
     useEffect(() => {
@@ -861,364 +713,6 @@ export const ZoneSidebar = () => {
                                         </CommandGroup>
                                     </CommandList>
                                 </Command>
-                            )}
-                            <SidebarMenuItem>
-                                <button
-                                    type="button"
-                                    onClick={() =>
-                                        setSetupOpen((prev) => !prev)
-                                    }
-                                    aria-expanded={setupOpen}
-                                    className={cn(
-                                        MENU_ITEM_CLASSNAME,
-                                        "justify-between font-semibold font-poppins",
-                                    )}
-                                >
-                                    Setup: custom stations &amp; station types
-                                    <VscChevronDown
-                                        className={cn(
-                                            "transition-transform duration-300",
-                                            !setupOpen && "-rotate-90",
-                                        )}
-                                    />
-                                </button>
-                            </SidebarMenuItem>
-                            {setupOpen && (
-                                <>
-                                    <SidebarMenuItem
-                                        className={MENU_ITEM_CLASSNAME}
-                                    >
-                                        <label className="flex flex-row min-h-11 items-center justify-between w-full gap-2 cursor-pointer">
-                                            <span className="font-semibold font-poppins">
-                                                Use custom station list?
-                                            </span>
-                                            <Checkbox
-                                                checked={useCustomStations}
-                                                onCheckedChange={(v) =>
-                                                    useCustomStationsAtom.set(
-                                                        !!v,
-                                                    )
-                                                }
-                                                disabled={$isLoading}
-                                            />
-                                        </label>
-                                    </SidebarMenuItem>
-                                    <SidebarMenuItem
-                                        className={MENU_ITEM_CLASSNAME}
-                                    >
-                                        <label className="flex flex-row min-h-11 items-center justify-between w-full gap-2 cursor-pointer">
-                                            <span className="font-semibold font-poppins">
-                                                Merge duplicated stations?
-                                            </span>
-                                            <Checkbox
-                                                checked={mergeDuplicates}
-                                                onCheckedChange={(v) =>
-                                                    mergeDuplicatesAtom.set(!!v)
-                                                }
-                                                disabled={$isLoading}
-                                            />
-                                        </label>
-                                    </SidebarMenuItem>
-                                    {useCustomStations && (
-                                        <>
-                                            <SidebarMenuItem
-                                                className={MENU_ITEM_CLASSNAME}
-                                            >
-                                                <Button
-                                                    className="w-full"
-                                                    disabled={$isLoading}
-                                                    onClick={() => {
-                                                        loadCuratedStations();
-                                                    }}
-                                                >
-                                                    Reload Curated Stations
-                                                </Button>
-                                            </SidebarMenuItem>
-                                            <SidebarMenuItem
-                                                className={MENU_ITEM_CLASSNAME}
-                                            >
-                                                <div className="flex flex-col gap-2 w-full">
-                                                    <Label className="font-semibold font-poppins leading-5">
-                                                        Import stations from URL
-                                                        (CSV, GeoJSON, KML).
-                                                        This must be a raw file
-                                                        link.
-                                                    </Label>
-                                                    <div className="flex gap-2">
-                                                        <Input
-                                                            placeholder="https://..."
-                                                            value={importUrl}
-                                                            onChange={(e) =>
-                                                                setImportUrl(
-                                                                    e.target
-                                                                        .value,
-                                                                )
-                                                            }
-                                                            disabled={
-                                                                $isLoading
-                                                            }
-                                                        />
-                                                        <button
-                                                            className="bg-blue-600 text-white px-3 rounded-md"
-                                                            disabled={
-                                                                $isLoading
-                                                            }
-                                                            onClick={async () => {
-                                                                if (!importUrl)
-                                                                    return;
-                                                                try {
-                                                                    const res =
-                                                                        await fetch(
-                                                                            importUrl,
-                                                                        );
-                                                                    const contentType =
-                                                                        res.headers.get(
-                                                                            "content-type",
-                                                                        ) ||
-                                                                        undefined;
-                                                                    const text =
-                                                                        await res.text();
-                                                                    const parsed =
-                                                                        parseCustomStationsFromText(
-                                                                            text,
-                                                                            contentType ||
-                                                                                undefined,
-                                                                        );
-                                                                    if (
-                                                                        parsed.length ===
-                                                                        0
-                                                                    ) {
-                                                                        toast.error(
-                                                                            "No stations found in provided URL",
-                                                                        );
-                                                                        return;
-                                                                    }
-                                                                    customStationsAtom.set(
-                                                                        parsed,
-                                                                    );
-                                                                    toast.success(
-                                                                        `Imported ${parsed.length} stations`,
-                                                                    );
-                                                                } catch (e: any) {
-                                                                    toast.error(
-                                                                        `Failed to import from URL: ${e.message || e}`,
-                                                                    );
-                                                                }
-                                                            }}
-                                                        >
-                                                            Import
-                                                        </button>
-                                                    </div>
-                                                    <div>
-                                                        <Input
-                                                            type="file"
-                                                            multiple
-                                                            accept=".csv,.json,.geojson,.kml,application/json,application/vnd.google-earth.kml+xml,text/csv,application/vnd.google-apps.kml+xml,application/xml,text/xml"
-                                                            onInput={async (
-                                                                e,
-                                                            ) => {
-                                                                const files = (
-                                                                    e.target as HTMLInputElement
-                                                                ).files;
-                                                                if (
-                                                                    !files ||
-                                                                    files.length ===
-                                                                        0
-                                                                )
-                                                                    return;
-                                                                try {
-                                                                    const all: any[] =
-                                                                        [];
-                                                                    for (const file of Array.from(
-                                                                        files,
-                                                                    )) {
-                                                                        const text =
-                                                                            await file.text();
-                                                                        const parsed =
-                                                                            parseCustomStationsFromText(
-                                                                                text,
-                                                                                file.type,
-                                                                            );
-                                                                        all.push(
-                                                                            ...parsed,
-                                                                        );
-                                                                    }
-                                                                    if (
-                                                                        all.length ===
-                                                                        0
-                                                                    ) {
-                                                                        toast.error(
-                                                                            "No stations found in uploaded files",
-                                                                        );
-                                                                        return;
-                                                                    }
-                                                                    const byKey =
-                                                                        new Map<
-                                                                            string,
-                                                                            any
-                                                                        >();
-                                                                    for (const s of all) {
-                                                                        const key =
-                                                                            s.id &&
-                                                                            s.id.includes(
-                                                                                "/",
-                                                                            )
-                                                                                ? `id:${s.id}`
-                                                                                : `pt:${s.lat},${s.lng}`;
-                                                                        if (
-                                                                            !byKey.has(
-                                                                                key,
-                                                                            )
-                                                                        )
-                                                                            byKey.set(
-                                                                                key,
-                                                                                s,
-                                                                            );
-                                                                    }
-                                                                    const unique =
-                                                                        Array.from(
-                                                                            byKey.values(),
-                                                                        );
-                                                                    customStationsAtom.set(
-                                                                        unique,
-                                                                    );
-                                                                    toast.success(
-                                                                        `Imported ${unique.length} stations`,
-                                                                    );
-                                                                } catch (e: any) {
-                                                                    toast.error(
-                                                                        `Failed to import files: ${e.message || e}`,
-                                                                    );
-                                                                }
-                                                            }}
-                                                        />
-                                                    </div>
-                                                    <label className="flex flex-row min-h-11 items-center justify-between w-full gap-2 cursor-pointer">
-                                                        <span className="font-semibold font-poppins">
-                                                            Include default
-                                                            stations with custom
-                                                            list?
-                                                        </span>
-                                                        <Checkbox
-                                                            checked={
-                                                                includeDefaultStations
-                                                            }
-                                                            onCheckedChange={(
-                                                                v,
-                                                            ) =>
-                                                                includeDefaultStationsAtom.set(
-                                                                    !!v,
-                                                                )
-                                                            }
-                                                            disabled={
-                                                                $isLoading
-                                                            }
-                                                        />
-                                                    </label>
-                                                    {$customStations.length >
-                                                        0 && (
-                                                        <div className="text-sm text-gray-300">
-                                                            {_previewText(
-                                                                $customStations.length,
-                                                            )}
-                                                        </div>
-                                                    )}
-                                                    {$customStations.length >
-                                                        0 && (
-                                                        <div className="flex gap-2">
-                                                            <Button
-                                                                className="w-full"
-                                                                onClick={() =>
-                                                                    customStationsAtom.set(
-                                                                        [],
-                                                                    )
-                                                                }
-                                                            >
-                                                                Clear Imported
-                                                            </Button>
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            </SidebarMenuItem>
-                                        </>
-                                    )}
-                                    <SidebarMenuItem
-                                        className={MENU_ITEM_CLASSNAME}
-                                    >
-                                        <MultiSelect
-                                            options={[
-                                                {
-                                                    label: "Railway Stations",
-                                                    value: "[railway=station]",
-                                                },
-                                                {
-                                                    label: "Railway Halts",
-                                                    value: "[railway=halt]",
-                                                },
-                                                {
-                                                    label: "Railway Stops",
-                                                    value: "[railway=stop]",
-                                                },
-                                                {
-                                                    label: "Tram Stops",
-                                                    value: "[railway=tram_stop]",
-                                                },
-                                                {
-                                                    label: "Bus Stops",
-                                                    value: "[highway=bus_stop]",
-                                                },
-                                                {
-                                                    label: "Ferry Terminals",
-                                                    value: "[amenity=ferry_terminal]",
-                                                },
-                                                {
-                                                    label: "Ferry Platforms (public transport)",
-                                                    value: "[public_transport=platform][platform=ferry]",
-                                                },
-                                                {
-                                                    label: "Funicular Stations",
-                                                    value: "[railway=funicular]",
-                                                },
-                                                {
-                                                    label: "Aerialway Stations",
-                                                    value: "[aerialway=station]",
-                                                },
-                                                {
-                                                    label: "Railway Stations Excluding Subways",
-                                                    value: "[railway=station][subway!=yes]",
-                                                },
-                                                {
-                                                    label: "Subway Stations",
-                                                    value: "[railway=station][subway=yes]",
-                                                },
-                                                {
-                                                    label: "Light Rail Stations",
-                                                    value: "[railway=station][light_rail=yes]",
-                                                },
-                                                {
-                                                    label: "Light Rail Halts",
-                                                    value: "[railway=halt][light_rail=yes]",
-                                                },
-                                            ]}
-                                            onValueChange={
-                                                displayHidingZonesOptions.set
-                                            }
-                                            defaultValue={
-                                                $displayHidingZonesOptions
-                                            }
-                                            placeholder="Select allowed places"
-                                            animation={2}
-                                            maxCount={3}
-                                            modalPopover
-                                            className="!bg-popover bg-opacity-100"
-                                            disabled={
-                                                $isLoading ||
-                                                (useCustomStations &&
-                                                    !includeDefaultStations)
-                                            }
-                                        />
-                                    </SidebarMenuItem>
-                                </>
                             )}
                         </SidebarMenu>
                     </SidebarGroupContent>
