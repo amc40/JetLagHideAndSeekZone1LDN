@@ -50,9 +50,9 @@ export const AddQuestionDialog = ({
             id: "thermometer",
             data: {
                 latA: center.lat,
-                lngB: center.lng,
+                lngA: center.lng,
                 latB: destination.geometry.coordinates[1],
-                lngA: destination.geometry.coordinates[0],
+                lngB: destination.geometry.coordinates[0],
             },
         });
 
