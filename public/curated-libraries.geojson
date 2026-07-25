@@ -27,11 +27,11 @@
             "type": "Feature",
             "geometry": {
                 "type": "Point",
-                "coordinates": [-0.1724301, 51.5336505]
+                "coordinates": [-0.137889, 51.487979]
             },
             "properties": {
-                "id": "node/293741403",
-                "name": "St. John's Wood Library"
+                "id": "node/275402349",
+                "name": "Pimlico Library"
             }
         },
         {
@@ -82,44 +82,11 @@
             "type": "Feature",
             "geometry": {
                 "type": "Point",
-                "coordinates": [-0.2026887, 51.477164]
-            },
-            "properties": {
-                "id": "node/718989172",
-                "name": "Fulham Library"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-0.137889, 51.487979]
-            },
-            "properties": {
-                "id": "node/275402349",
-                "name": "Pimlico Library"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
                 "coordinates": [-0.1685063, 51.4873496]
             },
             "properties": {
                 "id": "node/1210268273",
                 "name": "Chelsea Library"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-0.0730494, 51.477948]
-            },
-            "properties": {
-                "id": "node/1446667514",
-                "name": "The Feminist Library"
             }
         },
         {
@@ -142,17 +109,6 @@
             "properties": {
                 "id": "node/2324932999",
                 "name": "RHS Lindley Library"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-0.1377417, 51.534345]
-            },
-            "properties": {
-                "id": "node/2345394803",
-                "name": "Camden Town Library"
             }
         },
         {
@@ -236,33 +192,11 @@
             "type": "Feature",
             "geometry": {
                 "type": "Point",
-                "coordinates": [-0.2068063, 51.5238653]
-            },
-            "properties": {
-                "id": "node/7255009410",
-                "name": "Kensal Library"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
                 "coordinates": [-0.0923936, 51.5017779]
             },
             "properties": {
                 "id": "node/9919427425",
                 "name": "John Harvard Library"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-0.0860229, 51.4877397]
-            },
-            "properties": {
-                "id": "node/13446741958",
-                "name": "Una Marson Library"
             }
         },
         {
@@ -291,72 +225,6 @@
             "type": "Feature",
             "geometry": {
                 "type": "Point",
-                "coordinates": [-0.06932, 51.4742816]
-            },
-            "properties": {
-                "id": "way/19798157",
-                "name": "Peckham Library"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-0.1911436, 51.5363825]
-            },
-            "properties": {
-                "id": "way/34832022",
-                "name": "Kilburn Library"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-0.102943, 51.4823684]
-            },
-            "properties": {
-                "id": "way/38763432",
-                "name": "Brandon Library"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-0.1904854, 51.5247349]
-            },
-            "properties": {
-                "id": "way/58759623",
-                "name": "Maida Vale Library"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-0.2054273, 51.5351148]
-            },
-            "properties": {
-                "id": "way/62111346",
-                "name": "Kilburn Library"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-0.0987829, 51.5390428]
-            },
-            "properties": {
-                "id": "way/68422893",
-                "name": "South Library"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
                 "coordinates": [-0.1043746, 51.526375]
             },
             "properties": {
@@ -379,33 +247,11 @@
             "type": "Feature",
             "geometry": {
                 "type": "Point",
-                "coordinates": [-0.1052762, 51.4713898]
-            },
-            "properties": {
-                "id": "way/88843138",
-                "name": "Minet Library and Lambeth Archives"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
                 "coordinates": [-0.127878, 51.5102476]
             },
             "properties": {
                 "id": "way/96237024",
                 "name": "Charing Cross Library"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-0.2070957, 51.492559]
-            },
-            "properties": {
-                "id": "way/142410031",
-                "name": "Avonmore Library"
             }
         },
         {
@@ -489,28 +335,6 @@
             "type": "Feature",
             "geometry": {
                 "type": "Point",
-                "coordinates": [-0.154525, 51.4743846]
-            },
-            "properties": {
-                "id": "way/431085581",
-                "name": "Battersea Park Library"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-0.2107994, 51.5270593]
-            },
-            "properties": {
-                "id": "way/466432889",
-                "name": "Queen's Park Library"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
                 "coordinates": [-0.1301074, 51.4975767]
             },
             "properties": {
@@ -533,39 +357,6 @@
             "type": "Feature",
             "geometry": {
                 "type": "Point",
-                "coordinates": [-0.0638116, 51.4928723]
-            },
-            "properties": {
-                "id": "way/614265535",
-                "name": "Blue Anchor Library"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-0.0919629, 51.4757527]
-            },
-            "properties": {
-                "id": "way/621224358",
-                "name": "Camberwell Library"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-0.2092315, 51.5166797]
-            },
-            "properties": {
-                "id": "way/772671774",
-                "name": "North Kensington Library"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
                 "coordinates": [-0.1181685, 51.4976834]
             },
             "properties": {
@@ -582,28 +373,6 @@
             "properties": {
                 "id": "way/1007093220",
                 "name": "South Lambeth Library"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-0.1566667, 51.5411213]
-            },
-            "properties": {
-                "id": "way/1016910899",
-                "name": "Primrose Hill Community Library"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-0.1162446, 51.5407525]
-            },
-            "properties": {
-                "id": "way/1075717263",
-                "name": "West Library"
             }
         },
         {

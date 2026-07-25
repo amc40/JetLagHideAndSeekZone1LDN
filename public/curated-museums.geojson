@@ -126,17 +126,6 @@
             "type": "Feature",
             "geometry": {
                 "type": "Point",
-                "coordinates": [-0.1912833, 51.4827789]
-            },
-            "properties": {
-                "id": "way/715157652",
-                "name": "Chelsea FC Museum and Stadium Tours"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
                 "coordinates": [-0.1293639, 51.4901511]
             },
             "properties": {
@@ -241,17 +230,6 @@
             "properties": {
                 "id": "way/28269975",
                 "name": "Foundling Museum"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-0.2156544, 51.4705417]
-            },
-            "properties": {
-                "id": "relation/3609581",
-                "name": "Fulham Palace"
             }
         },
         {
@@ -390,17 +368,6 @@
             "type": "Feature",
             "geometry": {
                 "type": "Point",
-                "coordinates": [-0.1260074, 51.5374302]
-            },
-            "properties": {
-                "id": "node/11008671201",
-                "name": "Lightroom"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
                 "coordinates": [-0.120207, 51.5342186]
             },
             "properties": {
@@ -417,17 +384,6 @@
             "properties": {
                 "id": "way/44599803",
                 "name": "London Transport Museum"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-0.1743025, 51.528945]
-            },
-            "properties": {
-                "id": "node/6525008514",
-                "name": "Lord's MCC Cricket Museum"
             }
         },
         {
@@ -461,17 +417,6 @@
             "properties": {
                 "id": "node/13256051041",
                 "name": "Moco Museum"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-0.2109988, 51.5162502]
-            },
-            "properties": {
-                "id": "way/402345096",
-                "name": "Museum of Brands"
             }
         },
         {
@@ -516,17 +461,6 @@
             "properties": {
                 "id": "node/1686474834",
                 "name": "Museum of the Order of St John"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-0.135871, 51.5400251]
-            },
-            "properties": {
-                "id": "node/13962235901",
-                "name": "Museum Of Youth Culture"
             }
         },
         {
@@ -824,17 +758,6 @@
             "properties": {
                 "id": "node/4749096025",
                 "name": "The Guards Museum"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-0.144584, 51.5373041]
-            },
-            "properties": {
-                "id": "way/232592410",
-                "name": "The Jewish Museum"
             }
         },
         {

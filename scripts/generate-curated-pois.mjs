@@ -95,6 +95,8 @@ const REQUEST_HEADERS = {
 
 async function queryOverpass(query) {
     const encodedQuery = encodeURIComponent(query);
+    let lastError = "no attempts made";
+
     // overpass-api.de enforces a small per-client concurrent-slot budget and
     // answers over-budget requests with 429; back off and retry the primary
     // host a couple of times before giving up on it, since the fallback host
@@ -109,10 +111,14 @@ async function queryOverpass(query) {
                 },
             );
             if (response.ok) return response.json();
+            lastError = `primary ${response.status} ${response.statusText}: ${(await response.text()).slice(0, 500)}`;
+            console.warn(`  attempt ${attempt + 1}/3 (primary): ${lastError}`);
             if (response.status !== 429) break;
-        } catch {
+        } catch (e) {
             // Transient timeout/network error under the proxy — retry the
             // primary host with backoff instead of giving up after one try.
+            lastError = `primary ${e.name}: ${e.message}`;
+            console.warn(`  attempt ${attempt + 1}/3 (primary): ${lastError}`);
         }
         await sleep(5000 * (attempt + 1));
     }
@@ -127,14 +133,17 @@ async function queryOverpass(query) {
                 },
             );
             if (fallbackResponse.ok) return fallbackResponse.json();
-        } catch {
-            // retry below
+            lastError = `fallback ${fallbackResponse.status} ${fallbackResponse.statusText}: ${(await fallbackResponse.text()).slice(0, 500)}`;
+            console.warn(`  attempt ${attempt + 1}/2 (fallback): ${lastError}`);
+        } catch (e) {
+            lastError = `fallback ${e.name}: ${e.message}`;
+            console.warn(`  attempt ${attempt + 1}/2 (fallback): ${lastError}`);
         }
         await sleep(5000 * (attempt + 1));
     }
 
     throw new Error(
-        "Overpass request failed on both primary and fallback hosts",
+        `Overpass request failed on both primary and fallback hosts (last error: ${lastError})`,
     );
 }
 
@@ -217,12 +226,17 @@ async function generateCategory({ name, source, output }) {
     }
 
     let osmMap = new Map();
-    try {
-        if (osmEntries.length > 0) osmMap = await resolveOsmBatch(osmEntries);
-    } catch (e) {
-        console.warn(
-            `[${name}] Batched Overpass resolution failed: ${e.message}`,
-        );
+    if (osmEntries.length > 0) {
+        try {
+            osmMap = await resolveOsmBatch(osmEntries);
+        } catch (e) {
+            // Bail out rather than writing a near-empty file over the
+            // committed output — a failed batch here previously clobbered
+            // curated-museums.geojson down to 0 features.
+            throw new Error(
+                `[${name}] Batched Overpass resolution failed, leaving ${output} untouched: ${e.message}`,
+            );
+        }
     }
 
     const features = [];

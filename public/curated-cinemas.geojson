@@ -82,33 +82,11 @@
             "type": "Feature",
             "geometry": {
                 "type": "Point",
-                "coordinates": [-0.2188484, 51.503414]
-            },
-            "properties": {
-                "id": "node/452948294",
-                "name": "Vue"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
                 "coordinates": [-0.1731524, 51.4855904]
             },
             "properties": {
                 "id": "node/498694180",
                 "name": "Everyman Chelsea"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-0.1437574, 51.5389741]
-            },
-            "properties": {
-                "id": "node/931624349",
-                "name": "Odeon"
             }
         },
         {
@@ -225,17 +203,6 @@
             "type": "Feature",
             "geometry": {
                 "type": "Point",
-                "coordinates": [-0.1240562, 51.5375291]
-            },
-            "properties": {
-                "id": "node/5376964904",
-                "name": "Everyman King's Cross"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
                 "coordinates": [-0.1565601, 51.5205013]
             },
             "properties": {
@@ -263,17 +230,6 @@
             "properties": {
                 "id": "node/7930695624",
                 "name": "Ciné Lumière"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-0.1035717, 51.5386358]
-            },
-            "properties": {
-                "id": "node/8819117410",
-                "name": "Odeon Luxe & Dine"
             }
         },
         {
@@ -335,17 +291,6 @@
             "type": "Feature",
             "geometry": {
                 "type": "Point",
-                "coordinates": [-0.1944172, 51.4808021]
-            },
-            "properties": {
-                "id": "node/13525260759",
-                "name": "Vue"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
                 "coordinates": [-0.1036648, 51.5368532]
             },
             "properties": {
@@ -362,17 +307,6 @@
             "properties": {
                 "id": "way/77002327",
                 "name": "Curzon Mayfair"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-0.0679074, 51.4708481]
-            },
-            "properties": {
-                "id": "way/78230879",
-                "name": "Peckhamplex"
             }
         },
         {
@@ -434,17 +368,6 @@
             "type": "Feature",
             "geometry": {
                 "type": "Point",
-                "coordinates": [-0.1817063, 51.5280256]
-            },
-            "properties": {
-                "id": "way/208422244",
-                "name": "Everyman"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
                 "coordinates": [-0.123147, 51.5240631]
             },
             "properties": {
@@ -461,17 +384,6 @@
             "properties": {
                 "id": "way/356675364",
                 "name": "Picturehouse Notting Hill"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-0.2050653, 51.5155295]
-            },
-            "properties": {
-                "id": "way/357556094",
-                "name": "Electric Cinema"
             }
         },
         {
