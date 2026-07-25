@@ -88,6 +88,48 @@ export const hiderMode = persistentAtom<
     encode: JSON.stringify,
     decode: JSON.parse,
 });
+export const hiderLiveLocationEnabled = atom<boolean>(false);
+
+let hiderLiveLocationWatchId: number | null = null;
+
+export const setHiderLiveLocationEnabled = (
+    enabled: boolean,
+    onError?: (message: string) => void,
+) => {
+    if (enabled) {
+        if (!navigator || !navigator.geolocation) {
+            onError?.("Geolocation not supported in your browser");
+            return;
+        }
+        if (hiderLiveLocationWatchId !== null) return;
+
+        hiderLiveLocationWatchId = navigator.geolocation.watchPosition(
+            (position) => {
+                const $hiderMode = hiderMode.get();
+                if ($hiderMode === false) return;
+                hiderMode.set({
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude,
+                });
+            },
+            (error) => onError?.(error.message),
+            { enableHighAccuracy: true, maximumAge: 0 },
+        );
+        hiderLiveLocationEnabled.set(true);
+    } else {
+        if (hiderLiveLocationWatchId !== null) {
+            navigator.geolocation.clearWatch(hiderLiveLocationWatchId);
+            hiderLiveLocationWatchId = null;
+        }
+        hiderLiveLocationEnabled.set(false);
+    }
+};
+
+export const disableHiderMode = () => {
+    setHiderLiveLocationEnabled(false);
+    hiderMode.set(false);
+};
+
 export const triggerLocalRefresh = atom<number>(0);
 export const displayHidingZones = persistentAtom<boolean>(
     "displayHidingZones",

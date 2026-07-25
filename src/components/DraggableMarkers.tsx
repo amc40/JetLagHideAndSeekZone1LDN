@@ -8,6 +8,7 @@ import { Circle, Marker } from "react-leaflet";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import {
     autoSave,
+    disableHiderMode,
     hiderMode,
     hidingRadius,
     hidingRadiusUnits,
@@ -159,7 +160,7 @@ const ColoredMarker = ({
                 {questionKey === -1 && (
                     <Button // If it's the hider mode marker
                         onClick={() => {
-                            hiderMode.set(false);
+                            disableHiderMode();
                         }}
                         variant="destructive"
                         className="font-semibold font-poppins"

@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 
 import { SidebarMenuButton } from "@/components/ui/sidebar-l";
 import {
+    hiderLiveLocationEnabled,
     hiderMode,
     isLoading,
     questionModified,
@@ -10,6 +11,45 @@ import {
 } from "@/lib/context";
 import { hiderifyQuestion } from "@/maps";
 import { questionSchema } from "@/maps/schema";
+
+// One-off GPS fetch used to answer a question as the hider. Only called
+// when hider mode is on and the hider isn't already sharing their live
+// location (in which case hiderMode is kept up to date continuously, see
+// setHiderLiveLocationEnabled). Falls back silently to the hider's
+// currently saved location on failure or denial.
+const shareOneOffHiderLocation = async () => {
+    const $hiderMode = hiderMode.get();
+    if ($hiderMode === false) return;
+
+    if (!navigator || !navigator.geolocation) {
+        toast.error("Geolocation not supported — using saved hider location");
+        return;
+    }
+
+    try {
+        const position = await toast.promise(
+            new Promise<GeolocationPosition>((resolve, reject) => {
+                navigator.geolocation.getCurrentPosition(resolve, reject, {
+                    enableHighAccuracy: true,
+                    maximumAge: 0,
+                });
+            }),
+            {
+                pending: "Fetching your location",
+                success: "Location shared",
+                error: "Could not fetch location — using saved hider location",
+            },
+            { autoClose: 500 },
+        );
+
+        hiderMode.set({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+        });
+    } catch {
+        // Keep the previously saved hider location.
+    }
+};
 
 export const PasteQuestionButton = () => {
     const $isLoading = useStore(isLoading);
@@ -19,6 +59,10 @@ export const PasteQuestionButton = () => {
         if (!navigator || !navigator.clipboard) {
             toast.error("Clipboard API not supported in your browser");
             return false;
+        }
+
+        if (hiderMode.get() !== false && !hiderLiveLocationEnabled.get()) {
+            await shareOneOffHiderLocation();
         }
 
         try {
