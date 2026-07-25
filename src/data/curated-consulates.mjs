@@ -14,7 +14,9 @@
 // documented Turkish Consulate General below, judged a stale duplicate. A
 // "Chinese visa service" node (5069181558) was also dropped as an
 // approximate-location outsourced visa application center rather than an
-// actual consulate.
+// actual consulate. The Consulate of Pakistan way (530784906) has no OSM
+// "name" tag (only "name:fr"), so its entry below pins an explicit `name`
+// override rather than falling back to "Unknown".
 //
 // Run `pnpm generate:pois` after editing this file to resolve coordinates
 // and regenerate public/curated-consulates.geojson.
@@ -63,7 +65,7 @@ export default [
     // Consulate General of France
     { osmType: "way", osmId: 485840627 },
     // Consulate of Pakistan
-    { osmType: "way", osmId: 530784906 },
+    { osmType: "way", osmId: 530784906, name: "Consulate of Pakistan" },
     // Consulate General Of Egypt
     { osmType: "way", osmId: 553732921 },
     // Consulate General of Turkey
