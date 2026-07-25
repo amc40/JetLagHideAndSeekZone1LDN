@@ -52,16 +52,6 @@ const STATION_MODES = [
     "tram",
 ];
 
-// Hand-corrections for the few stations where OSM's geometry/tagging leaves the
-// auto-derived modes wrong (major NR termini mapped as areas that fall just
-// outside the match radius; an adjacent station bleeding a mode in). Keyed by
-// the merged station's normalised name; replaces the derived modes.
-const MODE_OVERRIDES = {
-    "liverpool street": ["tube", "rail", "overground", "elizabeth"],
-    marylebone: ["tube", "rail"],
-    "tower gateway": ["tube", "dlr"],
-};
-
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const slugify = (name) =>
     name
@@ -330,21 +320,22 @@ out skel qt;`);
 
     // 3. Enrich each curated entry with modes + lines.
     const enriched = curatedStations.map((entry) => {
+        // "rail" (National Rail) is deliberately NOT taken from nearby nodes or
+        // the name — a bare railway=station node next door shouldn't make a Tube
+        // stop look like a National Rail station. It is added below only when an
+        // actual TOC line calls here.
         const modeSet = new Set();
         for (const s of osmStations) {
             const d = distanceMeters(entry.lon, entry.lat, s.lon, s.lat);
             // Union modes of every co-located node (picks up NR + Tube together).
             if (d <= MODE_UNION_METERS)
-                for (const m of classifyModes(s.tags)) modeSet.add(m);
+                for (const m of classifyModes(s.tags))
+                    if (m !== "rail") modeSet.add(m);
         }
 
-        // The entry's own name is authoritative for the mode it declares.
+        // The entry's own name is authoritative for the (non-rail) mode it declares.
         const named = explicitModeFromName(entry.name);
-        if (named) modeSet.add(named);
-
-        // No OSM node close enough and no explicit name mode → fall back.
-        if (modeSet.size === 0)
-            for (const m of classifyModesFromName(entry.name)) modeSet.add(m);
+        if (named && named !== "rail") modeSet.add(named);
 
         const lines = new Set();
         for (const route of routes) {
@@ -356,11 +347,15 @@ out skel qt;`);
                 )
             ) {
                 lines.add(route.line);
-                // The lines calling here also tell us which modes serve it,
-                // filling gaps the single matched station node can miss.
+                // The lines calling here tell us which modes serve it — and are
+                // the ONLY source of the "rail" mode (a matched TOC line).
                 modeSet.add(route.mode);
             }
         }
+
+        // Nothing matched at all → fall back to the entry's own name.
+        if (modeSet.size === 0)
+            for (const m of classifyModesFromName(entry.name)) modeSet.add(m);
 
         return {
             id: `curated/${slugify(entry.name)}`,
@@ -428,10 +423,7 @@ out skel qt;`);
             return byFreq !== 0 ? byFreq : b.length - a.length;
         })[0];
 
-        const override = MODE_OVERRIDES[normaliseName(name)];
-        const modes = override
-            ? STATION_MODES.filter((m) => override.includes(m))
-            : STATION_MODES.filter((m) => modeSet.has(m));
+        const modes = STATION_MODES.filter((m) => modeSet.has(m));
 
         features.push({
             type: "Feature",

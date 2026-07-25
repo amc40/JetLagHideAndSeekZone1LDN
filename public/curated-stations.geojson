@@ -520,7 +520,7 @@
             "properties": {
                 "id": "curated/hoxton-railway-station",
                 "name": "Hoxton",
-                "modes": ["rail", "overground"],
+                "modes": ["overground"],
                 "lines": ["Windrush Line"],
                 "memberIds": ["curated/hoxton-railway-station"]
             }
@@ -912,7 +912,7 @@
             "properties": {
                 "id": "curated/shoreditch-high-street-railway-station",
                 "name": "Shoreditch High Street",
-                "modes": ["rail", "overground"],
+                "modes": ["overground"],
                 "lines": ["Windrush Line"],
                 "memberIds": ["curated/shoreditch-high-street-railway-station"]
             }
@@ -1024,7 +1024,7 @@
             "properties": {
                 "id": "curated/tower-gateway-dlr-station",
                 "name": "Tower Gateway",
-                "modes": ["tube", "dlr"],
+                "modes": ["tube", "rail", "dlr"],
                 "lines": ["Circle line", "DLR", "District line", "c2c"],
                 "memberIds": [
                     "curated/tower-gateway-dlr-station",
