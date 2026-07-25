@@ -2,8 +2,16 @@ import { useStore } from "@nanostores/react";
 import * as L from "leaflet";
 import { useEffect, useRef, useState } from "react";
 
-import { leafletMapContext, mapGeoLocation, mapOverlays } from "@/lib/context";
-import { findPlacesInZone } from "@/maps/api";
+import { leafletMapContext, mapOverlays } from "@/lib/context";
+import {
+    fetchCuratedAquariums,
+    fetchCuratedCinemas,
+    fetchCuratedConsulates,
+    fetchCuratedHospitals,
+    fetchCuratedLibraries,
+    fetchCuratedMuseums,
+    fetchCuratedParks,
+} from "@/maps/api";
 
 import {
     OVERLAY_CONFIG,
@@ -17,6 +25,16 @@ type OverlayPlace = {
     lat: number;
     lng: number;
     type: string;
+};
+
+const CURATED_FETCHERS: Record<OverlayKey, () => Promise<any>> = {
+    hospital: fetchCuratedHospitals,
+    museum: fetchCuratedMuseums,
+    aquarium: fetchCuratedAquariums,
+    cinema: fetchCuratedCinemas,
+    library: fetchCuratedLibraries,
+    consulate: fetchCuratedConsulates,
+    park: fetchCuratedParks,
 };
 
 function makeOverlayIcon(color: string, letter: string): L.DivIcon {
@@ -40,31 +58,19 @@ const OVERLAY_ICONS: Record<OverlayKey, L.DivIcon> = Object.fromEntries(
     ),
 ) as Record<OverlayKey, L.DivIcon>;
 
-type OverpassElement = {
-    type: string;
-    id: number;
-    lat?: number;
-    lon?: number;
-    center?: { lat: number; lon: number };
-    tags?: Record<string, string>;
-};
-
-function parsePlaces(
-    elements: OverpassElement[],
-    type: string,
-): OverlayPlace[] {
-    const seen = new Set<string>();
+function parsePlaces(features: any[], type: string): OverlayPlace[] {
     const places: OverlayPlace[] = [];
-    for (const el of elements) {
-        const lat = el.center ? el.center.lat : el.lat;
-        const lng = el.center ? el.center.lon : el.lon;
+    for (const f of features ?? []) {
+        if (f.geometry?.type !== "Point") continue;
+        const [lng, lat] = f.geometry.coordinates;
         if (typeof lat !== "number" || typeof lng !== "number") continue;
-        const name =
-            el.tags?.["name:en"] || el.tags?.name || el.tags?.iata || "Unknown";
-        const key = `${name}|${lat.toFixed(4)}|${lng.toFixed(4)}`;
-        if (seen.has(key)) continue;
-        seen.add(key);
-        places.push({ id: `${el.type}/${el.id}`, name, lat, lng, type });
+        places.push({
+            id: f.properties?.id ?? `${type}|${lat}|${lng}`,
+            name: f.properties?.name ?? "Unknown",
+            lat,
+            lng,
+            type,
+        });
     }
     return places;
 }
@@ -72,7 +78,6 @@ function parsePlaces(
 export const MapOverlayMarkers = () => {
     const map = useStore(leafletMapContext);
     const $mapOverlays = useStore(mapOverlays);
-    const $mapGeoLocation = useStore(mapGeoLocation);
     const [placesByType, setPlacesByType] = useState<
         Record<string, OverlayPlace[]>
     >({});
@@ -87,25 +92,20 @@ export const MapOverlayMarkers = () => {
 
             await Promise.all(
                 enabled.map(async (type) => {
-                    const cfg = OVERLAY_CONFIG[type];
-                    if (!cfg) return;
+                    const fetcher = CURATED_FETCHERS[type];
+                    if (!fetcher) return;
                     try {
-                        const data = await findPlacesInZone(
-                            cfg.filter,
-                            `Loading ${cfg.label}...`,
-                            cfg.searchType ?? "nwr",
-                            "center",
-                        );
+                        const curated = await fetcher();
                         if (!cancelled) {
                             results[type] = parsePlaces(
-                                data.elements ?? [],
+                                curated.features ?? [],
                                 type,
                             );
                         }
                     } catch (err) {
                         if (!cancelled)
                             console.error(
-                                `MapOverlayMarkers: failed to fetch ${type}`,
+                                `MapOverlayMarkers: failed to load curated ${type} data`,
                                 err,
                             );
                     }
@@ -121,7 +121,7 @@ export const MapOverlayMarkers = () => {
         return () => {
             cancelled = true;
         };
-    }, [$mapOverlays, $mapGeoLocation]);
+    }, [$mapOverlays]);
 
     useEffect(() => {
         if (!map) return;

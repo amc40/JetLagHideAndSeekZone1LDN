@@ -20,6 +20,7 @@ import {
     fetchCuratedCinemas,
     fetchCuratedConsulates,
     fetchCuratedHospitals,
+    fetchCuratedLibraries,
     fetchCuratedMuseums,
     fetchCuratedParks,
     fetchCuratedStations,
@@ -47,6 +48,7 @@ export const findMatchingPlaces = async (question: MatchingQuestion) => {
                 location === "hospital" ||
                 location === "park" ||
                 location === "cinema" ||
+                location === "library" ||
                 location === "museum"
             ) {
                 const curated =
@@ -56,7 +58,9 @@ export const findMatchingPlaces = async (question: MatchingQuestion) => {
                           ? await fetchCuratedParks()
                           : location === "cinema"
                             ? await fetchCuratedCinemas()
-                            : await fetchCuratedMuseums();
+                            : location === "library"
+                              ? await fetchCuratedLibraries()
+                              : await fetchCuratedMuseums();
                 if (curated.features?.length > 0) {
                     return curated.features.map((f: any) =>
                         turf.point(f.geometry.coordinates, f.properties),
@@ -78,7 +82,6 @@ export const findMatchingPlaces = async (question: MatchingQuestion) => {
                 `Finding ${prettifyLocation(location, true).toLowerCase()}...`,
                 "nwr",
                 "center",
-                [],
                 60,
             );
 
@@ -87,7 +90,7 @@ export const findMatchingPlaces = async (question: MatchingQuestion) => {
                     `Error finding ${prettifyLocation(
                         location,
                         true,
-                    ).toLowerCase()}. Please enable hiding zone mode and switch to the Large Game variation of this question.`,
+                    ).toLowerCase()}.`,
                 );
                 return [];
             }
@@ -97,7 +100,7 @@ export const findMatchingPlaces = async (question: MatchingQuestion) => {
                     `Too many ${prettifyLocation(
                         location,
                         true,
-                    ).toLowerCase()} found (${data.elements.length}). Please enable hiding zone mode and switch to the Large Game variation of this question.`,
+                    ).toLowerCase()} found (${data.elements.length}).`,
                 );
                 return [];
             }

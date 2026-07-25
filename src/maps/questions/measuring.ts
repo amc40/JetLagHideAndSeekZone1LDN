@@ -15,6 +15,7 @@ import {
     fetchCuratedConsulates,
     fetchCuratedHighspeed,
     fetchCuratedHospitals,
+    fetchCuratedLibraries,
     fetchCuratedMuseums,
     fetchCuratedParks,
     findPlacesInZone,
@@ -54,6 +55,7 @@ export const determineMeasuringBoundary = async (
                 location === "hospital" ||
                 location === "park" ||
                 location === "cinema" ||
+                location === "library" ||
                 location === "museum" ||
                 location === "aquarium"
             ) {
@@ -64,9 +66,11 @@ export const determineMeasuringBoundary = async (
                           ? await fetchCuratedParks()
                           : location === "cinema"
                             ? await fetchCuratedCinemas()
-                            : location === "aquarium"
-                              ? await fetchCuratedAquariums()
-                              : await fetchCuratedMuseums();
+                            : location === "library"
+                              ? await fetchCuratedLibraries()
+                              : location === "aquarium"
+                                ? await fetchCuratedAquariums()
+                                : await fetchCuratedMuseums();
                 if (curated.features?.length > 0) {
                     return [
                         turf.combine(turf.featureCollection(curated.features))
@@ -90,7 +94,6 @@ export const determineMeasuringBoundary = async (
                 `Finding ${prettifyLocation(location, true).toLowerCase()}...`,
                 "nwr",
                 "center",
-                [],
                 60,
             );
 
@@ -99,7 +102,7 @@ export const determineMeasuringBoundary = async (
                     `Error finding ${prettifyLocation(
                         location,
                         true,
-                    ).toLowerCase()}. Please enable hiding zone mode and switch to the Large Game variation of this question.`,
+                    ).toLowerCase()}.`,
                 );
                 return [turf.multiPolygon([])];
             }
@@ -109,7 +112,7 @@ export const determineMeasuringBoundary = async (
                     `Too many ${prettifyLocation(
                         location,
                         true,
-                    ).toLowerCase()} found (${data.elements.length}). Please enable hiding zone mode and switch to the Large Game variation of this question.`,
+                    ).toLowerCase()} found (${data.elements.length}).`,
                 );
                 return [turf.multiPolygon([])];
             }

@@ -39,6 +39,18 @@ const precacheDataFile = (relativePath) => {
 const additionalManifestEntries = [
     ...precacheDataFile("arcgis-assets/esri/geometry/support/pe-wasm.wasm"),
     ...precacheDataFile("elevation-london.bin"),
+    ...precacheDataFile("coastline50.geojson"),
+    ...precacheDataFile("curated-aquariums.geojson"),
+    ...precacheDataFile("curated-cinemas.geojson"),
+    ...precacheDataFile("curated-consulates.geojson"),
+    ...precacheDataFile("curated-highspeed.geojson"),
+    ...precacheDataFile("curated-hospitals.geojson"),
+    ...precacheDataFile("curated-libraries.geojson"),
+    ...precacheDataFile("curated-museums.geojson"),
+    ...precacheDataFile("curated-parks.geojson"),
+    ...precacheDataFile("curated-stations.geojson"),
+    ...precacheDataFile("london-boroughs.geojson"),
+    ...precacheDataFile("thames.geojson"),
 ];
 
 /**

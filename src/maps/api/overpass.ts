@@ -1,14 +1,8 @@
 import * as turf from "@turf/turf";
-import type { FeatureCollection, MultiPolygon } from "geojson";
-import osmtogeojson from "osmtogeojson";
 import { toast } from "react-toastify";
 
-import {
-    additionalMapGeoLocations,
-    mapGeoLocation,
-    polyGeoJSON,
-} from "@/lib/context";
-import { safeUnion } from "@/maps/geo-utils";
+import { polyGeoJSON } from "@/lib/context";
+import { TFL_ZONE_1_POLYGON } from "@/lib/map-presets";
 
 import { cacheFetch, determineCache } from "./cache";
 import { OVERPASS_API, OVERPASS_API_FALLBACK } from "./constants";
@@ -55,31 +49,6 @@ export const getOverpassData = async (
 
     const data = await response.json();
     return data;
-};
-
-export const determineGeoJSON = async (
-    osmId: string,
-    osmTypeLetter: "W" | "R" | "N",
-): Promise<any> => {
-    const osmTypeMap: { [key: string]: string } = {
-        W: "way",
-        R: "relation",
-        N: "node",
-    };
-    const osmType = osmTypeMap[osmTypeLetter];
-    const query = `[out:json];${osmType}(${osmId});out geom;`;
-    const data = await getOverpassData(
-        query,
-        "Loading map data...",
-        CacheType.PERMANENT_CACHE,
-    );
-    const geo = osmtogeojson(data);
-    return {
-        ...geo,
-        features: geo.features.filter(
-            (feature: any) => feature.geometry.type !== "Point",
-        ),
-    };
 };
 
 export const fetchCoastline = async () => {
@@ -162,6 +131,16 @@ export const fetchCuratedAquariums = async () => {
     return data;
 };
 
+export const fetchCuratedLibraries = async () => {
+    const response = await cacheFetch(
+        import.meta.env.BASE_URL + "/curated-libraries.geojson",
+        "Loading curated libraries...",
+        CacheType.PERMANENT_CACHE,
+    );
+    const data = await response.json();
+    return data;
+};
+
 // Source: Greater London Authority "London Borough" boundary file
 // (statistical-gis-boundaries-london), via the London Datastore. Derived from
 // Ordnance Survey / ONS data and licensed under the Open Government Licence v3.
@@ -216,161 +195,21 @@ export const findPlacesInZone = async (
         | "nr"
         | "area" = "nwr",
     outType: "center" | "geom" = "center",
-    alternatives: string[] = [],
     timeoutDuration: number = 0,
 ) => {
-    let query = "";
-    const $polyGeoJSON = polyGeoJSON.get();
-    if ($polyGeoJSON) {
-        query = `
+    const $polyGeoJSON = polyGeoJSON.get() ?? TFL_ZONE_1_POLYGON;
+    const coords = turf
+        .getCoords($polyGeoJSON.features)
+        .flatMap((polygon) => polygon.geometry.coordinates)
+        .flat()
+        .map((coord) => [coord[1], coord[0]].join(" "))
+        .join(" ");
+    const query = `
 [out:json]${timeoutDuration != 0 ? `[timeout:${timeoutDuration}]` : ""};
 (
-${searchType}${filter}(poly:"${turf
-            .getCoords($polyGeoJSON.features)
-            .flatMap((polygon) => polygon.geometry.coordinates)
-            .flat()
-            .map((coord) => [coord[1], coord[0]].join(" "))
-            .join(" ")}");
-${
-    alternatives.length > 0
-        ? alternatives
-              .map(
-                  (alternative) =>
-                      `${searchType}${alternative}(poly:"${turf
-                          .getCoords($polyGeoJSON.features)
-                          .flatMap((polygon) => polygon.geometry.coordinates)
-                          .flat()
-                          .map((coord) => [coord[1], coord[0]].join(" "))
-                          .join(" ")}");`,
-              )
-              .join("\n")
-        : ""
-}
+${searchType}${filter}(poly:"${coords}");
 );
 out ${outType};
 `;
-    } else {
-        const primaryLocation = mapGeoLocation.get();
-        const additionalLocations = additionalMapGeoLocations
-            .get()
-            .filter((entry) => entry.added)
-            .map((entry) => entry.location);
-        const allLocations = [primaryLocation, ...additionalLocations];
-        const relationToAreaBlocks = allLocations
-            .map((loc, idx) => {
-                const regionVar = `.region${idx}`;
-                return `relation(${loc.properties.osm_id});map_to_area->${regionVar};`;
-            })
-            .join("\n");
-        const searchBlocks = allLocations
-            .map((_, idx) => {
-                const regionVar = `area.region${idx}`;
-                const altQueries =
-                    alternatives.length > 0
-                        ? alternatives
-                              .map(
-                                  (alt) => `${searchType}${alt}(${regionVar});`,
-                              )
-                              .join("\n")
-                        : "";
-                return `
-            ${searchType}${filter}(${regionVar});
-            ${altQueries}
-          `;
-            })
-            .join("\n");
-        query = `
-        [out:json]${timeoutDuration !== 0 ? `[timeout:${timeoutDuration}]` : ""};
-        ${relationToAreaBlocks}
-        (
-        ${searchBlocks}
-        );
-        out ${outType};
-        `;
-    }
-    const data = await getOverpassData(
-        query,
-        loadingText,
-        CacheType.ZONE_CACHE,
-    );
-    const subtractedEntries = additionalMapGeoLocations
-        .get()
-        .filter((e) => !e.added);
-    const subtractedPolygons = subtractedEntries.map((entry) => entry.location);
-    if (subtractedPolygons.length > 0 && data && data.elements) {
-        const turfPolys = await Promise.all(
-            subtractedPolygons.map(
-                async (location) =>
-                    turf.combine(
-                        await determineGeoJSON(
-                            location.properties.osm_id.toString(),
-                            location.properties.osm_type,
-                        ),
-                    ).features[0],
-            ),
-        );
-        data.elements = data.elements.filter((el: any) => {
-            const lon = el.center ? el.center.lon : el.lon;
-            const lat = el.center ? el.center.lat : el.lat;
-            if (typeof lon !== "number" || typeof lat !== "number")
-                return false;
-            const pt = turf.point([lon, lat]);
-            return !turfPolys.some((poly) =>
-                turf.booleanPointInPolygon(pt, poly as any),
-            );
-        });
-    }
-    return data;
-};
-
-export const determineMapBoundaries = async () => {
-    const mapGeoDatum = await Promise.all(
-        [
-            {
-                location: mapGeoLocation.get(),
-                added: true,
-                base: true,
-            },
-            ...additionalMapGeoLocations.get(),
-        ].map(async (location) => ({
-            added: location.added,
-            data: await determineGeoJSON(
-                location.location.properties.osm_id.toString(),
-                location.location.properties.osm_type,
-            ),
-        })),
-    );
-
-    let mapGeoData = turf.featureCollection([
-        safeUnion(
-            turf.featureCollection(
-                mapGeoDatum
-                    .filter((x) => x.added)
-                    .flatMap((x) => x.data.features),
-            ) as any,
-        ),
-    ]);
-
-    const differences = mapGeoDatum.filter((x) => !x.added).map((x) => x.data);
-
-    if (differences.length > 0) {
-        mapGeoData = turf.featureCollection([
-            turf.difference(
-                turf.featureCollection([
-                    mapGeoData.features[0],
-                    ...differences.flatMap((x) => x.features),
-                ]),
-            )!,
-        ]);
-    }
-
-    if (turf.coordAll(mapGeoData).length > 10000) {
-        turf.simplify(mapGeoData, {
-            tolerance: 0.0005,
-            highQuality: true,
-            mutate: true,
-        });
-    }
-
-    return turf.combine(mapGeoData) as FeatureCollection<MultiPolygon>;
+    return getOverpassData(query, loadingText, CacheType.ZONE_CACHE);
 };

@@ -125,24 +125,12 @@ const baseMatchingQuestionSchema = ordinaryBaseQuestionSchema.extend({
 const ordinaryMatchingQuestionSchema = baseMatchingQuestionSchema.extend({
     type: z
         .union([
-            z
-                .literal("museum-full")
-                .describe("Museum Question (Small+Medium Games)"),
-            z
-                .literal("hospital-full")
-                .describe("Hospital Question (Small+Medium Games)"),
-            z
-                .literal("cinema-full")
-                .describe("Cinema Question (Small+Medium Games)"),
-            z
-                .literal("library-full")
-                .describe("Library Question (Small+Medium Games)"),
-            z
-                .literal("consulate-full")
-                .describe("Foreign Consulate Question (Small+Medium Games)"),
-            z
-                .literal("park-full")
-                .describe("Park Question (Small+Medium Games)"),
+            z.literal("museum-full").describe("Museum Question"),
+            z.literal("hospital-full").describe("Hospital Question"),
+            z.literal("cinema-full").describe("Cinema Question"),
+            z.literal("library-full").describe("Library Question"),
+            z.literal("consulate-full").describe("Foreign Consulate Question"),
+            z.literal("park-full").describe("Park Question"),
         ])
         .default("museum-full"),
 });
@@ -188,27 +176,13 @@ const ordinaryMeasuringQuestionSchema = baseMeasuringQuestionSchema.extend({
             z
                 .literal("highspeed-measure-shinkansen")
                 .describe("High-Speed Rail Question"),
-            z
-                .literal("aquarium-full")
-                .describe("Aquarium Question (Small+Medium Games)"),
-            z
-                .literal("museum-full")
-                .describe("Museum Question (Small+Medium Games)"),
-            z
-                .literal("hospital-full")
-                .describe("Hospital Question (Small+Medium Games)"),
-            z
-                .literal("cinema-full")
-                .describe("Cinema Question (Small+Medium Games)"),
-            z
-                .literal("library-full")
-                .describe("Library Question (Small+Medium Games)"),
-            z
-                .literal("consulate-full")
-                .describe("Foreign Consulate Question (Small+Medium Games)"),
-            z
-                .literal("park-full")
-                .describe("Park Question (Small+Medium Games)"),
+            z.literal("aquarium-full").describe("Aquarium Question"),
+            z.literal("museum-full").describe("Museum Question"),
+            z.literal("hospital-full").describe("Hospital Question"),
+            z.literal("cinema-full").describe("Cinema Question"),
+            z.literal("library-full").describe("Library Question"),
+            z.literal("consulate-full").describe("Foreign Consulate Question"),
+            z.literal("park-full").describe("Park Question"),
             z
                 .literal("sea-level")
                 .describe("Sea Level Question (Greater London Only)"),
@@ -254,12 +228,8 @@ export type Units = z.infer<typeof unitsSchema>;
 export type RadiusQuestion = z.infer<typeof radiusQuestionSchema>;
 export type ThermometerQuestion = z.infer<typeof thermometerQuestionSchema>;
 export type APILocations =
-    | "golf_course"
     | "consulate"
     | "park"
-    | "peak"
-    | "theme_park"
-    | "zoo"
     | "aquarium"
     | "museum"
     | "hospital"

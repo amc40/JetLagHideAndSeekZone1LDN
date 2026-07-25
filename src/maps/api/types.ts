@@ -2,7 +2,6 @@ import type { Feature, Point, Polygon } from "geojson";
 import type { LatLngTuple } from "leaflet";
 
 import type { StationMode } from "@/maps/geo-utils/stationModes";
-import type { Question } from "@/maps/schema";
 
 export interface OpenStreetMap {
     type: string;
@@ -26,14 +25,6 @@ export interface OpenStreetMapProperties {
     osm_value: string;
     name: string;
     type: string;
-    isHidingZone?: boolean;
-    questions?: Question[];
-}
-
-export interface AdditionalMapGeoLocations {
-    added: boolean;
-    location: OpenStreetMap;
-    base: boolean;
 }
 
 export enum CacheType {

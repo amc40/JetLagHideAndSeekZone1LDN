@@ -21,7 +21,6 @@ import {
 } from "@/components/ui/drawer";
 import { useIsMobile } from "@/hooks/use-mobile";
 import {
-    additionalMapGeoLocations,
     allowGooglePlusCodes,
     alwaysUsePastebin,
     animateMapMovements,
@@ -38,7 +37,6 @@ import {
     isLoading,
     leafletMapContext,
     mapGeoJSON,
-    mapGeoLocation,
     optionsDrawerOpen,
     pastebinApiKey,
     permanentOverlay,
@@ -174,30 +172,22 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                 geojson.properties &&
                 geojson.properties.isHidingZone === true
             ) {
-                questions.set(
-                    questionsSchema.parse(geojson.properties.questions ?? []),
+                toast.error(
+                    "This shared link uses an old format that's no longer supported.",
                 );
-                mapGeoLocation.set(geojson);
-                mapGeoJSON.set(null);
-                polyGeoJSON.set(null);
+                return;
+            }
 
-                if (geojson.alternateLocations) {
-                    additionalMapGeoLocations.set(geojson.alternateLocations);
-                } else {
-                    additionalMapGeoLocations.set([]);
-                }
+            if (geojson.questions) {
+                questions.set(questionsSchema.parse(geojson.questions));
+                delete geojson.questions;
+
+                mapGeoJSON.set(geojson);
+                polyGeoJSON.set(geojson);
             } else {
-                if (geojson.questions) {
-                    questions.set(questionsSchema.parse(geojson.questions));
-                    delete geojson.questions;
-
-                    mapGeoJSON.set(geojson);
-                    polyGeoJSON.set(geojson);
-                } else {
-                    questions.set([]);
-                    mapGeoJSON.set(geojson);
-                    polyGeoJSON.set(geojson);
-                }
+                questions.set([]);
+                mapGeoJSON.set(geojson);
+                polyGeoJSON.set(geojson);
             }
 
             if (

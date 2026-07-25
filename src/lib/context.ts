@@ -4,11 +4,7 @@ import type { Map } from "leaflet";
 import { atom, computed, onSet } from "nanostores";
 
 import { TFL_ZONE_1_POLYGON } from "@/lib/map-presets";
-import type {
-    AdditionalMapGeoLocations,
-    OpenStreetMap,
-    StationCircle,
-} from "@/maps/api";
+import type { OpenStreetMap, StationCircle } from "@/maps/api";
 import { extractStationLabel } from "@/maps/geo-utils";
 import {
     type DeepPartial,
@@ -45,12 +41,6 @@ export const mapGeoLocation = persistentAtom<OpenStreetMap>(
     },
 );
 
-export const additionalMapGeoLocations = persistentAtom<
-    AdditionalMapGeoLocations[]
->("additionalMapGeoLocations", [], {
-    encode: JSON.stringify,
-    decode: JSON.parse,
-});
 export const permanentOverlay = persistentAtom<FeatureCollection | null>(
     "permanentOverlay",
     null,
@@ -173,9 +163,8 @@ export const save = () => {
 export const hidingZone = computed(
     [
         questions,
+        mapGeoJSON,
         polyGeoJSON,
-        mapGeoLocation,
-        additionalMapGeoLocations,
         disabledStations,
         hidingRadius,
         hidingRadiusUnits,
@@ -185,38 +174,22 @@ export const hidingZone = computed(
     (
         q,
         geo,
-        loc,
-        altLoc,
+        poly,
         disabledStations,
         radius,
         hidingRadiusUnits,
         zoneOptions,
         $permanentOverlay,
     ) => {
-        if (geo !== null) {
-            return {
-                ...geo,
-                questions: q,
-                disabledStations: disabledStations,
-                hidingRadius: radius,
-                hidingRadiusUnits,
-                zoneOptions: zoneOptions,
-                permanentOverlay: $permanentOverlay,
-            };
-        } else {
-            const $loc = structuredClone(loc);
-            $loc.properties.isHidingZone = true;
-            $loc.properties.questions = q;
-            return {
-                ...$loc,
-                disabledStations: disabledStations,
-                hidingRadius: radius,
-                hidingRadiusUnits,
-                alternateLocations: structuredClone(altLoc),
-                zoneOptions: zoneOptions,
-                permanentOverlay: $permanentOverlay,
-            };
-        }
+        return {
+            ...(geo ?? poly ?? TFL_ZONE_1_POLYGON),
+            questions: q,
+            disabledStations: disabledStations,
+            hidingRadius: radius,
+            hidingRadiusUnits,
+            zoneOptions: zoneOptions,
+            permanentOverlay: $permanentOverlay,
+        };
     },
 );
 

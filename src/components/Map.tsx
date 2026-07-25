@@ -10,7 +10,6 @@ import { MapContainer, ScaleControl, TileLayer } from "react-leaflet";
 import { toast } from "react-toastify";
 
 import {
-    additionalMapGeoLocations,
     addQuestion,
     animateMapMovements,
     autoZoom,
@@ -29,10 +28,11 @@ import {
     thunderforestApiKey,
     triggerLocalRefresh,
 } from "@/lib/context";
+import { TFL_ZONE_1_POLYGON } from "@/lib/map-presets";
 import { cn } from "@/lib/utils";
 import { applyQuestionsToMapGeoData, holedMask } from "@/maps";
 import { hiderifyQuestion } from "@/maps";
-import { clearCache, determineMapBoundaries } from "@/maps/api";
+import { clearCache } from "@/maps/api";
 
 import { DraggableMarkers } from "./DraggableMarkers";
 import { ElevationOverlay } from "./ElevationOverlay";
@@ -116,7 +116,6 @@ const getTileLayer = (tileLayer: string, thunderforestApiKey: string) => {
 };
 
 export const Map = ({ className }: { className?: string }) => {
-    useStore(additionalMapGeoLocations);
     const $mapGeoLocation = useStore(mapGeoLocation);
     const $questions = useStore(questions);
     const $baseTileLayer = useStore(baseTileLayer);
@@ -151,23 +150,9 @@ export const Map = ({ className }: { className?: string }) => {
             let mapGeoData = mapGeoJSON.get();
 
             if (!mapGeoData) {
-                const polyGeoData = polyGeoJSON.get();
-                if (polyGeoData) {
-                    mapGeoData = polyGeoData;
-                    mapGeoJSON.set(polyGeoData);
-                } else {
-                    await toast.promise(
-                        determineMapBoundaries()
-                            .then((x) => {
-                                mapGeoJSON.set(x);
-                                mapGeoData = x;
-                            })
-                            .catch((error) => console.log(error)),
-                        {
-                            error: "Error refreshing map data",
-                        },
-                    );
-                }
+                const polyGeoData = polyGeoJSON.get() ?? TFL_ZONE_1_POLYGON;
+                mapGeoData = polyGeoData;
+                mapGeoJSON.set(polyGeoData);
             }
 
             if ($hiderMode !== false) {
