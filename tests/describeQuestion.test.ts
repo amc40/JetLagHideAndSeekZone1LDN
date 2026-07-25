@@ -12,7 +12,7 @@ const radiusQuestion: Question = {
     data: {
         lat: 51.5,
         lng: -0.1,
-        drag: true,
+        drag: false,
         color: "blue",
         collapsed: false,
         hidden: false,
@@ -28,7 +28,7 @@ const matchingHospitalQuestion: Question = {
     data: {
         lat: 51.5,
         lng: -0.1,
-        drag: true,
+        drag: false,
         color: "blue",
         collapsed: false,
         hidden: false,
@@ -43,7 +43,7 @@ const measuringSeaLevelQuestion: Question = {
     data: {
         lat: 51.5,
         lng: -0.1,
-        drag: true,
+        drag: false,
         color: "blue",
         collapsed: false,
         hidden: false,
@@ -87,4 +87,26 @@ test("builds a summary block for multiple questions", () => {
 
 test("returns an empty string for no questions", () => {
     expect(describeQuestionsSummary([])).toBe("");
+});
+
+test("omits the answer for an unlocked (still-being-positioned) question", () => {
+    const unlockedRadius: Question = {
+        ...radiusQuestion,
+        data: { ...radiusQuestion.data, drag: true },
+    };
+
+    expect(describeQuestionsSummary([unlockedRadius])).toBe(
+        "> (Radius) Are you within 2 kilometers of me?\n\n",
+    );
+});
+
+test("includes the answer once the question is locked", () => {
+    const lockedRadius: Question = {
+        ...radiusQuestion,
+        data: { ...radiusQuestion.data, drag: false },
+    };
+
+    expect(describeQuestionsSummary([lockedRadius])).toBe(
+        "> (Radius) Are you within 2 kilometers of me?\nYes\n\n",
+    );
 });

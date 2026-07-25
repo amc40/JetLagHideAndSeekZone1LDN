@@ -136,6 +136,11 @@ const describeQuestionBody = (
  * human reading the shared text (e.g. in chat) can understand it at a
  * glance. `parseJsonLenient` (see `@/lib/utils`) can still recover the JSON
  * object from the middle of this text when it's pasted back in.
+ *
+ * `data.drag` (aka "unlocked") means the question's answer hasn't been
+ * settled - the marker/toggle is still being positioned, so `within`/`same`/
+ * `warmer`/`hiderCloser` doesn't yet represent a real answer. The answer
+ * line is only included once the question is locked (`drag: false`).
  */
 export const describeQuestionsSummary = (questions: Question[]): string => {
     if (questions.length === 0) return "";
@@ -144,7 +149,8 @@ export const describeQuestionsSummary = (questions: Question[]): string => {
         questions
             .map((question) => {
                 const { prompt, answer } = describeQuestion(question);
-                return `> ${prompt}\n${answer}`;
+                const locked = !question.data.drag;
+                return locked ? `> ${prompt}\n${answer}` : `> ${prompt}`;
             })
             .join("\n\n") + "\n\n"
     );
