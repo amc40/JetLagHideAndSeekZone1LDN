@@ -1,20 +1,62 @@
 import { useStore } from "@nanostores/react";
+import * as turf from "@turf/turf";
 import { toast } from "react-toastify";
 
 import { SidebarMenuButton } from "@/components/ui/sidebar-l";
 import {
     followMeLocation,
     hiderMode,
+    hidingRadius,
+    hidingRadiusUnits,
     isLoading,
+    mapGeoJSON,
+    polyGeoJSON,
     questionModified,
     questions,
 } from "@/lib/context";
+import { TFL_ZONE_1_POLYGON } from "@/lib/map-presets";
 import { findMatchingQuestionIndex } from "@/lib/questionIdentity";
 import { parseJsonLenient } from "@/lib/utils";
 import { hiderifyQuestion } from "@/maps";
+import { safeUnion } from "@/maps/geo-utils";
 import { questionSchema } from "@/maps/schema";
 
 type Location = { latitude: number; longitude: number };
+
+const warnIfOutsideSelectedZone = (location: Location) => {
+    const $hiderMode = hiderMode.get();
+
+    // Outside the hider's declared hiding radius around their station,
+    // even if still within the wider play area.
+    if ($hiderMode !== false) {
+        const distance = turf.distance(
+            turf.point([location.longitude, location.latitude]),
+            turf.point([$hiderMode.longitude, $hiderMode.latitude]),
+            { units: hidingRadiusUnits.get() },
+        );
+        if (distance > hidingRadius.get()) {
+            toast.warning(
+                "Your location is outside your hiding radius from your station",
+            );
+            return;
+        }
+    }
+
+    // Outside the wider selected play area entirely.
+    const zone = mapGeoJSON.get() ?? polyGeoJSON.get() ?? TFL_ZONE_1_POLYGON;
+
+    try {
+        const inZone = turf.booleanPointInPolygon(
+            turf.point([location.longitude, location.latitude]),
+            safeUnion(zone),
+        );
+        if (!inZone) {
+            toast.warning("Your location is outside the selected hiding zone");
+        }
+    } catch {
+        // If the zone geometry can't be checked, don't block answering.
+    }
+};
 
 // The location a pasted question should be answered from as the hider.
 // This never touches hiderMode — the hider's station pin stays fixed;
@@ -23,7 +65,10 @@ type Location = { latitude: number; longitude: number };
 // GPS fetch. Falls back to the saved station location on failure/denial.
 const getHiderAnswerLocation = async (): Promise<Location | undefined> => {
     const $followMeLocation = followMeLocation.get();
-    if ($followMeLocation !== null) return $followMeLocation;
+    if ($followMeLocation !== null) {
+        warnIfOutsideSelectedZone($followMeLocation);
+        return $followMeLocation;
+    }
 
     if (!navigator || !navigator.geolocation) {
         toast.error("Geolocation not supported — using saved hider location");
@@ -46,10 +91,12 @@ const getHiderAnswerLocation = async (): Promise<Location | undefined> => {
             { autoClose: 500 },
         );
 
-        return {
+        const location = {
             latitude: position.coords.latitude,
             longitude: position.coords.longitude,
         };
+        warnIfOutsideSelectedZone(location);
+        return location;
     } catch {
         return undefined;
     }
