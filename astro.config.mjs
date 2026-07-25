@@ -1,12 +1,15 @@
 // @ts-check
+import { createHash } from "node:crypto";
+import { existsSync, readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+
 import partytown from "@astrojs/partytown";
 import react from "@astrojs/react";
 import tailwind from "@astrojs/tailwind";
 import AstroPWA from "@vite-pwa/astro";
 import { defineConfig } from "astro/config";
-import { createHash } from "node:crypto";
-import { existsSync, readFileSync } from "node:fs";
-import { fileURLToPath } from "node:url";
+
+import { ICON_COLORS } from "./src/maps/api/constants.ts";
 
 const base = "JetLagHideAndSeekZone1LDN";
 
@@ -51,6 +54,19 @@ const additionalManifestEntries = [
     ...precacheDataFile("curated-stations.geojson"),
     ...precacheDataFile("london-boroughs.geojson"),
     ...precacheDataFile("thames.geojson"),
+    // Leaflet marker icons - referenced only via string-built URLs
+    // (DraggableMarkers.tsx), so Vite's build never sees an import and the
+    // default Workbox globPatterns (js/css/html) never picks up these PNGs.
+    // Without this they 404 offline the first time a new question marker
+    // (a color the user hasn't dragged yet, so never runtime-cached) is
+    // added. Derived from ICON_COLORS so a new color added there is
+    // automatically precached too.
+    ...Object.keys(ICON_COLORS).flatMap((color) =>
+        precacheDataFile(`marker-icon-2x-${color}.png`),
+    ),
+    ...precacheDataFile("marker-icon-2x.png"),
+    ...precacheDataFile("marker-icon.png"),
+    ...precacheDataFile("marker-shadow.png"),
 ];
 
 // Despite the name, this isn't tile-specific - it's a general CacheFirst

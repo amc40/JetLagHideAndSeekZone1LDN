@@ -32,7 +32,21 @@ import { TFL_ZONE_1_POLYGON } from "@/lib/map-presets";
 import { cn } from "@/lib/utils";
 import { applyQuestionsToMapGeoData, holedMask } from "@/maps";
 import { hiderifyQuestion } from "@/maps";
-import { clearCache } from "@/maps/api";
+import {
+    clearCache,
+    fetchCoastline,
+    fetchCuratedAquariums,
+    fetchCuratedCinemas,
+    fetchCuratedConsulates,
+    fetchCuratedHighspeed,
+    fetchCuratedHospitals,
+    fetchCuratedLibraries,
+    fetchCuratedMuseums,
+    fetchCuratedParks,
+    fetchCuratedStations,
+    fetchLondonBoroughs,
+    fetchThamesLine,
+} from "@/maps/api";
 
 import { DraggableMarkers } from "./DraggableMarkers";
 import { ElevationOverlay } from "./ElevationOverlay";
@@ -134,6 +148,30 @@ export const Map = ({ className }: { className?: string }) => {
         () => ({ current: null as number | null }),
         [],
     );
+
+    // Warm the permanent cache for every bundled curated dataset on mount so
+    // they're all available offline immediately, rather than only once a
+    // question/overlay that happens to need that particular dataset is used.
+    useEffect(() => {
+        for (const fetcher of [
+            fetchCoastline,
+            fetchLondonBoroughs,
+            fetchThamesLine,
+            fetchCuratedStations,
+            fetchCuratedHospitals,
+            fetchCuratedParks,
+            fetchCuratedCinemas,
+            fetchCuratedHighspeed,
+            fetchCuratedConsulates,
+            fetchCuratedAquariums,
+            fetchCuratedLibraries,
+            fetchCuratedMuseums,
+        ]) {
+            fetcher().catch((err) =>
+                console.error("Failed to preload curated data", err),
+            );
+        }
+    }, []);
 
     const refreshQuestions = async (focus: boolean = false) => {
         if (!map) return;
