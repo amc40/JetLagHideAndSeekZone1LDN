@@ -2,6 +2,7 @@ import { useStore } from "@nanostores/react";
 import { EyeIcon, EyeOffIcon, LockIcon, UnlockIcon } from "lucide-react";
 import { useRef, useState } from "react";
 import { VscChevronDown, VscShare, VscTrash } from "react-icons/vsc";
+import { toast } from "react-toastify";
 
 import {
     MoreActionsMenu,
@@ -67,6 +68,7 @@ export const QuestionCard = ({
     const $isLoading = useStore(isLoading);
     const copyButtonRef = useRef<HTMLButtonElement>(null);
     const isSharingRef = useRef(false);
+    const [shareDialogOpen, setShareDialogOpen] = useState(false);
 
     const toggleCollapse = () => {
         if (setCollapsed) {
@@ -130,6 +132,25 @@ export const QuestionCard = ({
                             <MoreActionsMenu
                                 disabled={$isLoading}
                                 label="More question actions"
+                                onInteractOutside={(e) => {
+                                    // The "Share this Question!" Dialog below
+                                    // is portalled into a separate container
+                                    // (for Leaflet z-index reasons), which
+                                    // breaks this Popover's containment check
+                                    // for "is this interaction inside me" —
+                                    // it dismisses itself (unmounting the
+                                    // Dialog with it) the moment that Dialog
+                                    // opens or the native share sheet blurs
+                                    // the page. Ignore outside interactions
+                                    // while the Dialog is open or a share is
+                                    // in flight.
+                                    if (
+                                        shareDialogOpen ||
+                                        isSharingRef.current
+                                    ) {
+                                        e.preventDefault();
+                                    }
+                                }}
                             >
                                 <MoreActionsMenuItem
                                     icon={
@@ -144,7 +165,10 @@ export const QuestionCard = ({
                                 >
                                     {hidden ? "Show question" : "Hide question"}
                                 </MoreActionsMenuItem>
-                                <Dialog>
+                                <Dialog
+                                    open={shareDialogOpen}
+                                    onOpenChange={setShareDialogOpen}
+                                >
                                     <DialogTrigger asChild>
                                         <Button
                                             variant="ghost"
@@ -156,14 +180,6 @@ export const QuestionCard = ({
                                     </DialogTrigger>
                                     <DialogContent
                                         onInteractOutside={(e) => {
-                                            // The native share sheet opened by
-                                            // navigator.share() below blurs the
-                                            // page, which Radix treats as a
-                                            // focus-outside interaction and
-                                            // closes this dialog before the
-                                            // share sheet can appear. Ignore
-                                            // outside interactions while a
-                                            // share is in flight.
                                             if (isSharingRef.current) {
                                                 e.preventDefault();
                                             }
@@ -207,10 +223,29 @@ export const QuestionCard = ({
                                                                 title: "Jet Lag Hide and Seek Question",
                                                                 text: questionJSON,
                                                             })
-                                                            .catch(() => {
-                                                                // User cancelled or share failed; the
-                                                                // clipboard option below still works.
+                                                            .then(() => {
+                                                                toast.success(
+                                                                    "Question shared",
+                                                                );
                                                             })
+                                                            .catch(
+                                                                (
+                                                                    error: unknown,
+                                                                ) => {
+                                                                    if (
+                                                                        error instanceof
+                                                                            DOMException &&
+                                                                        error.name ===
+                                                                            "AbortError"
+                                                                    ) {
+                                                                        // User cancelled the share sheet.
+                                                                        return;
+                                                                    }
+                                                                    toast.error(
+                                                                        "Sharing failed. Try Copy to Clipboard instead.",
+                                                                    );
+                                                                },
+                                                            )
                                                             .finally(() => {
                                                                 isSharingRef.current =
                                                                     false;

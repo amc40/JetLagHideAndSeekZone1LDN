@@ -12,10 +12,14 @@ export const MoreActionsMenu = ({
     children,
     disabled,
     label = "More actions",
+    onInteractOutside,
 }: {
     children: React.ReactNode;
     disabled?: boolean;
     label?: string;
+    onInteractOutside?: React.ComponentProps<
+        typeof PopoverContent
+    >["onInteractOutside"];
 }) => (
     <Popover>
         <PopoverTrigger asChild>
@@ -29,7 +33,11 @@ export const MoreActionsMenu = ({
                 <MoreHorizontalIcon />
             </Button>
         </PopoverTrigger>
-        <PopoverContent align="end" className="w-56 p-1">
+        <PopoverContent
+            align="end"
+            className="w-56 p-1"
+            onInteractOutside={onInteractOutside}
+        >
             <div className="flex flex-col gap-1">{children}</div>
         </PopoverContent>
     </Popover>
