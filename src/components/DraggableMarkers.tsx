@@ -1,16 +1,20 @@
 import { useStore } from "@nanostores/react";
+import * as turf from "@turf/turf";
 import { type DragEndEvent, Icon } from "leaflet";
 import { useState } from "react";
 import { Fragment } from "react/jsx-runtime";
-import { Marker } from "react-leaflet";
+import { Circle, Marker } from "react-leaflet";
 
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import {
     autoSave,
     hiderMode,
+    hidingRadius,
+    hidingRadiusUnits,
     questionModified,
     questions,
     save,
+    showHiderRadius,
     triggerLocalRefresh,
 } from "@/lib/context";
 import type { ICON_COLORS } from "@/maps/api";
@@ -34,6 +38,7 @@ const ColoredMarker = ({
     onChange,
     questionKey,
     sub = "",
+    draggable = true,
 }: {
     onChange: (event: DragEndEvent) => void;
     latitude: number;
@@ -41,6 +46,7 @@ const ColoredMarker = ({
     color: keyof typeof ICON_COLORS;
     questionKey: number;
     sub?: string;
+    draggable?: boolean;
 }) => {
     const $questions = useStore(questions);
     const $hiderMode = useStore(hiderMode);
@@ -63,7 +69,7 @@ const ColoredMarker = ({
                           })
                         : undefined
                 }
-                draggable={true}
+                draggable={draggable}
                 eventHandlers={{
                     dragstart: () => {
                         isDragging = true;
@@ -101,6 +107,7 @@ const ColoredMarker = ({
                                     });
                                 }}
                                 label="Hider Location"
+                                stationsOnly
                             />
                         </SidebarMenu>
                     </>
@@ -177,6 +184,9 @@ export const DraggableMarkers = () => {
     useStore(triggerLocalRefresh);
     const $questions = useStore(questions);
     const $hiderMode = useStore(hiderMode);
+    const $showHiderRadius = useStore(showHiderRadius);
+    const $hidingRadius = useStore(hidingRadius);
+    const $hidingRadiusUnits = useStore(hidingRadiusUnits);
 
     return (
         <Fragment>
@@ -188,19 +198,23 @@ export const DraggableMarkers = () => {
                     questionKey={-1}
                     latitude={$hiderMode.latitude}
                     longitude={$hiderMode.longitude}
-                    onChange={(e) => {
-                        $hiderMode.latitude =
-                            e.target.getLatLng().lat ?? $hiderMode.latitude;
-                        $hiderMode.longitude =
-                            e.target.getLatLng().lng ?? $hiderMode.longitude;
-
-                        if (autoSave.get()) {
-                            hiderMode.set({
-                                ...$hiderMode,
-                            });
-                        } else {
-                            triggerLocalRefresh.set(Math.random());
-                        }
+                    draggable={false}
+                    onChange={() => {}}
+                />
+            )}
+            {$hiderMode !== false && $showHiderRadius && (
+                <Circle
+                    key="hider-radius"
+                    center={[$hiderMode.latitude, $hiderMode.longitude]}
+                    radius={turf.convertLength(
+                        $hidingRadius,
+                        $hidingRadiusUnits,
+                        "meters",
+                    )}
+                    pathOptions={{
+                        color: "green",
+                        fillColor: "green",
+                        fillOpacity: 0.1,
                     }}
                 />
             )}

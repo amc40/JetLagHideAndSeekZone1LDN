@@ -1,4 +1,6 @@
 import { useStore } from "@nanostores/react";
+import * as turf from "@turf/turf";
+import _ from "lodash";
 import { useEffect, useRef } from "react";
 import { toast } from "react-toastify";
 
@@ -44,6 +46,7 @@ import {
     polyGeoJSON,
     questions,
     save,
+    showHiderRadius,
     showTutorial,
     triggerLocalRefresh,
 } from "@/lib/context";
@@ -56,7 +59,7 @@ import { cn, decompress, fetchFromPastebin } from "@/lib/utils";
 import { CacheType, clearCache } from "@/maps/api";
 import { questionsSchema } from "@/maps/schema";
 
-import { LatitudeLongitude } from "./LatLngPicker";
+import { LatitudeLongitude, loadCuratedStations } from "./LatLngPicker";
 import { Button } from "./ui/button";
 import { Checkbox } from "./ui/checkbox";
 import { Input } from "./ui/input";
@@ -78,6 +81,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
     const $animateMapMovements = useStore(animateMapMovements);
     const $autoZoom = useStore(autoZoom);
     const $hiderMode = useStore(hiderMode);
+    const $showHiderRadius = useStore(showHiderRadius);
     const $autoSave = useStore(autoSave);
     const $hidingZone = useStore(hidingZone);
     const $planningMode = useStore(planningModeEnabled);
@@ -280,20 +284,39 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                         if ($hiderMode === false) {
                                             const $leafletMapContext =
                                                 leafletMapContext.get();
+                                            const center =
+                                                $leafletMapContext?.getCenter();
 
-                                            if ($leafletMapContext) {
-                                                const center =
-                                                    $leafletMapContext.getCenter();
-                                                hiderMode.set({
-                                                    latitude: center.lat,
-                                                    longitude: center.lng,
-                                                });
-                                            } else {
-                                                hiderMode.set({
-                                                    latitude: 0,
-                                                    longitude: 0,
-                                                });
-                                            }
+                                            loadCuratedStations().then(
+                                                (stations) => {
+                                                    if (stations.length === 0)
+                                                        return;
+
+                                                    const nearest =
+                                                        (center
+                                                            ? _.minBy(
+                                                                  stations,
+                                                                  (station) =>
+                                                                      turf.distance(
+                                                                          [
+                                                                              center.lng,
+                                                                              center.lat,
+                                                                          ],
+                                                                          [
+                                                                              station.lng,
+                                                                              station.lat,
+                                                                          ],
+                                                                      ),
+                                                              )
+                                                            : stations[0]) ??
+                                                        stations[0];
+
+                                                    hiderMode.set({
+                                                        latitude: nearest.lat,
+                                                        longitude: nearest.lng,
+                                                    });
+                                                },
+                                            );
                                         } else {
                                             hiderMode.set(false);
                                         }
@@ -324,7 +347,19 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                             }
                                         }}
                                         label="Hider Location"
+                                        stationsOnly
                                     />
+                                    <SidebarMenuItem className="flex w-full min-h-11 flex-row items-center justify-between gap-2 cursor-pointer">
+                                        <span className="text-base font-medium">
+                                            Show hider radius?
+                                        </span>
+                                        <Checkbox
+                                            checked={$showHiderRadius}
+                                            onCheckedChange={(checked) =>
+                                                showHiderRadius.set(!!checked)
+                                            }
+                                        />
+                                    </SidebarMenuItem>
                                     {!autoSave && (
                                         <SidebarMenuItem>
                                             <SidebarMenuButton
