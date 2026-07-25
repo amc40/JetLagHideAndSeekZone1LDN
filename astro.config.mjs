@@ -53,6 +53,9 @@ const additionalManifestEntries = [
     ...precacheDataFile("thames.geojson"),
 ];
 
+// Despite the name, this isn't tile-specific - it's a general CacheFirst
+// runtime-caching entry for any third-party host whose responses should
+// persist for offline use once fetched at least once.
 /**
  * @param {RegExp} urlPattern
  * @param {string} cacheName
@@ -124,6 +127,14 @@ export default defineConfig({
                     tileHostCaching(
                         /^https:\/\/tile\.thunderforest\.com\//,
                         "thunderforest-tiles",
+                    ),
+                    tileHostCaching(
+                        /^https:\/\/fonts\.googleapis\.com\//,
+                        "google-fonts-stylesheets",
+                    ),
+                    tileHostCaching(
+                        /^https:\/\/fonts\.gstatic\.com\//,
+                        "google-fonts-webfonts",
                     ),
                 ],
             },
