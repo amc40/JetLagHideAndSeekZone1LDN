@@ -20,6 +20,7 @@ import {
     fetchCuratedCinemas,
     fetchCuratedConsulates,
     fetchCuratedHospitals,
+    fetchCuratedLibraries,
     fetchCuratedMuseums,
     fetchCuratedParks,
     fetchCuratedStations,
@@ -27,16 +28,11 @@ import {
     fetchThamesLine,
     findPlacesInZone,
     LOCATION_FIRST_TAG,
-    nearestToQuestion,
     prettifyLocation,
 } from "@/maps/api";
 import { holedMask, modifyMapData, riverNorthPolygon } from "@/maps/geo-utils";
 import { geoSpatialVoronoi } from "@/maps/geo-utils";
-import type {
-    APILocations,
-    HomeGameMatchingQuestions,
-    MatchingQuestion,
-} from "@/maps/schema";
+import type { APILocations, MatchingQuestion } from "@/maps/schema";
 
 export const findMatchingPlaces = async (question: MatchingQuestion) => {
     switch (question.type) {
@@ -52,6 +48,7 @@ export const findMatchingPlaces = async (question: MatchingQuestion) => {
                 location === "hospital" ||
                 location === "park" ||
                 location === "cinema" ||
+                location === "library" ||
                 location === "museum"
             ) {
                 const curated =
@@ -61,7 +58,9 @@ export const findMatchingPlaces = async (question: MatchingQuestion) => {
                           ? await fetchCuratedParks()
                           : location === "cinema"
                             ? await fetchCuratedCinemas()
-                            : await fetchCuratedMuseums();
+                            : location === "library"
+                              ? await fetchCuratedLibraries()
+                              : await fetchCuratedMuseums();
                 if (curated.features?.length > 0) {
                     return curated.features.map((f: any) =>
                         turf.point(f.geometry.coordinates, f.properties),
@@ -83,7 +82,6 @@ export const findMatchingPlaces = async (question: MatchingQuestion) => {
                 `Finding ${prettifyLocation(location, true).toLowerCase()}...`,
                 "nwr",
                 "center",
-                [],
                 60,
             );
 
@@ -92,7 +90,7 @@ export const findMatchingPlaces = async (question: MatchingQuestion) => {
                     `Error finding ${prettifyLocation(
                         location,
                         true,
-                    ).toLowerCase()}. Please enable hiding zone mode and switch to the Large Game variation of this question.`,
+                    ).toLowerCase()}.`,
                 );
                 return [];
             }
@@ -102,7 +100,7 @@ export const findMatchingPlaces = async (question: MatchingQuestion) => {
                     `Too many ${prettifyLocation(
                         location,
                         true,
-                    ).toLowerCase()} found (${data.elements.length}). Please enable hiding zone mode and switch to the Large Game variation of this question.`,
+                    ).toLowerCase()} found (${data.elements.length}).`,
                 );
                 return [];
             }
@@ -122,12 +120,6 @@ export const determineMatchingBoundary = _.memoize(
         let boundary: any;
 
         switch (question.type) {
-            case "museum":
-            case "hospital":
-            case "cinema":
-            case "library":
-            case "consulate":
-            case "park":
             case "same-first-letter-station":
             case "same-length-station":
             case "same-train-line": {
@@ -224,36 +216,6 @@ export const adjustPerMatching = async (
 export const hiderifyMatching = async (question: MatchingQuestion) => {
     const $hiderMode = hiderMode.get();
     if ($hiderMode === false) {
-        return question;
-    }
-
-    if (
-        [
-            "museum",
-            "hospital",
-            "cinema",
-            "library",
-            "consulate",
-            "park",
-        ].includes(question.type)
-    ) {
-        const questionNearest = await nearestToQuestion(
-            question as HomeGameMatchingQuestions,
-        );
-        const hiderNearest = await nearestToQuestion({
-            lat: $hiderMode.latitude,
-            lng: $hiderMode.longitude,
-            same: true,
-            type: (question as HomeGameMatchingQuestions).type,
-            drag: false,
-            color: "black",
-            collapsed: false,
-            hidden: false,
-        });
-
-        question.same =
-            questionNearest.properties.name === hiderNearest.properties.name;
-
         return question;
     }
 

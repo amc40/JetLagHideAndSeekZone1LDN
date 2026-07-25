@@ -36,17 +36,12 @@ import { cn } from "@/lib/utils";
 import {
     BLANK_GEOJSON,
     fetchCuratedStations,
-    findPlacesSpecificInZone,
-    findTentacleLocations,
-    nearestToQuestion,
-    QuestionSpecificLocation,
     type StationCircle,
     type StationPlace,
 } from "@/maps/api";
 import {
     extractStationLabel,
     extractStationName,
-    geoSpatialVoronoi,
     holedMask,
     lngLatToText,
     safeUnion,
@@ -299,51 +294,6 @@ export const ZoneSidebar = () => {
                                 return false;
                             });
                         }
-                    }
-                    if (
-                        question.id === "measuring" &&
-                        (question.data.type === "mcdonalds" ||
-                            question.data.type === "seven11")
-                    ) {
-                        const points = await findPlacesSpecificInZone(
-                            question.data.type === "mcdonalds"
-                                ? QuestionSpecificLocation.McDonalds
-                                : QuestionSpecificLocation.Seven11,
-                        );
-
-                        const nearestPoint = turf.nearestPoint(
-                            turf.point([question.data.lng, question.data.lat]),
-                            points as any,
-                        );
-
-                        const distance = turf.distance(
-                            turf.point([question.data.lng, question.data.lat]),
-                            nearestPoint as any,
-                            {
-                                units: "miles",
-                            },
-                        );
-
-                        circles = circles.filter((circle) => {
-                            const point = turf.point(
-                                turf.getCoord(circle.properties),
-                            );
-
-                            const nearest = turf.nearestPoint(
-                                point,
-                                points as any,
-                            );
-
-                            return question.data.hiderCloser
-                                ? turf.distance(point, nearest as any, {
-                                      units: "miles",
-                                  }) <
-                                      distance + $hidingRadius
-                                : turf.distance(point, nearest as any, {
-                                      units: "miles",
-                                  }) >
-                                      distance - $hidingRadius;
-                        });
                     }
                 }
 
@@ -771,138 +721,6 @@ async function selectionProcess(
         }
 
         if (
-            (question.id === "measuring" || question.id === "matching") &&
-            (question.data.type === "aquarium" ||
-                question.data.type === "museum" ||
-                question.data.type === "hospital" ||
-                question.data.type === "cinema" ||
-                question.data.type === "library" ||
-                question.data.type === "consulate" ||
-                question.data.type === "park")
-        ) {
-            const nearestQuestion = await nearestToQuestion(question.data);
-
-            let radius = 30;
-
-            let instances: any = { features: [] };
-
-            const nearestPoints = [];
-
-            while (instances.features.length === 0) {
-                instances = await findTentacleLocations(
-                    {
-                        lat: station.properties.geometry.coordinates[1],
-                        lng: station.properties.geometry.coordinates[0],
-                        radius: radius,
-                        unit: "miles",
-                        location: false,
-                        locationType: question.data.type,
-                        drag: false,
-                        color: "black",
-                        collapsed: false,
-                        hidden: false,
-                    },
-                    "Finding matching locations to hiding zone...",
-                );
-
-                const distances: any[] = instances.features.map((x: any) => {
-                    return {
-                        distance: turf.distance(
-                            turf.point(turf.getCoord(x)),
-                            station.properties,
-                            {
-                                units: "miles",
-                            },
-                        ),
-                        point: x,
-                    };
-                });
-
-                if (distances.length === 0) {
-                    radius += 30;
-                    continue;
-                }
-
-                const minimumPoint = _.minBy(distances, "distance")!;
-
-                if (minimumPoint.distance + $hidingRadius * 2 > radius) {
-                    radius = minimumPoint.distance + $hidingRadius * 2;
-                    continue;
-                }
-
-                nearestPoints.push(
-                    ...distances
-                        .filter(
-                            (x) =>
-                                x.distance <
-                                    minimumPoint.distance + $hidingRadius * 2 &&
-                                x.point.properties.name, // If it doesn't have a name, it's not a valid location
-                        )
-                        .map((x) => x.point),
-                );
-            }
-
-            if (question.id === "matching") {
-                const voronoi = geoSpatialVoronoi(
-                    turf.featureCollection(nearestPoints),
-                );
-
-                const correctPolygon = voronoi.features.find((feature: any) => {
-                    return (
-                        feature.properties.site.properties.name ===
-                        nearestQuestion.properties.name
-                    );
-                });
-
-                if (!correctPolygon) {
-                    if (question.data.same) {
-                        mapData = BLANK_GEOJSON;
-                    }
-
-                    continue;
-                }
-
-                if (question.data.same) {
-                    mapData = safeUnion(
-                        turf.featureCollection([
-                            ...mapData.features,
-                            turf.mask(correctPolygon),
-                        ]),
-                    );
-                } else {
-                    mapData = safeUnion(
-                        turf.featureCollection([
-                            ...mapData.features,
-                            correctPolygon,
-                        ]),
-                    );
-                }
-            } else {
-                const circles = nearestPoints.map((x) =>
-                    turf.circle(
-                        turf.getCoord(x),
-                        nearestQuestion.properties.distanceToPoint,
-                    ),
-                );
-
-                if (question.data.hiderCloser) {
-                    mapData = safeUnion(
-                        turf.featureCollection([
-                            ...mapData.features,
-                            holedMask(turf.featureCollection(circles)),
-                        ]),
-                    );
-                } else {
-                    mapData = safeUnion(
-                        turf.featureCollection([
-                            ...mapData.features,
-                            ...circles,
-                        ]),
-                    );
-                }
-            }
-        }
-        if (
             question.id === "measuring" &&
             question.data.type === "rail-measure"
         ) {
@@ -927,51 +745,6 @@ async function selectionProcess(
                         distance + 1.61 * $hidingRadius,
                 )
                 .map((x) => turf.circle(x.properties.geometry, distance));
-
-            if (question.data.hiderCloser) {
-                mapData = safeUnion(
-                    turf.featureCollection([
-                        ...mapData.features,
-                        holedMask(turf.featureCollection(circles)),
-                    ]),
-                );
-            } else {
-                mapData = safeUnion(
-                    turf.featureCollection([...mapData.features, ...circles]),
-                );
-            }
-        }
-        if (
-            question.id === "measuring" &&
-            (question.data.type === "mcdonalds" ||
-                question.data.type === "seven11")
-        ) {
-            const points = await findPlacesSpecificInZone(
-                question.data.type === "mcdonalds"
-                    ? QuestionSpecificLocation.McDonalds
-                    : QuestionSpecificLocation.Seven11,
-            );
-
-            const seeker = turf.point([question.data.lng, question.data.lat]);
-            const nearest = turf.nearestPoint(seeker, points as any);
-
-            const distance = turf.distance(seeker, nearest, {
-                units: "miles",
-            });
-
-            const filtered = points.features.filter(
-                (x) =>
-                    turf.distance(x as any, station.properties.geometry, {
-                        units: "miles",
-                    }) <
-                    distance + $hidingRadius,
-            );
-
-            const circles = filtered.map((x) =>
-                turf.circle(x as any, distance, {
-                    units: "miles",
-                }),
-            );
 
             if (question.data.hiderCloser) {
                 mapData = safeUnion(

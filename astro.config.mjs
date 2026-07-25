@@ -39,8 +39,23 @@ const precacheDataFile = (relativePath) => {
 const additionalManifestEntries = [
     ...precacheDataFile("arcgis-assets/esri/geometry/support/pe-wasm.wasm"),
     ...precacheDataFile("elevation-london.bin"),
+    ...precacheDataFile("coastline50.geojson"),
+    ...precacheDataFile("curated-aquariums.geojson"),
+    ...precacheDataFile("curated-cinemas.geojson"),
+    ...precacheDataFile("curated-consulates.geojson"),
+    ...precacheDataFile("curated-highspeed.geojson"),
+    ...precacheDataFile("curated-hospitals.geojson"),
+    ...precacheDataFile("curated-libraries.geojson"),
+    ...precacheDataFile("curated-museums.geojson"),
+    ...precacheDataFile("curated-parks.geojson"),
+    ...precacheDataFile("curated-stations.geojson"),
+    ...precacheDataFile("london-boroughs.geojson"),
+    ...precacheDataFile("thames.geojson"),
 ];
 
+// Despite the name, this isn't tile-specific - it's a general CacheFirst
+// runtime-caching entry for any third-party host whose responses should
+// persist for offline use once fetched at least once.
 /**
  * @param {RegExp} urlPattern
  * @param {string} cacheName
@@ -112,6 +127,14 @@ export default defineConfig({
                     tileHostCaching(
                         /^https:\/\/tile\.thunderforest\.com\//,
                         "thunderforest-tiles",
+                    ),
+                    tileHostCaching(
+                        /^https:\/\/fonts\.googleapis\.com\//,
+                        "google-fonts-stylesheets",
+                    ),
+                    tileHostCaching(
+                        /^https:\/\/fonts\.gstatic\.com\//,
+                        "google-fonts-webfonts",
                     ),
                 ],
             },

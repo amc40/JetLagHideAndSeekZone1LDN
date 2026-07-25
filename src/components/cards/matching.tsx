@@ -63,19 +63,6 @@ export const MatchingQuestionComponent = ({
                 </span>
             );
             break;
-        case "hospital":
-        case "museum":
-        case "cinema":
-        case "library":
-        case "consulate":
-        case "park":
-            questionSpecific = (
-                <span className="px-2 text-center text-orange-500">
-                    This question will only influence the map when you click on
-                    a hiding zone in the hiding zone sidebar.
-                </span>
-            );
-            break;
     }
 
     return (

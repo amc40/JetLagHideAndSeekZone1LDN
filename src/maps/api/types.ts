@@ -2,7 +2,6 @@ import type { Feature, Point, Polygon } from "geojson";
 import type { LatLngTuple } from "leaflet";
 
 import type { StationMode } from "@/maps/geo-utils/stationModes";
-import type { Question } from "@/maps/schema";
 
 export interface OpenStreetMap {
     type: string;
@@ -26,19 +25,6 @@ export interface OpenStreetMapProperties {
     osm_value: string;
     name: string;
     type: string;
-    isHidingZone?: boolean;
-    questions?: Question[];
-}
-
-export interface AdditionalMapGeoLocations {
-    added: boolean;
-    location: OpenStreetMap;
-    base: boolean;
-}
-
-export enum QuestionSpecificLocation {
-    McDonalds = '["brand:wikidata"="Q38076"]',
-    Seven11 = '["brand:wikidata"="Q259340"]',
 }
 
 export enum CacheType {
@@ -63,9 +49,4 @@ export interface StationPlaceProperties {
 export type StationPlace = Feature<Point, StationPlaceProperties>;
 export type StationCircle = Feature<Polygon, StationPlace>;
 
-export type {
-    APILocations,
-    EncompassingTentacleQuestionSchema,
-    HomeGameMatchingQuestions,
-    HomeGameMeasuringQuestions,
-} from "@/maps/schema";
+export type { APILocations } from "@/maps/schema";

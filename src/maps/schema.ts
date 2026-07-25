@@ -117,54 +117,6 @@ const radiusQuestionSchema = ordinaryBaseQuestionSchema.extend({
     within: z.boolean().default(true),
 });
 
-const tentacleLocationsFifteen = z.union([
-    z.literal("theme_park").describe("Theme Parks"),
-    z.literal("zoo").describe("Zoos"),
-    z.literal("aquarium").describe("Aquariums"),
-]);
-
-const tentacleLocationsOne = z.union([
-    z.literal("museum").describe("Museums"),
-    z.literal("hospital").describe("Hospitals"),
-    z.literal("cinema").describe("Movie Theaters"),
-    z.literal("library").describe("Libraries"),
-]);
-
-const apiLocationSchema = z.union([
-    z.literal("golf_course"),
-    z.literal("consulate"),
-    z.literal("park"),
-    z.literal("peak"),
-    tentacleLocationsFifteen,
-    tentacleLocationsOne,
-]);
-
-const baseTentacleQuestionSchema = ordinaryBaseQuestionSchema.extend({
-    radius: z.number().min(0, "You cannot have a negative radius").default(24),
-    unit: unitsSchema.default(getDefaultUnit),
-    location: z
-        .union([
-            z.object({
-                type: z.literal("Feature"),
-                geometry: z.object({
-                    type: z.literal("Point"),
-                    coordinates: z.array(z.number()),
-                }),
-                id: z.union([z.string(), z.number(), z.undefined()]).optional(),
-                properties: z.object({
-                    name: z.any(),
-                }),
-            }),
-            z.literal(false),
-        ])
-        .default(false),
-});
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const encompassingTentacleQuestionSchema = baseTentacleQuestionSchema.extend({
-    locationType: apiLocationSchema,
-    places: z.array(z.any()).optional(),
-});
-
 const baseMatchingQuestionSchema = ordinaryBaseQuestionSchema.extend({
     same: z.boolean().default(true),
     lengthComparison: z.enum(["shorter", "longer", "same"]).optional(),
@@ -173,24 +125,12 @@ const baseMatchingQuestionSchema = ordinaryBaseQuestionSchema.extend({
 const ordinaryMatchingQuestionSchema = baseMatchingQuestionSchema.extend({
     type: z
         .union([
-            z
-                .literal("museum-full")
-                .describe("Museum Question (Small+Medium Games)"),
-            z
-                .literal("hospital-full")
-                .describe("Hospital Question (Small+Medium Games)"),
-            z
-                .literal("cinema-full")
-                .describe("Cinema Question (Small+Medium Games)"),
-            z
-                .literal("library-full")
-                .describe("Library Question (Small+Medium Games)"),
-            z
-                .literal("consulate-full")
-                .describe("Foreign Consulate Question (Small+Medium Games)"),
-            z
-                .literal("park-full")
-                .describe("Park Question (Small+Medium Games)"),
+            z.literal("museum-full").describe("Museum Question"),
+            z.literal("hospital-full").describe("Hospital Question"),
+            z.literal("cinema-full").describe("Cinema Question"),
+            z.literal("library-full").describe("Library Question"),
+            z.literal("consulate-full").describe("Foreign Consulate Question"),
+            z.literal("park-full").describe("Park Question"),
         ])
         .default("museum-full"),
 });
@@ -203,17 +143,6 @@ const thamesMatchingQuestionSchema = baseMatchingQuestionSchema.extend({
     type: z
         .literal("thames")
         .describe("Landmass (North or South of River) Question"),
-});
-
-const homeGameMatchingQuestionsSchema = baseMatchingQuestionSchema.extend({
-    type: z.union([
-        z.literal("museum").describe("Museum Question"),
-        z.literal("hospital").describe("Hospital Question"),
-        z.literal("cinema").describe("Cinema Question"),
-        z.literal("library").describe("Library Question"),
-        z.literal("consulate").describe("Foreign Consulate Question"),
-        z.literal("park").describe("Park Question"),
-    ]),
 });
 
 const hidingZoneMatchingQuestionsSchema = baseMatchingQuestionSchema.extend({
@@ -235,7 +164,6 @@ export const matchingQuestionSchema = z.union([
     thamesMatchingQuestionSchema.describe(NO_GROUP),
     ordinaryMatchingQuestionSchema.describe(NO_GROUP),
     hidingZoneMatchingQuestionsSchema.describe("Hiding Zone Mode"),
-    homeGameMatchingQuestionsSchema.describe("Hiding Zone Mode"),
 ]);
 
 const baseMeasuringQuestionSchema = ordinaryBaseQuestionSchema.extend({
@@ -248,27 +176,13 @@ const ordinaryMeasuringQuestionSchema = baseMeasuringQuestionSchema.extend({
             z
                 .literal("highspeed-measure-shinkansen")
                 .describe("High-Speed Rail Question"),
-            z
-                .literal("aquarium-full")
-                .describe("Aquarium Question (Small+Medium Games)"),
-            z
-                .literal("museum-full")
-                .describe("Museum Question (Small+Medium Games)"),
-            z
-                .literal("hospital-full")
-                .describe("Hospital Question (Small+Medium Games)"),
-            z
-                .literal("cinema-full")
-                .describe("Cinema Question (Small+Medium Games)"),
-            z
-                .literal("library-full")
-                .describe("Library Question (Small+Medium Games)"),
-            z
-                .literal("consulate-full")
-                .describe("Foreign Consulate Question (Small+Medium Games)"),
-            z
-                .literal("park-full")
-                .describe("Park Question (Small+Medium Games)"),
+            z.literal("aquarium-full").describe("Aquarium Question"),
+            z.literal("museum-full").describe("Museum Question"),
+            z.literal("hospital-full").describe("Hospital Question"),
+            z.literal("cinema-full").describe("Cinema Question"),
+            z.literal("library-full").describe("Library Question"),
+            z.literal("consulate-full").describe("Foreign Consulate Question"),
+            z.literal("park-full").describe("Park Question"),
             z
                 .literal("sea-level")
                 .describe("Sea Level Question (Greater London Only)"),
@@ -277,29 +191,12 @@ const ordinaryMeasuringQuestionSchema = baseMeasuringQuestionSchema.extend({
 });
 
 const hidingZoneMeasuringQuestionsSchema = baseMeasuringQuestionSchema.extend({
-    type: z.union([
-        z.literal("mcdonalds").describe("McDonald's Question"),
-        z.literal("seven11").describe("7-Eleven Question"),
-        z.literal("rail-measure").describe("Train Station Question"),
-    ]),
-});
-
-const homeGameMeasuringQuestionsSchema = baseMeasuringQuestionSchema.extend({
-    type: z.union([
-        z.literal("aquarium").describe("Aquarium Question"),
-        z.literal("museum").describe("Museum Question"),
-        z.literal("hospital").describe("Hospital Question"),
-        z.literal("cinema").describe("Cinema Question"),
-        z.literal("library").describe("Library Question"),
-        z.literal("consulate").describe("Foreign Consulate Question"),
-        z.literal("park").describe("Park Question"),
-    ]),
+    type: z.literal("rail-measure").describe("Train Station Question"),
 });
 
 export const measuringQuestionSchema = z.union([
     ordinaryMeasuringQuestionSchema.describe(NO_GROUP),
     hidingZoneMeasuringQuestionsSchema.describe("Hiding Zone Mode"),
-    homeGameMeasuringQuestionsSchema.describe("Hiding Zone Mode"),
 ]);
 
 export const questionSchema = z.union([
@@ -330,20 +227,18 @@ export const questionsSchema = z.array(questionSchema);
 export type Units = z.infer<typeof unitsSchema>;
 export type RadiusQuestion = z.infer<typeof radiusQuestionSchema>;
 export type ThermometerQuestion = z.infer<typeof thermometerQuestionSchema>;
-export type APILocations = z.infer<typeof apiLocationSchema>;
+export type APILocations =
+    | "consulate"
+    | "park"
+    | "aquarium"
+    | "museum"
+    | "hospital"
+    | "cinema"
+    | "library";
 export type MatchingQuestion = z.infer<typeof matchingQuestionSchema>;
-export type HomeGameMatchingQuestions = z.infer<
-    typeof homeGameMatchingQuestionsSchema
->;
 export type MeasuringQuestion = z.infer<typeof measuringQuestionSchema>;
-export type HomeGameMeasuringQuestions = z.infer<
-    typeof homeGameMeasuringQuestionsSchema
->;
 export type Question = z.infer<typeof questionSchema>;
 export type Questions = z.infer<typeof questionsSchema>;
 export type DeepPartial<T> = {
     [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
 };
-export type EncompassingTentacleQuestionSchema = z.infer<
-    typeof encompassingTentacleQuestionSchema
->;

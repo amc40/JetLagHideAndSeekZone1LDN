@@ -53,31 +53,6 @@ export const MeasuringQuestionComponent = ({
     let questionSpecific = <></>;
 
     switch (data.type) {
-        case "mcdonalds":
-        case "seven11":
-            questionSpecific = (
-                <span className="px-2 text-center text-orange-500">
-                    This question will eliminate hiding zones that don&apos;t
-                    fit the criteria. When you click on a zone, the parts of
-                    that zone that don&apos;t satisfy the criteria will be
-                    eliminated.
-                </span>
-            );
-            break;
-        case "aquarium":
-        case "hospital":
-        case "museum":
-        case "cinema":
-        case "library":
-        case "consulate":
-        case "park":
-            questionSpecific = (
-                <span className="px-2 text-center text-orange-500">
-                    This question will only influence the map when you click on
-                    a hiding zone in the hiding zone sidebar.
-                </span>
-            );
-            break;
         case "sea-level":
             questionSpecific = (
                 <span className="px-2 text-center text-orange-500">
