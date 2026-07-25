@@ -15,6 +15,7 @@ import {
     autoZoom,
     baseTileLayer,
     followMe,
+    followMeLocation,
     hiderMode,
     isLoading,
     leafletMapContext,
@@ -448,6 +449,7 @@ export const Map = ({ className }: { className?: string }) => {
     useEffect(() => {
         if (!map) return;
         if (!$followMe) {
+            followMeLocation.set(null);
             if (followMeMarkerRef.current) {
                 map.removeLayer(followMeMarkerRef.current);
                 followMeMarkerRef.current = null;
@@ -477,13 +479,7 @@ export const Map = ({ className }: { className?: string }) => {
                     followMeMarkerRef.current = marker;
                 }
 
-                // While hider mode is on, Follow Me doubles as the hider's
-                // live location feed rather than running a second
-                // geolocation subscription.
-                const $hiderMode = hiderMode.get();
-                if ($hiderMode !== false) {
-                    hiderMode.set({ latitude: lat, longitude: lng });
-                }
+                followMeLocation.set({ latitude: lat, longitude: lng });
             },
             () => {
                 toast.error("Unable to access your location.");
@@ -492,6 +488,7 @@ export const Map = ({ className }: { className?: string }) => {
             { enableHighAccuracy: true, maximumAge: 10000, timeout: 20000 },
         );
         return () => {
+            followMeLocation.set(null);
             if (followMeMarkerRef.current) {
                 map.removeLayer(followMeMarkerRef.current);
                 followMeMarkerRef.current = null;

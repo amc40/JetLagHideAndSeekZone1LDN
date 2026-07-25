@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 
 import { SidebarMenuButton } from "@/components/ui/sidebar-l";
 import {
-    followMe,
+    followMeLocation,
     hiderMode,
     isLoading,
     questionModified,
@@ -14,18 +14,20 @@ import { parseJsonLenient } from "@/lib/utils";
 import { hiderifyQuestion } from "@/maps";
 import { questionSchema } from "@/maps/schema";
 
-// One-off GPS fetch used to answer a question as the hider. Only called
-// when hider mode is on and "Follow Me (GPS)" isn't already on (in which
-// case Map.tsx's watchPosition keeps hiderMode up to date continuously).
-// Falls back silently to the hider's currently saved location on failure
-// or denial.
-const shareOneOffHiderLocation = async () => {
-    const $hiderMode = hiderMode.get();
-    if ($hiderMode === false) return;
+type Location = { latitude: number; longitude: number };
+
+// The location a pasted question should be answered from as the hider.
+// This never touches hiderMode — the hider's station pin stays fixed;
+// only this one answer is computed from wherever the hider actually is.
+// Prefers an already-live Follow Me position; otherwise does a one-off
+// GPS fetch. Falls back to the saved station location on failure/denial.
+const getHiderAnswerLocation = async (): Promise<Location | undefined> => {
+    const $followMeLocation = followMeLocation.get();
+    if ($followMeLocation !== null) return $followMeLocation;
 
     if (!navigator || !navigator.geolocation) {
         toast.error("Geolocation not supported — using saved hider location");
-        return;
+        return undefined;
     }
 
     try {
@@ -44,12 +46,12 @@ const shareOneOffHiderLocation = async () => {
             { autoClose: 500 },
         );
 
-        hiderMode.set({
+        return {
             latitude: position.coords.latitude,
             longitude: position.coords.longitude,
-        });
+        };
     } catch {
-        // Keep the previously saved hider location.
+        return undefined;
     }
 };
 
@@ -63,9 +65,10 @@ export const PasteQuestionButton = () => {
             return false;
         }
 
-        if (hiderMode.get() !== false && !followMe.get()) {
-            await shareOneOffHiderLocation();
-        }
+        const isHider = hiderMode.get() !== false;
+        const answerLocation = isHider
+            ? await getHiderAnswerLocation()
+            : undefined;
 
         try {
             await toast.promise(
@@ -82,8 +85,8 @@ export const PasteQuestionButton = () => {
                     // If hider mode is on, answer the pasted question
                     // immediately and lock it so it doesn't get
                     // accidentally edited or re-answered later.
-                    if (hiderMode.get() !== false) {
-                        await hiderifyQuestion(validated);
+                    if (isHider) {
+                        await hiderifyQuestion(validated, answerLocation);
                         validated.data.drag = false;
                     }
 

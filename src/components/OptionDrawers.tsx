@@ -331,7 +331,8 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                     <p className="text-sm text-muted-foreground self-start">
                                         Turn on <strong>Follow Me (GPS)</strong>{" "}
                                         below to answer questions from your live
-                                        location instead of this saved one.
+                                        location. This pin stays fixed as your
+                                        hiding station either way.
                                     </p>
                                     <LatitudeLongitude
                                         latitude={$hiderMode.latitude}
