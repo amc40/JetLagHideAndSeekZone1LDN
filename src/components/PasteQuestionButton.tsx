@@ -9,6 +9,7 @@ import {
     questionModified,
     questions,
 } from "@/lib/context";
+import { findMatchingQuestionIndex } from "@/lib/questionIdentity";
 import { parseJsonLenient } from "@/lib/utils";
 import { hiderifyQuestion } from "@/maps";
 import { questionSchema } from "@/maps/schema";
@@ -87,11 +88,36 @@ export const PasteQuestionButton = () => {
                         validated.data.drag = false;
                     }
 
-                    return questionModified(questions.get().push(validated));
+                    // If this is a re-shared copy of a question already on
+                    // the map (e.g. the hider's answer coming back for a
+                    // question we sent unanswered), update that question in
+                    // place instead of adding a duplicate.
+                    const $questions = questions.get();
+                    const existingIndex = findMatchingQuestionIndex(
+                        $questions,
+                        validated,
+                    );
+
+                    if (existingIndex === -1) {
+                        questionModified($questions.push(validated));
+                        return false;
+                    }
+
+                    $questions[existingIndex] = {
+                        ...validated,
+                        key: $questions[existingIndex].key,
+                    };
+                    questionModified(existingIndex);
+                    return true;
                 }),
                 {
                     pending: "Reading from clipboard",
-                    success: "Question added from clipboard!",
+                    success: {
+                        render: ({ data: wasUpdate }) =>
+                            wasUpdate
+                                ? "Question updated from clipboard!"
+                                : "Question added from clipboard!",
+                    },
                     error: "No valid question found in clipboard",
                 },
                 { autoClose: 1000 },
