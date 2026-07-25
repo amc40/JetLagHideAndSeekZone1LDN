@@ -9,6 +9,7 @@ import {
     questionModified,
     questions,
 } from "@/lib/context";
+import { findMatchingQuestionIndex } from "@/lib/questionIdentity";
 import { parseJsonLenient } from "@/lib/utils";
 import { hiderifyQuestion } from "@/maps";
 import { questionSchema } from "@/maps/schema";
@@ -70,14 +71,13 @@ export const PasteQuestionButton = () => {
             await toast.promise(
                 navigator.clipboard.readText().then(async (text) => {
                     const parsed = parseJsonLenient(text);
-                    const question =
-                        parsed &&
-                        typeof parsed === "object" &&
-                        !Array.isArray(parsed)
-                            ? { ...parsed, key: Math.random() }
-                            : parsed;
 
-                    const validated = questionSchema.parse(question);
+                    // Preserve the pasted question's `key` (rather than
+                    // minting a new one) so it can be matched against a
+                    // question we already have below - the schema only
+                    // generates a fresh key when the pasted JSON doesn't
+                    // include one at all.
+                    const validated = questionSchema.parse(parsed);
 
                     // If hider mode is on, answer the pasted question
                     // immediately and lock it so it doesn't get
@@ -87,11 +87,33 @@ export const PasteQuestionButton = () => {
                         validated.data.drag = false;
                     }
 
-                    return questionModified(questions.get().push(validated));
+                    // If this is a re-shared copy of a question already on
+                    // the map (e.g. the hider's answer coming back for a
+                    // question we sent unanswered), update that question in
+                    // place instead of adding a duplicate.
+                    const $questions = questions.get();
+                    const existingIndex = findMatchingQuestionIndex(
+                        $questions,
+                        validated,
+                    );
+
+                    if (existingIndex === -1) {
+                        questionModified($questions.push(validated));
+                        return false;
+                    }
+
+                    $questions[existingIndex] = validated;
+                    questionModified(existingIndex);
+                    return true;
                 }),
                 {
                     pending: "Reading from clipboard",
-                    success: "Question added from clipboard!",
+                    success: {
+                        render: ({ data: wasUpdate }) =>
+                            wasUpdate
+                                ? "Question updated from clipboard!"
+                                : "Question added from clipboard!",
+                    },
                     error: "No valid question found in clipboard",
                 },
                 { autoClose: 1000 },
