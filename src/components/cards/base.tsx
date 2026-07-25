@@ -67,8 +67,6 @@ export const QuestionCard = ({
     const $questions = useStore(questions);
     const $isLoading = useStore(isLoading);
     const copyButtonRef = useRef<HTMLButtonElement>(null);
-    const isSharingRef = useRef(false);
-    const [shareDialogOpen, setShareDialogOpen] = useState(false);
 
     const toggleCollapse = () => {
         if (setCollapsed) {
@@ -129,28 +127,55 @@ export const QuestionCard = ({
                                     {locked ? <LockIcon /> : <UnlockIcon />}
                                 </Button>
                             )}
+                            {typeof navigator !== "undefined" &&
+                                "share" in navigator && (
+                                    <Button
+                                        variant="outline"
+                                        size="icon"
+                                        disabled={$isLoading}
+                                        title="Share question"
+                                        aria-label="Share question"
+                                        onClick={() => {
+                                            const questionJSON = JSON.stringify(
+                                                $questions.find(
+                                                    (q) =>
+                                                        q.key === questionKey,
+                                                ),
+                                                null,
+                                                4,
+                                            );
+                                            navigator
+                                                .share({
+                                                    title: "Jet Lag Hide and Seek Question",
+                                                    text: questionJSON,
+                                                })
+                                                .then(() => {
+                                                    toast.success(
+                                                        "Question shared",
+                                                    );
+                                                })
+                                                .catch((error: unknown) => {
+                                                    if (
+                                                        error instanceof
+                                                            DOMException &&
+                                                        error.name ===
+                                                            "AbortError"
+                                                    ) {
+                                                        // User cancelled the share sheet.
+                                                        return;
+                                                    }
+                                                    toast.error(
+                                                        "Sharing failed. Try Copy to Clipboard instead.",
+                                                    );
+                                                });
+                                        }}
+                                    >
+                                        <VscShare className="size-4" />
+                                    </Button>
+                                )}
                             <MoreActionsMenu
                                 disabled={$isLoading}
                                 label="More question actions"
-                                onInteractOutside={(e) => {
-                                    // The "Share this Question!" Dialog below
-                                    // is portalled into a separate container
-                                    // (for Leaflet z-index reasons), which
-                                    // breaks this Popover's containment check
-                                    // for "is this interaction inside me" —
-                                    // it dismisses itself (unmounting the
-                                    // Dialog with it) the moment that Dialog
-                                    // opens or the native share sheet blurs
-                                    // the page. Ignore outside interactions
-                                    // while the Dialog is open or a share is
-                                    // in flight.
-                                    if (
-                                        shareDialogOpen ||
-                                        isSharingRef.current
-                                    ) {
-                                        e.preventDefault();
-                                    }
-                                }}
                             >
                                 <MoreActionsMenuItem
                                     icon={
@@ -165,10 +190,7 @@ export const QuestionCard = ({
                                 >
                                     {hidden ? "Show question" : "Hide question"}
                                 </MoreActionsMenuItem>
-                                <Dialog
-                                    open={shareDialogOpen}
-                                    onOpenChange={setShareDialogOpen}
-                                >
+                                <Dialog>
                                     <DialogTrigger asChild>
                                         <Button
                                             variant="ghost"
@@ -178,13 +200,7 @@ export const QuestionCard = ({
                                             Share question JSON
                                         </Button>
                                     </DialogTrigger>
-                                    <DialogContent
-                                        onInteractOutside={(e) => {
-                                            if (isSharingRef.current) {
-                                                e.preventDefault();
-                                            }
-                                        }}
-                                    >
+                                    <DialogContent>
                                         <DialogHeader>
                                             <DialogTitle className="text-2xl">
                                                 Share this Question!
@@ -199,63 +215,6 @@ export const QuestionCard = ({
                                                 &ldquo;Questions&rdquo; sidebar.
                                             </DialogDescription>
                                         </DialogHeader>
-                                        {typeof navigator !== "undefined" &&
-                                            "share" in navigator && (
-                                                <Button
-                                                    variant="outline"
-                                                    size="sm"
-                                                    className="mb-2 sm:mb-0 transition-colors"
-                                                    onClick={() => {
-                                                        const questionJSON =
-                                                            JSON.stringify(
-                                                                $questions.find(
-                                                                    (q) =>
-                                                                        q.key ===
-                                                                        questionKey,
-                                                                ),
-                                                                null,
-                                                                4,
-                                                            );
-                                                        isSharingRef.current =
-                                                            true;
-                                                        navigator
-                                                            .share({
-                                                                title: "Jet Lag Hide and Seek Question",
-                                                                text: questionJSON,
-                                                            })
-                                                            .then(() => {
-                                                                toast.success(
-                                                                    "Question shared",
-                                                                );
-                                                            })
-                                                            .catch(
-                                                                (
-                                                                    error: unknown,
-                                                                ) => {
-                                                                    if (
-                                                                        error instanceof
-                                                                            DOMException &&
-                                                                        error.name ===
-                                                                            "AbortError"
-                                                                    ) {
-                                                                        // User cancelled the share sheet.
-                                                                        return;
-                                                                    }
-                                                                    toast.error(
-                                                                        "Sharing failed. Try Copy to Clipboard instead.",
-                                                                    );
-                                                                },
-                                                            )
-                                                            .finally(() => {
-                                                                isSharingRef.current =
-                                                                    false;
-                                                            });
-                                                    }}
-                                                >
-                                                    <VscShare className="size-4" />
-                                                    Share
-                                                </Button>
-                                            )}
                                         <Button
                                             variant="outline"
                                             size="sm"
