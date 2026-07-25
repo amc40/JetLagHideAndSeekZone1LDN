@@ -2,6 +2,7 @@ import { useStore } from "@nanostores/react";
 import { EyeIcon, EyeOffIcon, LockIcon, UnlockIcon } from "lucide-react";
 import { useRef, useState } from "react";
 import { VscChevronDown, VscShare, VscTrash } from "react-icons/vsc";
+import { toast } from "react-toastify";
 
 import {
     MoreActionsMenu,
@@ -66,7 +67,6 @@ export const QuestionCard = ({
     const $questions = useStore(questions);
     const $isLoading = useStore(isLoading);
     const copyButtonRef = useRef<HTMLButtonElement>(null);
-    const isSharingRef = useRef(false);
 
     const toggleCollapse = () => {
         if (setCollapsed) {
@@ -154,21 +154,7 @@ export const QuestionCard = ({
                                             Share question JSON
                                         </Button>
                                     </DialogTrigger>
-                                    <DialogContent
-                                        onInteractOutside={(e) => {
-                                            // The native share sheet opened by
-                                            // navigator.share() below blurs the
-                                            // page, which Radix treats as a
-                                            // focus-outside interaction and
-                                            // closes this dialog before the
-                                            // share sheet can appear. Ignore
-                                            // outside interactions while a
-                                            // share is in flight.
-                                            if (isSharingRef.current) {
-                                                e.preventDefault();
-                                            }
-                                        }}
-                                    >
+                                    <DialogContent>
                                         <DialogHeader>
                                             <DialogTitle className="text-2xl">
                                                 Share this Question!
@@ -200,21 +186,34 @@ export const QuestionCard = ({
                                                                 null,
                                                                 4,
                                                             );
-                                                        isSharingRef.current =
-                                                            true;
                                                         navigator
                                                             .share({
                                                                 title: "Jet Lag Hide and Seek Question",
                                                                 text: questionJSON,
                                                             })
-                                                            .catch(() => {
-                                                                // User cancelled or share failed; the
-                                                                // clipboard option below still works.
+                                                            .then(() => {
+                                                                toast.success(
+                                                                    "Question shared",
+                                                                );
                                                             })
-                                                            .finally(() => {
-                                                                isSharingRef.current =
-                                                                    false;
-                                                            });
+                                                            .catch(
+                                                                (
+                                                                    error: unknown,
+                                                                ) => {
+                                                                    if (
+                                                                        error instanceof
+                                                                            DOMException &&
+                                                                        error.name ===
+                                                                            "AbortError"
+                                                                    ) {
+                                                                        // User cancelled the share sheet.
+                                                                        return;
+                                                                    }
+                                                                    toast.error(
+                                                                        "Sharing failed. Try Copy to Clipboard instead.",
+                                                                    );
+                                                                },
+                                                            );
                                                     }}
                                                 >
                                                     <VscShare className="size-4" />
