@@ -605,20 +605,6 @@
             "type": "Feature",
             "geometry": {
                 "type": "Point",
-                "coordinates": [-0.169, 51.4875]
-            },
-            "properties": {
-                "id": "curated/king-s-road-chelsea-railway-station",
-                "name": "King's Road Chelsea",
-                "modes": ["rail"],
-                "lines": [],
-                "memberIds": ["curated/king-s-road-chelsea-railway-station"]
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
                 "coordinates": [-0.16083333, 51.50166667]
             },
             "properties": {
