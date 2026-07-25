@@ -95,6 +95,8 @@ const REQUEST_HEADERS = {
 
 async function queryOverpass(query) {
     const encodedQuery = encodeURIComponent(query);
+    let lastError = "no attempts made";
+
     // overpass-api.de enforces a small per-client concurrent-slot budget and
     // answers over-budget requests with 429; back off and retry the primary
     // host a couple of times before giving up on it, since the fallback host
@@ -109,10 +111,14 @@ async function queryOverpass(query) {
                 },
             );
             if (response.ok) return response.json();
+            lastError = `primary ${response.status} ${response.statusText}: ${(await response.text()).slice(0, 500)}`;
+            console.warn(`  attempt ${attempt + 1}/3 (primary): ${lastError}`);
             if (response.status !== 429) break;
-        } catch {
+        } catch (e) {
             // Transient timeout/network error under the proxy — retry the
             // primary host with backoff instead of giving up after one try.
+            lastError = `primary ${e.name}: ${e.message}`;
+            console.warn(`  attempt ${attempt + 1}/3 (primary): ${lastError}`);
         }
         await sleep(5000 * (attempt + 1));
     }
@@ -127,44 +133,62 @@ async function queryOverpass(query) {
                 },
             );
             if (fallbackResponse.ok) return fallbackResponse.json();
-        } catch {
-            // retry below
+            lastError = `fallback ${fallbackResponse.status} ${fallbackResponse.statusText}: ${(await fallbackResponse.text()).slice(0, 500)}`;
+            console.warn(`  attempt ${attempt + 1}/2 (fallback): ${lastError}`);
+        } catch (e) {
+            lastError = `fallback ${e.name}: ${e.message}`;
+            console.warn(`  attempt ${attempt + 1}/2 (fallback): ${lastError}`);
         }
         await sleep(5000 * (attempt + 1));
     }
 
     throw new Error(
-        "Overpass request failed on both primary and fallback hosts",
+        `Overpass request failed on both primary and fallback hosts (last error: ${lastError})`,
     );
 }
 
 // Entries with known {lat, lon} (e.g. sourced from a GPX/Wikipedia export)
-// skip Overpass entirely. Entries with {osmType, osmId} are resolved via
-// Overpass to find their coordinates.
-async function resolveEntry(entry) {
-    if (typeof entry.lat === "number" && typeof entry.lon === "number") {
-        return {
-            type: "Feature",
-            geometry: { type: "Point", coordinates: [entry.lon, entry.lat] },
-            properties: {
-                id: `curated/${slugify(entry.name)}`,
-                name: entry.name,
-            },
-        };
+// skip Overpass entirely.
+
+// Overpass ids for a whole category are resolved in a handful of batched
+// queries (a union of `way(id);`/`node(id);`/`relation(id);` clauses per
+// request) rather than one query per entry — this cuts a ~300-entry run
+// from hundreds of round-trips down to single digits. `out center tags`
+// returns each matched element's own {type, id}, so results are matched
+// back to entries by `${type}/${id}` rather than by response order (some
+// ids in a batch may come back missing entirely).
+const OVERPASS_BATCH_SIZE = 50;
+
+async function resolveOsmBatch(osmEntries) {
+    const resultMap = new Map();
+    for (let i = 0; i < osmEntries.length; i += OVERPASS_BATCH_SIZE) {
+        const batch = osmEntries.slice(i, i + OVERPASS_BATCH_SIZE);
+        const clauses = batch
+            .map((e) => `${OSM_TYPE_QUERY_NAME[e.osmType]}(${e.osmId});`)
+            .join("");
+        const query = `[out:json];(${clauses});out center tags;`;
+        const data = await queryOverpass(query);
+        for (const element of data.elements ?? []) {
+            resultMap.set(`${element.type}/${element.id}`, element);
+        }
+        // Be polite to the public Overpass instance between batches.
+        if (i + OVERPASS_BATCH_SIZE < osmEntries.length) await sleep(1000);
     }
+    return resultMap;
+}
 
-    const osmType = OSM_TYPE_QUERY_NAME[entry.osmType];
-    if (!osmType) {
-        throw new Error(
-            `Entry "${entry.name ?? "unknown"}" needs either {lat, lon} or a valid {osmType, osmId}`,
-        );
-    }
+function resolveDirectEntry(entry) {
+    return {
+        type: "Feature",
+        geometry: { type: "Point", coordinates: [entry.lon, entry.lat] },
+        properties: {
+            id: `curated/${slugify(entry.name)}`,
+            name: entry.name,
+        },
+    };
+}
 
-    const query = `[out:json];${osmType}(${entry.osmId});out center tags;`;
-    const data = await queryOverpass(query);
-    const element = data.elements?.[0];
-    if (!element) return null;
-
+function resolveOsmEntry(entry, element) {
     const lat = element.center ? element.center.lat : element.lat;
     const lon = element.center ? element.center.lon : element.lon;
     if (typeof lat !== "number" || typeof lon !== "number") return null;
@@ -190,25 +214,51 @@ async function generateCategory({ name, source, output }) {
         return;
     }
 
+    const osmEntries = entries.filter(
+        (e) => !(typeof e.lat === "number" && typeof e.lon === "number"),
+    );
+    for (const e of osmEntries) {
+        if (!OSM_TYPE_QUERY_NAME[e.osmType]) {
+            throw new Error(
+                `Entry "${e.name ?? "unknown"}" needs either {lat, lon} or a valid {osmType, osmId}`,
+            );
+        }
+    }
+
+    let osmMap = new Map();
+    if (osmEntries.length > 0) {
+        try {
+            osmMap = await resolveOsmBatch(osmEntries);
+        } catch (e) {
+            // Bail out rather than writing a near-empty file over the
+            // committed output — a failed batch here previously clobbered
+            // curated-museums.geojson down to 0 features.
+            throw new Error(
+                `[${name}] Batched Overpass resolution failed, leaving ${output} untouched: ${e.message}`,
+            );
+        }
+    }
+
     const features = [];
     for (const entry of entries) {
+        const label = entry.name ?? `${entry.osmType}/${entry.osmId}`;
         const isDirectCoordinate =
             typeof entry.lat === "number" && typeof entry.lon === "number";
-        const label = entry.name ?? `${entry.osmType}/${entry.osmId}`;
-        try {
-            const feature = await resolveEntry(entry);
-            if (!feature) {
-                console.warn(
-                    `[${name}] No data found for ${label} — check the OSM ID.`,
-                );
-                continue;
-            }
-            features.push(feature);
-        } catch (e) {
-            console.warn(`[${name}] Failed to resolve ${label}: ${e.message}`);
+
+        const feature = isDirectCoordinate
+            ? resolveDirectEntry(entry)
+            : resolveOsmEntry(
+                  entry,
+                  osmMap.get(`${entry.osmType}/${entry.osmId}`) ?? {},
+              );
+
+        if (!feature) {
+            console.warn(
+                `[${name}] No data found for ${label} — check the OSM ID.`,
+            );
+            continue;
         }
-        // Be polite to the public Overpass instance between requests.
-        if (!isDirectCoordinate) await sleep(500);
+        features.push(feature);
     }
 
     const featureCollection = { type: "FeatureCollection", features };

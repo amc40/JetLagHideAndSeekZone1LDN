@@ -58,7 +58,6 @@ export default [
         lon: -0.15277778,
     },
     { name: "Kennington tube station", lat: 51.48827778, lon: -0.10566667 },
-    { name: "Kensington (Olympia) station", lat: 51.4986, lon: -0.2108 },
     {
         name: "King's Cross St Pancras tube station",
         lat: 51.5302,

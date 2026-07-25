@@ -31,8 +31,6 @@ export default [
     { osmType: "way", osmId: 905365405 },
     // Charles Dickens Museum
     { osmType: "node", osmId: 334631276 },
-    // Chelsea FC Museum and Stadium Tours
-    { osmType: "way", osmId: 715157652 },
     // Chelsea Space
     { osmType: "node", osmId: 672741997 },
     // Churchill War Rooms
@@ -53,8 +51,6 @@ export default [
     { osmType: "way", osmId: 101154182 },
     // Foundling Museum
     { osmType: "way", osmId: 28269975 },
-    // Fulham Palace
-    { osmType: "relation", osmId: 3609581 },
     // Fusiliers Museum
     { osmType: "node", osmId: 13958592487 },
     // Garden Museum
@@ -79,22 +75,16 @@ export default [
     { osmType: "way", osmId: 82459230 },
     // Leighton House Museum
     { osmType: "way", osmId: 115594423 },
-    // Lightroom
-    { osmType: "node", osmId: 11008671201 },
     // London Canal Museum
     { osmType: "way", osmId: 190831613 },
     // London Transport Museum
     { osmType: "way", osmId: 44599803 },
-    // Lord's MCC Cricket Museum
-    { osmType: "node", osmId: 6525008514 },
     // Madame Tussauds
     { osmType: "way", osmId: 684695074 },
     // MathsWorld
     { osmType: "node", osmId: 13261198401 },
     // Moco Museum
     { osmType: "node", osmId: 13256051041 },
-    // Museum of Brands
-    { osmType: "way", osmId: 402345096 },
     // Museum of Freemasonry
     { osmType: "node", osmId: 12541989407 },
     // Museum of Methodism
@@ -103,8 +93,6 @@ export default [
     { osmType: "way", osmId: 706183718 },
     // Museum of the Order of St John
     { osmType: "node", osmId: 1686474834 },
-    // Museum Of Youth Culture
-    { osmType: "node", osmId: 13962235901 },
     // National Army Museum
     { osmType: "way", osmId: 10807015 },
     // Natural History Museum
@@ -159,8 +147,6 @@ export default [
     { osmType: "node", osmId: 5741257603 },
     // The Guards Museum
     { osmType: "node", osmId: 4749096025 },
-    // The Jewish Museum
-    { osmType: "way", osmId: 232592410 },
     // The King's Gallery
     { osmType: "node", osmId: 1289223308 },
     // The Mosaic Rooms

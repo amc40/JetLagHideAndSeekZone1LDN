@@ -5,28 +5,6 @@
             "type": "Feature",
             "geometry": {
                 "type": "Point",
-                "coordinates": [-0.2176095, 51.5222211]
-            },
-            "properties": {
-                "id": "way/31636962",
-                "name": "St Charles' Hospital"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-0.1313957, 51.5362791]
-            },
-            "properties": {
-                "id": "way/43290805",
-                "name": "St. Pancras Hospital"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
                 "coordinates": [-0.1742846, 51.5174818]
             },
             "properties": {
@@ -163,29 +141,7 @@
             },
             "properties": {
                 "id": "way/170732745",
-                "name": "St Bartholomew's Hospital"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-0.2197632, 51.486919]
-            },
-            "properties": {
-                "id": "way/188617701",
-                "name": "Charing Cross Hospital"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-0.093654, 51.4684289]
-            },
-            "properties": {
-                "id": "way/277432734",
-                "name": "King's College Hospital"
+                "name": "Saint Bartholomew's Hospital"
             }
         },
         {
@@ -258,17 +214,6 @@
             "type": "Feature",
             "geometry": {
                 "type": "Point",
-                "coordinates": [-0.1749786, 51.5332691]
-            },
-            "properties": {
-                "id": "way/699934188",
-                "name": "Hospital of St John and St Elizabeth"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
                 "coordinates": [-0.0868297, 51.5032347]
             },
             "properties": {
@@ -285,17 +230,6 @@
             "properties": {
                 "id": "way/821710065",
                 "name": "Cromwell Hospital"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-0.1814395, 51.4843905]
-            },
-            "properties": {
-                "id": "way/881918254",
-                "name": "Chelsea and Westminster Hospital"
             }
         },
         {
@@ -329,17 +263,6 @@
             "properties": {
                 "id": "way/1390491266",
                 "name": "Royal London Hospital for Integrated Medicine"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-0.0902554, 51.4690387]
-            },
-            "properties": {
-                "id": "relation/8286235",
-                "name": "Maudsley Hospital"
             }
         },
         {

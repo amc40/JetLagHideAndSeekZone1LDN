@@ -203,17 +203,6 @@
             "type": "Feature",
             "geometry": {
                 "type": "Point",
-                "coordinates": [-0.2021991, 51.5123193]
-            },
-            "properties": {
-                "id": "way/356788438",
-                "name": "Consulate of Ukraine"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
                 "coordinates": [-0.108178, 51.5134117]
             },
             "properties": {
@@ -250,8 +239,7 @@
                 "coordinates": [-0.1586132, 51.4992728]
             },
             "properties": {
-                "id": "way/530784906",
-                "name": null
+                "id": "way/530784906"
             }
         },
         {

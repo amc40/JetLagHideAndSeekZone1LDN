@@ -557,24 +557,6 @@
             "type": "Feature",
             "geometry": {
                 "type": "Point",
-                "coordinates": [-0.2108, 51.4986]
-            },
-            "properties": {
-                "id": "curated/kensington-olympia-station",
-                "name": "Kensington (Olympia)",
-                "modes": ["tube", "rail", "overground"],
-                "lines": [
-                    "District line",
-                    "Govia Thameslink Railway",
-                    "Mildmay Line"
-                ],
-                "memberIds": ["curated/kensington-olympia-station"]
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
                 "coordinates": [-0.12422592666666667, 51.53040000000001]
             },
             "properties": {
