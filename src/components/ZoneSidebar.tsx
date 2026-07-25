@@ -22,6 +22,7 @@ import {
     disabledStations,
     displayHidingZones,
     displayHidingZonesStyle,
+    hiderMode,
     hidingRadius,
     hidingRadiusUnits,
     isLoading,
@@ -29,6 +30,7 @@ import {
     planningModeEnabled,
     questionFinishedMapData,
     questions,
+    showHiderRadius,
     trainStations,
 } from "@/lib/context";
 import { getStationModesIcon } from "@/lib/stationIcons";
@@ -86,6 +88,8 @@ export const ZoneSidebar = () => {
     const $displayHidingZonesStyle = useStore(displayHidingZonesStyle);
     const $hidingRadius = useStore(hidingRadius);
     const $hidingRadiusUnits = useStore(hidingRadiusUnits);
+    const $hiderMode = useStore(hiderMode);
+    const $showHiderRadius = useStore(showHiderRadius);
     const $isLoading = useStore(isLoading);
     const map = useStore(leafletMapContext);
     const stations = useStore(trainStations);
@@ -450,6 +454,24 @@ export const ZoneSidebar = () => {
                                     />
                                 </div>
                             </SidebarMenuItem>
+                            {$hiderMode !== false && (
+                                <SidebarMenuItem
+                                    className={MENU_ITEM_CLASSNAME}
+                                >
+                                    <label className="flex w-full min-h-11 items-center justify-between gap-2 cursor-pointer">
+                                        <span className="font-semibold font-poppins">
+                                            Show hider radius?
+                                        </span>
+                                        <Checkbox
+                                            checked={$showHiderRadius}
+                                            onCheckedChange={(checked) =>
+                                                showHiderRadius.set(!!checked)
+                                            }
+                                            disabled={$isLoading}
+                                        />
+                                    </label>
+                                </SidebarMenuItem>
+                            )}
                             {$displayHidingZones && stations.length > 0 && (
                                 <SidebarMenuItem>
                                     <Label className="font-semibold font-poppins ml-2">

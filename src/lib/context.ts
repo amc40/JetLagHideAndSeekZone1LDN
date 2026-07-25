@@ -139,6 +139,14 @@ export const hidingRadiusUnits = persistentAtom<Units>(
         decode: JSON.parse,
     },
 );
+export const showHiderRadius = persistentAtom<boolean>(
+    "showHiderRadius",
+    true,
+    {
+        encode: JSON.stringify,
+        decode: JSON.parse,
+    },
+);
 export const disabledStations = persistentAtom<string[]>(
     "disabledStations",
     [],
