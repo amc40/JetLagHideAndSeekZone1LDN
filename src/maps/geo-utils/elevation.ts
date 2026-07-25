@@ -60,12 +60,12 @@ let gridPromise: Promise<Int16Array> | null = null;
 // Exported (only) so the app can warm the permanent cache for this file on
 // load, alongside the curated geojson datasets - see Map.tsx. Otherwise it's
 // fetched lazily the first time a Sea Level Measuring question is added.
-export const loadGrid = (silent = false): Promise<Int16Array> => {
+export const loadGrid = (): Promise<Int16Array> => {
     if (!gridPromise) {
         gridPromise = (async () => {
             const response = await cacheFetch(
                 versionedPublicUrl("elevation-london.bin"),
-                silent ? undefined : "Loading elevation data...",
+                undefined,
                 CacheType.PERMANENT_CACHE,
             );
             const buffer = await response.arrayBuffer();
