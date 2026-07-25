@@ -139,32 +139,47 @@ async function queryOverpass(query) {
 }
 
 // Entries with known {lat, lon} (e.g. sourced from a GPX/Wikipedia export)
-// skip Overpass entirely. Entries with {osmType, osmId} are resolved via
-// Overpass to find their coordinates.
-async function resolveEntry(entry) {
-    if (typeof entry.lat === "number" && typeof entry.lon === "number") {
-        return {
-            type: "Feature",
-            geometry: { type: "Point", coordinates: [entry.lon, entry.lat] },
-            properties: {
-                id: `curated/${slugify(entry.name)}`,
-                name: entry.name,
-            },
-        };
+// skip Overpass entirely.
+
+// Overpass ids for a whole category are resolved in a handful of batched
+// queries (a union of `way(id);`/`node(id);`/`relation(id);` clauses per
+// request) rather than one query per entry — this cuts a ~300-entry run
+// from hundreds of round-trips down to single digits. `out center tags`
+// returns each matched element's own {type, id}, so results are matched
+// back to entries by `${type}/${id}` rather than by response order (some
+// ids in a batch may come back missing entirely).
+const OVERPASS_BATCH_SIZE = 50;
+
+async function resolveOsmBatch(osmEntries) {
+    const resultMap = new Map();
+    for (let i = 0; i < osmEntries.length; i += OVERPASS_BATCH_SIZE) {
+        const batch = osmEntries.slice(i, i + OVERPASS_BATCH_SIZE);
+        const clauses = batch
+            .map((e) => `${OSM_TYPE_QUERY_NAME[e.osmType]}(${e.osmId});`)
+            .join("");
+        const query = `[out:json];(${clauses});out center tags;`;
+        const data = await queryOverpass(query);
+        for (const element of data.elements ?? []) {
+            resultMap.set(`${element.type}/${element.id}`, element);
+        }
+        // Be polite to the public Overpass instance between batches.
+        if (i + OVERPASS_BATCH_SIZE < osmEntries.length) await sleep(1000);
     }
+    return resultMap;
+}
 
-    const osmType = OSM_TYPE_QUERY_NAME[entry.osmType];
-    if (!osmType) {
-        throw new Error(
-            `Entry "${entry.name ?? "unknown"}" needs either {lat, lon} or a valid {osmType, osmId}`,
-        );
-    }
+function resolveDirectEntry(entry) {
+    return {
+        type: "Feature",
+        geometry: { type: "Point", coordinates: [entry.lon, entry.lat] },
+        properties: {
+            id: `curated/${slugify(entry.name)}`,
+            name: entry.name,
+        },
+    };
+}
 
-    const query = `[out:json];${osmType}(${entry.osmId});out center tags;`;
-    const data = await queryOverpass(query);
-    const element = data.elements?.[0];
-    if (!element) return null;
-
+function resolveOsmEntry(entry, element) {
     const lat = element.center ? element.center.lat : element.lat;
     const lon = element.center ? element.center.lon : element.lon;
     if (typeof lat !== "number" || typeof lon !== "number") return null;
@@ -190,25 +205,46 @@ async function generateCategory({ name, source, output }) {
         return;
     }
 
+    const osmEntries = entries.filter(
+        (e) => !(typeof e.lat === "number" && typeof e.lon === "number"),
+    );
+    for (const e of osmEntries) {
+        if (!OSM_TYPE_QUERY_NAME[e.osmType]) {
+            throw new Error(
+                `Entry "${e.name ?? "unknown"}" needs either {lat, lon} or a valid {osmType, osmId}`,
+            );
+        }
+    }
+
+    let osmMap = new Map();
+    try {
+        if (osmEntries.length > 0) osmMap = await resolveOsmBatch(osmEntries);
+    } catch (e) {
+        console.warn(
+            `[${name}] Batched Overpass resolution failed: ${e.message}`,
+        );
+    }
+
     const features = [];
     for (const entry of entries) {
+        const label = entry.name ?? `${entry.osmType}/${entry.osmId}`;
         const isDirectCoordinate =
             typeof entry.lat === "number" && typeof entry.lon === "number";
-        const label = entry.name ?? `${entry.osmType}/${entry.osmId}`;
-        try {
-            const feature = await resolveEntry(entry);
-            if (!feature) {
-                console.warn(
-                    `[${name}] No data found for ${label} — check the OSM ID.`,
-                );
-                continue;
-            }
-            features.push(feature);
-        } catch (e) {
-            console.warn(`[${name}] Failed to resolve ${label}: ${e.message}`);
+
+        const feature = isDirectCoordinate
+            ? resolveDirectEntry(entry)
+            : resolveOsmEntry(
+                  entry,
+                  osmMap.get(`${entry.osmType}/${entry.osmId}`) ?? {},
+              );
+
+        if (!feature) {
+            console.warn(
+                `[${name}] No data found for ${label} — check the OSM ID.`,
+            );
+            continue;
         }
-        // Be polite to the public Overpass instance between requests.
-        if (!isDirectCoordinate) await sleep(500);
+        features.push(feature);
     }
 
     const featureCollection = { type: "FeatureCollection", features };

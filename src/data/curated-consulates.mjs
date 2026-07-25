@@ -56,8 +56,6 @@ export default [
     { osmType: "way", osmId: 242160713 },
     // Venezuela Consular Section in London
     { osmType: "way", osmId: 294886281 },
-    // Consulate of Ukraine
-    { osmType: "way", osmId: 356788438 },
     // Consular Section of the Embassy of the Republic of Poland
     { osmType: "way", osmId: 372474647 },
     // Consulate General of the Republic of Angola
