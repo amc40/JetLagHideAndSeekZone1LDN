@@ -15,6 +15,13 @@ const categoryLabelFor = (type: string): string => {
     return CATEGORY_LABELS[category] ?? category;
 };
 
+const QUESTION_TYPE_LABELS: Record<Question["id"], string> = {
+    radius: "Radius",
+    thermometer: "Thermometer",
+    matching: "Matching",
+    measuring: "Measuring",
+};
+
 const yesNo = (value: boolean) => (value ? "Yes" : "No");
 
 const formatDistance = (radius: number, unit: string) => {
@@ -28,6 +35,16 @@ const formatDistance = (radius: number, unit: string) => {
  * the hider. Used to give humans context when sharing a hiding zone.
  */
 export const describeQuestion = (
+    question: Question,
+): { prompt: string; answer: string } => {
+    const { prompt, answer } = describeQuestionBody(question);
+    return {
+        prompt: `(${QUESTION_TYPE_LABELS[question.id]}) ${prompt}`,
+        answer,
+    };
+};
+
+const describeQuestionBody = (
     question: Question,
 ): { prompt: string; answer: string } => {
     switch (question.id) {
@@ -100,7 +117,7 @@ export const describeQuestion = (
                     };
                 case "highspeed-measure-shinkansen":
                     return {
-                        prompt: "Is your nearest bullet train station closer to you than mine is to me?",
+                        prompt: "Is your nearest Eurostar station closer to you than mine is to me?",
                         answer: yesNo(hiderCloser),
                     };
                 default:

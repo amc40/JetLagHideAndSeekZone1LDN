@@ -54,21 +54,21 @@ const measuringSeaLevelQuestion: Question = {
 
 test("describes a radius question in plain English", () => {
     expect(describeQuestion(radiusQuestion)).toEqual({
-        prompt: "Are you within 2 kilometers of me?",
+        prompt: "(Radius) Are you within 2 kilometers of me?",
         answer: "Yes",
     });
 });
 
 test("describes a matching question in plain English", () => {
     expect(describeQuestion(matchingHospitalQuestion)).toEqual({
-        prompt: "Is your nearest hospital the same as mine?",
+        prompt: "(Matching) Is your nearest hospital the same as mine?",
         answer: "No",
     });
 });
 
 test("describes a measuring question in plain English", () => {
     expect(describeQuestion(measuringSeaLevelQuestion)).toEqual({
-        prompt: "Are you closer to sea level than me?",
+        prompt: "(Measuring) Are you closer to sea level than me?",
         answer: "Yes",
     });
 });
@@ -80,8 +80,8 @@ test("builds a summary block for multiple questions", () => {
     ]);
 
     expect(summary).toBe(
-        "> Are you within 2 kilometers of me?\nYes\n\n" +
-            "> Is your nearest hospital the same as mine?\nNo\n\n",
+        "> (Radius) Are you within 2 kilometers of me?\nYes\n\n" +
+            "> (Matching) Is your nearest hospital the same as mine?\nNo\n\n",
     );
 });
 
