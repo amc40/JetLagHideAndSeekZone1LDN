@@ -31,6 +31,7 @@ import {
     questionFinishedMapData,
     questions,
     showHiderRadius,
+    showMovementAllowance,
     trainStations,
 } from "@/lib/context";
 import { getStationModesIcon } from "@/lib/stationIcons";
@@ -90,6 +91,7 @@ export const ZoneSidebar = () => {
     const $hidingRadiusUnits = useStore(hidingRadiusUnits);
     const $hiderMode = useStore(hiderMode);
     const $showHiderRadius = useStore(showHiderRadius);
+    const $showMovementAllowance = useStore(showMovementAllowance);
     const $isLoading = useStore(isLoading);
     const map = useStore(leafletMapContext);
     const stations = useStore(trainStations);
@@ -452,6 +454,36 @@ export const ZoneSidebar = () => {
                                             hidingRadiusUnits.set(unit);
                                         }}
                                     />
+                                </div>
+                            </SidebarMenuItem>
+                            <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
+                                <div className="flex w-full flex-col gap-1">
+                                    <label className="flex w-full min-h-11 items-center justify-between gap-2 cursor-pointer">
+                                        <span className="font-semibold font-poppins">
+                                            Show movement allowance?
+                                        </span>
+                                        <Checkbox
+                                            checked={$showMovementAllowance}
+                                            onCheckedChange={(checked) =>
+                                                showMovementAllowance.set(
+                                                    !!checked,
+                                                )
+                                            }
+                                            disabled={$isLoading}
+                                        />
+                                    </label>
+                                    <p className="text-xs text-slate-400">
+                                        Shades the area that&apos;s only ruled
+                                        out if the hider never moved. Width is
+                                        twice the hiding zone radius above
+                                        {Number.isFinite($hidingRadius) &&
+                                        $hidingRadius > 0
+                                            ? ` (${+($hidingRadius * 2).toFixed(3)} ${$hidingRadiusUnits})`
+                                            : ""}
+                                        , since their position when they
+                                        answered and their final spot both sit
+                                        inside one zone.
+                                    </p>
                                 </div>
                             </SidebarMenuItem>
                             {$hiderMode !== false && (

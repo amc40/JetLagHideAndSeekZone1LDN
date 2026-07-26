@@ -4,6 +4,7 @@ import "leaflet-contextmenu";
 
 import { useStore } from "@nanostores/react";
 import * as turf from "@turf/turf";
+import type { FeatureCollection, MultiPolygon, Polygon } from "geojson";
 import * as L from "leaflet";
 import { useEffect, useMemo } from "react";
 import { MapContainer, ScaleControl, TileLayer } from "react-leaflet";
@@ -17,10 +18,12 @@ import {
     followMe,
     followMeLocation,
     hiderMode,
+    hidingRadiusUnits,
     isLoading,
     leafletMapContext,
     mapGeoJSON,
     mapGeoLocation,
+    movementAllowance,
     permanentOverlay,
     planningModeEnabled,
     polyGeoJSON,
@@ -31,7 +34,12 @@ import {
 } from "@/lib/context";
 import { TFL_ZONE_1_POLYGON } from "@/lib/map-presets";
 import { cn } from "@/lib/utils";
-import { applyQuestionsToMapGeoData, holedMask } from "@/maps";
+import {
+    applyQuestionsToMapGeoData,
+    applyQuestionsToMapGeoDataWithAllowance,
+    holedMask,
+    safeUnion,
+} from "@/maps";
 import { hiderifyQuestion } from "@/maps";
 import {
     clearCache,
@@ -211,8 +219,9 @@ export const Map = ({ className }: { className?: string }) => {
             });
 
             const playAreaBoundary = structuredClone(mapGeoData);
+            const playArea = structuredClone(mapGeoData);
 
-            mapGeoData = await applyQuestionsToMapGeoData(
+            const strictGeoData = await applyQuestionsToMapGeoData(
                 $questions,
                 mapGeoData,
                 planningModeEnabled.get(),
@@ -224,19 +233,63 @@ export const Map = ({ className }: { className?: string }) => {
                 },
             );
 
-            mapGeoData = {
+            // The hider can move within their hiding zone, so an answer only
+            // truly eliminates the area beyond that reach. Anything between the
+            // two is shaded lighter: ruled out only if the hider never moved.
+            const allowance = movementAllowance.get();
+            let relaxedGeoData = strictGeoData;
+
+            if (allowance > 0 && $questions.length > 0) {
+                try {
+                    relaxedGeoData =
+                        (await applyQuestionsToMapGeoDataWithAllowance(
+                            $questions,
+                            playArea,
+                            allowance,
+                            hidingRadiusUnits.get(),
+                            planningModeEnabled.get(),
+                        )) ?? strictGeoData;
+                } catch (error) {
+                    console.log("Movement allowance calculation failed", error);
+                    relaxedGeoData = strictGeoData;
+                }
+            }
+
+            const toMask = (
+                surviving: any,
+            ): FeatureCollection<Polygon | MultiPolygon> => ({
                 type: "FeatureCollection",
-                features: [holedMask(mapGeoData!)!],
-            };
+                features: [holedMask(surviving!)!],
+            });
+
+            const strictMask = toMask(strictGeoData);
+            const eliminationMask =
+                relaxedGeoData === strictGeoData
+                    ? strictMask
+                    : toMask(relaxedGeoData);
+
+            const allowanceBand =
+                relaxedGeoData === strictGeoData
+                    ? null
+                    : turf.difference(
+                          turf.featureCollection([
+                              safeUnion(relaxedGeoData) as any,
+                              safeUnion(strictGeoData) as any,
+                          ]),
+                      );
 
             map.eachLayer((layer: any) => {
-                if (layer.eliminationGeoJSON || layer.playAreaBoundaryGeoJSON) {
+                if (
+                    layer.eliminationGeoJSON ||
+                    layer.movementAllowanceGeoJSON ||
+                    layer.playAreaBoundaryGeoJSON
+                ) {
                     // Hopefully only geoJSON layers
                     map.removeLayer(layer);
                 }
             });
 
-            const g = L.geoJSON(mapGeoData, {
+            const g = L.geoJSON(eliminationMask, {
                 style: {
                     stroke: false,
                     fillColor: "#1e293b",
@@ -246,6 +299,19 @@ export const Map = ({ className }: { className?: string }) => {
             // @ts-expect-error This is a check such that only this type of layer is removed
             g.eliminationGeoJSON = true;
             g.addTo(map);
+
+            if (allowanceBand) {
+                const band = L.geoJSON(allowanceBand, {
+                    style: {
+                        stroke: false,
+                        fillColor: "#1e293b",
+                        fillOpacity: 0.22,
+                    },
+                });
+                // @ts-expect-error This is a check such that only this type of layer is removed
+                band.movementAllowanceGeoJSON = true;
+                band.addTo(map);
+            }
 
             // Outline of the original play area, drawn on top of the
             // elimination mask so it stays visually distinct from the
@@ -263,10 +329,13 @@ export const Map = ({ className }: { className?: string }) => {
             boundary.playAreaBoundaryGeoJSON = true;
             boundary.addTo(map);
 
-            questionFinishedMapData.set(mapGeoData);
+            // Hiding-zone filtering downstream stays on the strict area; the
+            // allowance is a display aid, not a change to which zones survive.
+            questionFinishedMapData.set(strictMask);
 
             if (autoZoom.get() && focus) {
-                const bbox = turf.bbox(holedMask(mapGeoData) as any);
+                // Frame the relaxed area so the allowance band isn't cropped.
+                const bbox = turf.bbox(relaxedGeoData as any);
                 const bounds = [
                     [bbox[1], bbox[0]],
                     [bbox[3], bbox[2]],

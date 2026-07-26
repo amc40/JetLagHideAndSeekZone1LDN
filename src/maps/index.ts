@@ -1,5 +1,6 @@
 import type { Feature, FeatureCollection } from "geojson";
 
+import { arcBuffer, modifyMapData } from "./geo-utils";
 import {
     adjustPerMatching,
     hiderifyMatching,
@@ -20,7 +21,7 @@ import {
     hiderifyThermometer,
     thermometerPlanningPolygon,
 } from "./questions/thermometer";
-import type { Question, Questions } from "./schema";
+import type { Question, Questions, Units } from "./schema";
 
 export * from "./geo-utils";
 
@@ -96,6 +97,59 @@ export async function adjustMapGeoDataForQuestion(
     } catch {
         return mapGeoData;
     }
+}
+
+const asFeatureCollection = (data: any) =>
+    data.type === "FeatureCollection"
+        ? data
+        : { type: "FeatureCollection", features: [data] };
+
+/**
+ * The area that survives the questions once the hider is allowed to have moved
+ * up to `allowance` between answering any one of them and now.
+ *
+ * Each question's allowed region is computed against the untouched play area
+ * and dilated *before* being intersected with the others. Dilating every region
+ * separately (rather than dilating the final strict intersection) is what makes
+ * the result a true superset of the strict area for every question type: for an
+ * "outside this radius" answer, growing the allowed region correctly shrinks
+ * the excluded circle, which dilating the end result would never do.
+ *
+ * Returns `null` if nothing survives even with the allowance applied.
+ */
+export async function applyQuestionsToMapGeoDataWithAllowance(
+    questions: Questions,
+    mapGeoData: any,
+    allowance: number,
+    allowanceUnit: Units,
+    planningModeEnabled: boolean,
+): Promise<any> {
+    const playArea = asFeatureCollection(mapGeoData);
+    let relaxed = playArea;
+
+    for (const question of questions) {
+        if (planningModeEnabled && question.data.drag) continue;
+        if (question.data.hidden) continue;
+
+        // Errors inside adjustMapGeoDataForQuestion surface as the untouched
+        // play area, which dilates and intersects to a no-op — the same way the
+        // strict pipeline silently skips a question it can't evaluate.
+        const allowed = await adjustMapGeoDataForQuestion(question, playArea);
+        if (!allowed) continue;
+
+        const dilated = await arcBuffer(
+            asFeatureCollection(allowed),
+            allowance,
+            allowanceUnit,
+        );
+
+        const intersection = modifyMapData(relaxed, dilated, true);
+        if (!intersection) return null;
+
+        relaxed = asFeatureCollection(intersection);
+    }
+
+    return relaxed;
 }
 
 export async function applyQuestionsToMapGeoData(

@@ -147,6 +147,30 @@ export const showHiderRadius = persistentAtom<boolean>(
         decode: JSON.parse,
     },
 );
+export const showMovementAllowance = persistentAtom<boolean>(
+    "showMovementAllowance",
+    true,
+    {
+        encode: JSON.stringify,
+        decode: JSON.parse,
+    },
+);
+
+/**
+ * How far apart two of the hider's positions can be, expressed in
+ * `hidingRadiusUnits`.
+ *
+ * An answer constrains where the hider was at the moment they answered, not
+ * where they are now. Since both that position and their final hiding spot lie
+ * within `hidingRadius` of the same station, the two can differ by at most
+ * twice the hiding radius — so that's the slack every answer deserves before
+ * its area is treated as truly eliminated.
+ */
+export const movementAllowance = computed(
+    [showMovementAllowance, hidingRadius],
+    (enabled, radius) =>
+        enabled && Number.isFinite(radius) && radius > 0 ? radius * 2 : 0,
+);
 export const disabledStations = persistentAtom<string[]>(
     "disabledStations",
     [],
