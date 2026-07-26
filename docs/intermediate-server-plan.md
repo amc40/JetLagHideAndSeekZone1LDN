@@ -121,15 +121,73 @@ Extract `applyIncomingQuestion` + tests. Add a "Share as link" option to the que
 
 **Phase 2 — hardening.** Outbox flush, E2E encryption via URL fragment, QR code join, deletion propagation, presence ("hider connected").
 
-**Phase 3 — nice to have.** Debounced automatic push of question edits (behind a toggle — accidental broadcast of a half-dragged marker is the risk), live snapshot sync, per-team channels so competing seeker teams don't see each other's questions.
+**Phase 3 — nice to have.** Live snapshot sync, per-team channels so competing seeker teams don't see each other's questions. Note that automatic diff-based push of question edits is explicitly **not** on this list — see §6.
 
-## 6. Testing
+## 6. Making sure a question is only asked when the seekers mean to ask it
+
+Removing the clipboard removes something load-bearing. Today, asking costs four deliberate acts — open dialog, tap copy, switch app, paste and send. That tedium is also the confirmation step; nobody has ever accidentally asked a question. Replacing it with one tap that reaches the hider's phone in two seconds means the intent signal has to be rebuilt deliberately rather than assumed.
+
+### 6.1 The underlying modelling bug: `drag` means two different things
+
+`drag` (documented as "synonymous with unlocked", `schema.ts:77,99`) is already the app's provisional-state bit: planning mode skips applying unlocked questions and draws only their outline (`maps/index.ts:61,120`, `ZoneSidebar.tsx:209`), and `hiderifyQuestion` sets `drag = false` when the hider settles an answer. But it conflates:
+
+- "the seekers are still deciding whether to ask this", and
+- "this has been asked and we're waiting on the hider".
+
+The clipboard is currently the only thing that distinguishes them, and it lives entirely outside the data model. So step one is to put the missing state _in_ the model.
+
+### 6.2 Add an explicit lifecycle, don't infer one
+
+Add `askedAt: z.number().optional()` to the question schemas. Three states:
+
+| State        | Condition                      | Behaviour                                                  |
+| ------------ | ------------------------------ | ---------------------------------------------------------- |
+| **Draft**    | `askedAt` unset                | Local only. Never pushed. Renders as a planning outline.   |
+| **Asked**    | `askedAt` set, `drag === true` | Pushed once, at the moment of transition. Awaiting answer. |
+| **Answered** | `drag === false`               | The hider's reply, merged by the existing precedence rule. |
+
+Additive with a default, so persisted questions still parse through `questionsSchema` in the `questions` atom decode. **An incoming question with no `askedAt` must be treated as asked** — that is what a pasted clipboard blob means today, and the clipboard path has to keep working unchanged.
+
+### 6.3 Push at the transition, never from a store subscription
+
+The single most important rule. Do **not** subscribe to the `questions` atom and diff it: `questionModified()` fires on every marker drag frame and every keystroke in a card, so a diff-based pusher is precisely the design that produces accidental asks. Instead the sync module exposes only `pushAsk()`, `pushAnswer()` and `pushRetraction()` — there is no generic `push()` — and each is called from exactly one handler. Every event in the outbox is then, by construction, something a human tapped a button for.
+
+### 6.4 Freeze the question once asked
+
+On transition, the question's _defining_ parameters become read-only: the marker stops being draggable, radius/unit/type inputs disable. Only answer fields (`within`, `warmer`, `same`, `hiderCloser`) can still change, and only via an incoming answer.
+
+This is what actually makes accidental re-broadcast impossible rather than merely unlikely — after asking there is nothing left that can change locally and be re-sent. Wanting different parameters becomes an explicit **Retract** (sends a retraction; only valid while unanswered) or **Duplicate as new question** (new `key`, new draft).
+
+### 6.5 Confirm with English, not JSON
+
+The Ask button gets its own affordance on the card — not the existing Share control, not adjacent to the mobile bottom bar's Share button. Tapping it opens a confirmation rendered with the existing `describeQuestionsSummary()` (`src/lib/describeQuestion.ts`): _"Ask the hider: are you within 1 km of Oxford Circus?"_ → **Ask** / Cancel.
+
+This is strictly better than what it replaces: a JSON blob never let anyone catch that they'd dragged the marker to the wrong station, but a plain-English sentence does.
+
+(Do not reuse the existing `autoSave` toggle for this. It gates local map recomputation, not sharing; overloading it would make two unrelated kinds of "not yet" share one switch.)
+
+### 6.6 Several seekers, one team
+
+With multiple seeker phones in a room, two people can ask the same thing, or one can ask what the team hadn't agreed. Cheapest adequate answer, in order:
+
+1. Every ask broadcasts to all seekers, not just the hider, and lands in a shared "Asked" log with a timestamp — so a duplicate is visible immediately.
+2. Client-side duplicate guard: if an equivalent unanswered question (same type, parameters within a tolerance) is already asked, warn before allowing a second.
+3. Only if that proves insufficient: a nominated "asker" device, where other seekers' cards offer **Suggest** instead of **Ask** and the asker confirms.
+
+### 6.7 Cheap server-side backstops
+
+- **Idempotency key** per event = hash of `(roomCode, question.key, "ask")`. A double-tap, or a retry after a connection wobble, appends once rather than twice.
+- **Rate limit** asks per room (say one per 10s) so a stuck retry loop can never spam the hider's phone.
+- **Retraction** removes an unanswered question from the hider's inbox with a toast. If the hider already answered, the answer wins and the retraction is a no-op reported as "too late — they've answered".
+
+## 7. Testing
 
 - Vitest, alongside the existing `tests/` suite: merge precedence, cursor/dedupe/out-of-order delivery, outbox flush, redaction allowlist.
 - The in-memory transport lets a test drive two simulated clients through a full ask→answer→apply round trip with no network.
 - Manual two-browser check via Playwright before shipping; then a real game.
+- **The no-accidental-ask invariant, as an executable test rather than a UI convention:** drive a simulated marker drag, a burst of parameter edits and a `questionModified()` storm against the fake transport, and assert it received **zero** events. Then tap Ask once and assert exactly one. Because the sync module has no generic `push()`, this test is the thing that keeps §6.3 true as the code changes.
 
-## 7. Open questions for the maintainer
+## 8. Open questions for the maintainer
 
 1. **Who hosts?** A single instance you run for your group, or does every user paste a server URL? (Recommendation: ship a default instance you control, keep the field editable.)
 2. **Should seekers see each other's questions?** Fine for one seeker team, a leak for competing teams — decides whether rooms need per-team channels in phase 1 or phase 3.
