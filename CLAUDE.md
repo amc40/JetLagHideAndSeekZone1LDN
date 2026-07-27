@@ -95,3 +95,10 @@ The project uses **`@arcgis/core`** for geodesically accurate buffers (as oppose
 ### Hider Mode
 
 When `hiderMode` is set (lat/lng), the app calls `hiderifyQuestion()` for each question, which automatically determines the correct `same`/`within`/`warmer` answer based on the hider's actual location. This lets seekers use the tool live during a game.
+
+`hiderMode` is the hider's _fixed_ hiding station. Where the hider physically **is** when they answer a pasted question is a separate thing, resolved by the `deviceLocation` computed atom:
+
+- `debugLocationOverride` — a manually placed stand-in for the device's GPS fix (Options → Advanced → "Debug: set my location manually?", the map's "Set Debug Location" context-menu item, or dragging the violet pin). When set it wins over real GPS, `Map.tsx` skips its `watchPosition` watch entirely, and `DebugLocationIndicator` shows a persistent banner so it can't be left on by accident.
+- `followMeLocation` — the live fix from Follow Me's GPS watch, otherwise `null`.
+
+`PasteQuestionButton` answers from `deviceLocation` when it's non-null, falls back to a one-off `getCurrentPosition()`, and finally to the `hiderMode` station.
