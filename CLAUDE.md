@@ -32,6 +32,7 @@ All application state is managed via **nanostores**. Persistent atoms (using `@n
 - `hiderMode` — when set to a lat/lng, auto-computes question answers for that location
 - `hidingZone` — a computed atom aggregating all state for zone display
 - `planningModeEnabled` — shows question boundary outlines without applying them
+- `showMovementAllowance` / `endgameMode` — one setting under two names: when the allowance is shown, each answer's eliminated area is shaded in two tiers to allow for the hider having moved since answering; `endgameMode` (its inverse, set via `setEndgameMode`) is the framing used in the Options drawer for when the hider is locked in place and answers are exact
 
 The `questionModified()` function must be called after any mutation to `questions` array elements (direct property changes aren't reactive).
 

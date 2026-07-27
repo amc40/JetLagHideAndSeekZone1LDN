@@ -3,8 +3,10 @@ import type { FeatureCollection, MultiPolygon, Polygon } from "geojson";
 import { expect, test, vi } from "vitest";
 
 import {
+    endgameMode,
     hidingRadius,
     movementAllowance,
+    setEndgameMode,
     showMovementAllowance,
 } from "@/lib/context";
 import {
@@ -130,6 +132,27 @@ test("the allowance is twice the hiding zone radius, and opt-outable", () => {
     hidingRadius.set(0.5);
     showMovementAllowance.set(false);
     expect(movementAllowance.get()).toBe(0);
+
+    showMovementAllowance.set(true);
+});
+
+test("endgame mode is the inverse of the allowance, and zeroes it", () => {
+    hidingRadius.set(0.5);
+
+    setEndgameMode(true);
+    expect(showMovementAllowance.get()).toBe(false);
+    expect(endgameMode.get()).toBe(true);
+    // The hider can no longer move, so answers cut exactly where they say.
+    expect(movementAllowance.get()).toBe(0);
+
+    setEndgameMode(false);
+    expect(showMovementAllowance.get()).toBe(true);
+    expect(endgameMode.get()).toBe(false);
+    expect(movementAllowance.get()).toBe(1);
+
+    // Either control moves the same setting, whichever one the player finds.
+    showMovementAllowance.set(false);
+    expect(endgameMode.get()).toBe(true);
 
     showMovementAllowance.set(true);
 });

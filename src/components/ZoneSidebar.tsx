@@ -482,7 +482,10 @@ export const ZoneSidebar = () => {
                                             : ""}
                                         , since their position when they
                                         answered and their final spot both sit
-                                        inside one zone.
+                                        inside one zone. Turning it off is the
+                                        same as switching on Endgame under
+                                        Options: the hider is then locked in
+                                        place, so every answer is exact.
                                     </p>
                                 </div>
                             </SidebarMenuItem>

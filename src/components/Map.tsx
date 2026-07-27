@@ -148,6 +148,7 @@ export const Map = ({ className }: { className?: string }) => {
     const $isLoading = useStore(isLoading);
     const $followMe = useStore(followMe);
     const $permanentOverlay = useStore(permanentOverlay);
+    const $movementAllowance = useStore(movementAllowance);
     const map = useStore(leafletMapContext);
 
     const followMeMarkerRef = useMemo(
@@ -472,7 +473,11 @@ export const Map = ({ className }: { className?: string }) => {
         if (!map) return;
 
         refreshQuestions(true);
-    }, [$questions, map, $hiderMode]);
+        // The allowance is read from the store inside refreshQuestions, so it
+        // has to be a dependency too — otherwise switching endgame on (or
+        // editing the hiding radius the band is derived from) leaves the last
+        // rendered shading on the map until some question happens to change.
+    }, [$questions, map, $hiderMode, $movementAllowance]);
 
     useEffect(() => {
         const intervalId = setInterval(async () => {

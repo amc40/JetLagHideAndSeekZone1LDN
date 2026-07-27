@@ -31,6 +31,7 @@ import {
     defaultUnit,
     disabledStations,
     displayHidingZonesOptions,
+    endgameMode,
     followMe,
     hiderMode,
     hidingRadius,
@@ -46,6 +47,7 @@ import {
     polyGeoJSON,
     questions,
     save,
+    setEndgameMode,
     showTutorial,
     triggerLocalRefresh,
 } from "@/lib/context";
@@ -88,6 +90,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
     const $autoSave = useStore(autoSave);
     const $hidingZone = useStore(hidingZone);
     const $planningMode = useStore(planningModeEnabled);
+    const $endgameMode = useStore(endgameMode);
     const $pastebinApiKey = useStore(pastebinApiKey);
     const $alwaysUsePastebin = useStore(alwaysUsePastebin);
     const $followMe = useStore(followMe);
@@ -397,6 +400,25 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                     }}
                                 />
                             </label>
+                            <div className="flex w-full flex-col gap-1">
+                                <label className="flex w-full min-h-11 flex-row items-center justify-between gap-2 cursor-pointer">
+                                    <span className="text-base font-medium">
+                                        Endgame (hider can&apos;t move)?
+                                    </span>
+                                    <Checkbox
+                                        checked={$endgameMode}
+                                        onCheckedChange={(checked) =>
+                                            setEndgameMode(!!checked)
+                                        }
+                                    />
+                                </label>
+                                <p className="text-sm text-muted-foreground self-start">
+                                    Once the hider is locked in place, every
+                                    answer is exact. This drops the lighter
+                                    shading that allows for them having moved
+                                    between answering and now.
+                                </p>
+                            </div>
                             <label className="flex w-full min-h-11 flex-row items-center justify-between gap-2 cursor-pointer">
                                 <span className="text-base font-medium">
                                     Follow Me (GPS)?

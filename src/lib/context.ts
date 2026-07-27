@@ -171,6 +171,22 @@ export const movementAllowance = computed(
     (enabled, radius) =>
         enabled && Number.isFinite(radius) && radius > 0 ? radius * 2 : 0,
 );
+
+/**
+ * Endgame: the hider is locked to their final hiding spot, so an answer pins
+ * where they are *now*, not merely where they were when they answered, and the
+ * movement margin should vanish.
+ *
+ * It's exactly the inverse of `showMovementAllowance`, but that's the framing
+ * players reach for mid-game ("we're in the endgame now"), so it gets its own
+ * control rather than asking them to reason about a display setting.
+ */
+export const endgameMode = computed(
+    showMovementAllowance,
+    (allowanceShown) => !allowanceShown,
+);
+export const setEndgameMode = (enabled: boolean) =>
+    showMovementAllowance.set(!enabled);
 export const disabledStations = persistentAtom<string[]>(
     "disabledStations",
     [],
