@@ -7,6 +7,7 @@ import { QuestionSidebar } from "@/components/QuestionSidebar";
 import { ZoneSidebar } from "@/components/ZoneSidebar";
 import { MapLayersButton } from "@/components/MapLayersButton";
 import { OfflineIndicator } from "@/components/OfflineIndicator";
+import { DebugLocationIndicator } from "@/components/DebugLocationIndicator";
 import { OptionDrawers } from "@/components/OptionDrawers";
 import { DesktopSidebarTriggers } from "@/components/DesktopSidebarTriggers";
 import { MobileActionBar } from "@/components/MobileActionBar";
@@ -33,6 +34,10 @@ import { TutorialDialog } from "@/components/TutorialDialog";
                         >
                             <OfflineIndicator
                                 client:load
+                                className="mt-4 pointer-events-auto"
+                            />
+                            <DebugLocationIndicator
+                                client:only
                                 className="mt-4 pointer-events-auto"
                             />
                             <MapLayersButton

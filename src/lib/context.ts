@@ -263,6 +263,36 @@ export const followMeLocation = atom<{
     longitude: number;
 } | null>(null);
 
+/**
+ * Debug mode: a manually chosen stand-in for the device's GPS position.
+ *
+ * When set, the app pretends "you" are here instead of asking the browser
+ * where you actually are — so a hider can test answering questions from an
+ * arbitrary spot (or on a desktop with no usable GPS) without travelling
+ * there. This is deliberately separate from `hiderMode`, which is the
+ * hider's fixed hiding station.
+ */
+export const debugLocationOverride = persistentAtom<
+    | false
+    | {
+          latitude: number;
+          longitude: number;
+      }
+>("debugLocationOverride", false, {
+    encode: JSON.stringify,
+    decode: JSON.parse,
+});
+
+/**
+ * Where the app should consider the device to be: the debug override when
+ * one is set, otherwise whatever Follow Me's GPS watch last reported (null
+ * if it isn't running).
+ */
+export const deviceLocation = computed(
+    [debugLocationOverride, followMeLocation],
+    (override, live) => (override === false ? live : override),
+);
+
 export const pastebinApiKey = persistentAtom<string>("pastebinApiKey", "");
 export const alwaysUsePastebin = persistentAtom<boolean>(
     "alwaysUsePastebin",

@@ -8,6 +8,7 @@ import { Circle, Marker } from "react-leaflet";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import {
     autoSave,
+    debugLocationOverride,
     hiderMode,
     hidingRadius,
     hidingRadiusUnits,
@@ -31,6 +32,10 @@ import { SidebarMenu } from "./ui/sidebar-l";
 
 let isDragging = false;
 
+// Sentinel `questionKey`s for the markers that aren't questions.
+const HIDER_MARKER_KEY = -1;
+const DEBUG_LOCATION_MARKER_KEY = -2;
+
 const ColoredMarker = ({
     latitude,
     longitude,
@@ -50,6 +55,7 @@ const ColoredMarker = ({
 }) => {
     const $questions = useStore(questions);
     const $hiderMode = useStore(hiderMode);
+    const $debugLocation = useStore(debugLocationOverride);
     const $autoSave = useStore(autoSave);
     const [open, setOpen] = useState(false);
 
@@ -88,7 +94,45 @@ const ColoredMarker = ({
                 }}
             />
             <DialogContent className="!bg-[hsl(var(--sidebar-background))] !text-white">
-                {questionKey === -1 && $hiderMode !== false && (
+                {questionKey === DEBUG_LOCATION_MARKER_KEY &&
+                    $debugLocation !== false && (
+                        <>
+                            <h2 className="text-center text-2xl font-bold font-poppins">
+                                {sub}
+                            </h2>
+                            <p className="text-sm text-muted-foreground">
+                                Debug mode: the app treats this pin as your
+                                device&apos;s GPS position, so questions you
+                                answer as the hider are answered from here.
+                            </p>
+                            <SidebarMenu>
+                                <LatitudeLongitude
+                                    latitude={$debugLocation.latitude}
+                                    longitude={$debugLocation.longitude}
+                                    inlineEdit
+                                    onChange={(latitude, longitude) => {
+                                        debugLocationOverride.set({
+                                            latitude:
+                                                latitude ??
+                                                $debugLocation.latitude,
+                                            longitude:
+                                                longitude ??
+                                                $debugLocation.longitude,
+                                        });
+                                    }}
+                                    label="Debug Location"
+                                />
+                            </SidebarMenu>
+                            <Button
+                                onClick={() => debugLocationOverride.set(false)}
+                                variant="destructive"
+                                className="font-semibold font-poppins"
+                            >
+                                Disable
+                            </Button>
+                        </>
+                    )}
+                {questionKey === HIDER_MARKER_KEY && $hiderMode !== false && (
                     <>
                         <h2 className="text-center text-2xl font-bold font-poppins">
                             {sub}
@@ -156,7 +200,7 @@ const ColoredMarker = ({
                                 return null;
                         }
                     })}
-                {questionKey === -1 && (
+                {questionKey === HIDER_MARKER_KEY && (
                     <Button // If it's the hider mode marker
                         onClick={() => {
                             hiderMode.set(false);
@@ -187,15 +231,32 @@ export const DraggableMarkers = () => {
     const $showHiderRadius = useStore(showHiderRadius);
     const $hidingRadius = useStore(hidingRadius);
     const $hidingRadiusUnits = useStore(hidingRadiusUnits);
+    const $debugLocation = useStore(debugLocationOverride);
 
     return (
         <Fragment>
+            {$debugLocation !== false && (
+                <ColoredMarker
+                    color="violet"
+                    key="debug-location"
+                    sub="Debug Location"
+                    questionKey={DEBUG_LOCATION_MARKER_KEY}
+                    latitude={$debugLocation.latitude}
+                    longitude={$debugLocation.longitude}
+                    onChange={(e) =>
+                        debugLocationOverride.set({
+                            latitude: e.target.getLatLng().lat,
+                            longitude: e.target.getLatLng().lng,
+                        })
+                    }
+                />
+            )}
             {$hiderMode !== false && (
                 <ColoredMarker
                     color="green"
                     key="hider"
                     sub="Hider Location"
-                    questionKey={-1}
+                    questionKey={HIDER_MARKER_KEY}
                     latitude={$hiderMode.latitude}
                     longitude={$hiderMode.longitude}
                     draggable={false}

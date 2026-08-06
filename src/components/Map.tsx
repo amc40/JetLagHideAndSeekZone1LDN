@@ -15,6 +15,7 @@ import {
     animateMapMovements,
     autoZoom,
     baseTileLayer,
+    debugLocationOverride,
     followMe,
     followMeLocation,
     hiderMode,
@@ -147,6 +148,7 @@ export const Map = ({ className }: { className?: string }) => {
     const $hiderMode = useStore(hiderMode);
     const $isLoading = useStore(isLoading);
     const $followMe = useStore(followMe);
+    const $debugLocationOverride = useStore(debugLocationOverride);
     const $permanentOverlay = useStore(permanentOverlay);
     const map = useStore(leafletMapContext);
 
@@ -367,7 +369,7 @@ export const Map = ({ className }: { className?: string }) => {
                 ref={leafletMapContext.set}
                 // @ts-expect-error Typing doesn't update from react-contextmenu
                 contextmenu={true}
-                contextmenuWidth={140}
+                contextmenuWidth={170}
                 contextmenuItems={[
                     {
                         text: "Add Radius",
@@ -425,6 +427,19 @@ export const Map = ({ className }: { className?: string }) => {
                                     lng: e.latlng.lng,
                                 },
                             });
+                        },
+                    },
+                    {
+                        text: "Set Debug Location",
+                        callback: (e: any) => {
+                            debugLocationOverride.set({
+                                latitude: e.latlng.lat,
+                                longitude: e.latlng.lng,
+                            });
+                            toast.info(
+                                "Debug location set — the app will treat this as your GPS position",
+                                { autoClose: 2500 },
+                            );
                         },
                     },
                     {
@@ -519,7 +534,10 @@ export const Map = ({ className }: { className?: string }) => {
 
     useEffect(() => {
         if (!map) return;
-        if (!$followMe) {
+        // A debug location override stands in for the device's real position,
+        // so don't start (or keep) a GPS watch that would fight with it — the
+        // draggable debug marker is drawn by DraggableMarkers instead.
+        if (!$followMe || $debugLocationOverride !== false) {
             followMeLocation.set(null);
             if (followMeMarkerRef.current) {
                 map.removeLayer(followMeMarkerRef.current);
@@ -569,7 +587,7 @@ export const Map = ({ className }: { className?: string }) => {
                 geoWatchIdRef.current = null;
             }
         };
-    }, [$followMe, map]);
+    }, [$followMe, $debugLocationOverride, map]);
 
     useEffect(() => {
         if (!map) return;

@@ -28,6 +28,7 @@ import {
     animateMapMovements,
     autoSave,
     autoZoom,
+    debugLocationOverride,
     defaultUnit,
     disabledStations,
     displayHidingZonesOptions,
@@ -39,6 +40,7 @@ import {
     isLoading,
     leafletMapContext,
     mapGeoJSON,
+    mapGeoLocation,
     optionsDrawerOpen,
     pastebinApiKey,
     permanentOverlay,
@@ -91,6 +93,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
     const $pastebinApiKey = useStore(pastebinApiKey);
     const $alwaysUsePastebin = useStore(alwaysUsePastebin);
     const $followMe = useStore(followMe);
+    const $debugLocation = useStore(debugLocationOverride);
     const $isLoading = useStore(isLoading);
     const $isOptionsOpen = useStore(optionsDrawerOpen);
     const isMobile = useIsMobile();
@@ -330,7 +333,10 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                     <p className="text-sm text-muted-foreground self-start">
                                         Turn on <strong>Follow Me (GPS)</strong>{" "}
                                         below to answer questions from your live
-                                        location. This pin stays fixed as your
+                                        location, or set a{" "}
+                                        <strong>debug location</strong> under
+                                        Advanced to answer from a spot you pick
+                                        by hand. This pin stays fixed as your
                                         hiding station either way.
                                     </p>
                                     <LatitudeLongitude
@@ -408,6 +414,12 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                     }
                                 />
                             </label>
+                            {$followMe && $debugLocation !== false && (
+                                <p className="text-sm text-muted-foreground self-start">
+                                    GPS tracking is paused while a debug
+                                    location is set (see Advanced below).
+                                </p>
+                            )}
 
                             <Separator className="bg-slate-300 w-[280px]" />
                             <h3 className="text-lg font-semibold font-poppins self-start">
@@ -580,6 +592,76 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                     }
                                 />
                             </label>
+                            <label className="flex w-full min-h-11 flex-row items-center justify-between gap-2 cursor-pointer">
+                                <span className="text-base font-medium">
+                                    Debug: set my location manually?
+                                </span>
+                                <Checkbox
+                                    checked={$debugLocation !== false}
+                                    onCheckedChange={() => {
+                                        if ($debugLocation !== false) {
+                                            debugLocationOverride.set(false);
+                                            return;
+                                        }
+
+                                        // Start from somewhere sensible: the
+                                        // hider's station if there is one,
+                                        // otherwise the middle of the map.
+                                        const $hiderMode = hiderMode.get();
+                                        const center = leafletMapContext
+                                            .get()
+                                            ?.getCenter();
+
+                                        if ($hiderMode !== false) {
+                                            debugLocationOverride.set({
+                                                latitude: $hiderMode.latitude,
+                                                longitude: $hiderMode.longitude,
+                                            });
+                                        } else if (center) {
+                                            debugLocationOverride.set({
+                                                latitude: center.lat,
+                                                longitude: center.lng,
+                                            });
+                                        } else {
+                                            const [latitude, longitude] =
+                                                mapGeoLocation.get().geometry
+                                                    .coordinates;
+                                            debugLocationOverride.set({
+                                                latitude,
+                                                longitude,
+                                            });
+                                        }
+                                    }}
+                                />
+                            </label>
+                            {$debugLocation !== false && (
+                                <SidebarMenu>
+                                    <p className="text-sm text-muted-foreground self-start">
+                                        The app will pretend your device is here
+                                        instead of using real GPS, so you can
+                                        answer questions as the hider from
+                                        anywhere. Drag the violet pin on the
+                                        map, or right-click the map and choose{" "}
+                                        <strong>Set Debug Location</strong>.
+                                    </p>
+                                    <LatitudeLongitude
+                                        latitude={$debugLocation.latitude}
+                                        longitude={$debugLocation.longitude}
+                                        inlineEdit
+                                        onChange={(latitude, longitude) => {
+                                            debugLocationOverride.set({
+                                                latitude:
+                                                    latitude ??
+                                                    $debugLocation.latitude,
+                                                longitude:
+                                                    longitude ??
+                                                    $debugLocation.longitude,
+                                            });
+                                        }}
+                                        label="Debug Location"
+                                    />
+                                </SidebarMenu>
+                            )}
 
                             <Separator className="bg-slate-300 w-[280px]" />
                             <h3 className="text-lg font-semibold font-poppins self-start">

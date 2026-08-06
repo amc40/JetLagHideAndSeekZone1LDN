@@ -4,7 +4,8 @@ import { toast } from "react-toastify";
 
 import { SidebarMenuButton } from "@/components/ui/sidebar-l";
 import {
-    followMeLocation,
+    debugLocationOverride,
+    deviceLocation,
     hiderMode,
     hidingRadius,
     hidingRadiusUnits,
@@ -61,13 +62,19 @@ const warnIfOutsideSelectedZone = (location: Location) => {
 // The location a pasted question should be answered from as the hider.
 // This never touches hiderMode — the hider's station pin stays fixed;
 // only this one answer is computed from wherever the hider actually is.
-// Prefers an already-live Follow Me position; otherwise does a one-off
-// GPS fetch. Falls back to the saved station location on failure/denial.
+// Prefers a debug location override, then an already-live Follow Me
+// position; otherwise does a one-off GPS fetch. Falls back to the saved
+// station location on failure/denial.
 const getHiderAnswerLocation = async (): Promise<Location | undefined> => {
-    const $followMeLocation = followMeLocation.get();
-    if ($followMeLocation !== null) {
-        warnIfOutsideSelectedZone($followMeLocation);
-        return $followMeLocation;
+    const $deviceLocation = deviceLocation.get();
+    if ($deviceLocation !== null) {
+        if (debugLocationOverride.get() !== false) {
+            toast.info("Answering from your debug location", {
+                autoClose: 1500,
+            });
+        }
+        warnIfOutsideSelectedZone($deviceLocation);
+        return $deviceLocation;
     }
 
     if (!navigator || !navigator.geolocation) {
