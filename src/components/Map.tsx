@@ -116,24 +116,26 @@ const getTileLayer = (tileLayer: string, thunderforestApiKey: string) => {
                 );
             break;
 
-        case "osmcarto":
+        case "voyager":
             return (
                 <TileLayer
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors; Powered by Esri and Turf.js; Borough boundaries &copy; <a href="https://data.london.gov.uk/dataset/statistical-gis-boundary-files-london">GLA</a>; river data: <a href="https://www.ordnancesurvey.co.uk/products/os-open-rivers">OS Open Rivers</a>; elevation data: OS Terrain 50; contains OS data &copy; Crown copyright and database right, <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/">OGL v3</a>'
-                    url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    maxZoom={19}
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors; &copy; <a href="https://carto.com/attributions">CARTO</a>; Powered by Esri and Turf.js; Borough boundaries &copy; <a href="https://data.london.gov.uk/dataset/statistical-gis-boundary-files-london">GLA</a>; river data: <a href="https://www.ordnancesurvey.co.uk/products/os-open-rivers">OS Open Rivers</a>; elevation data: OS Terrain 50; contains OS data &copy; Crown copyright and database right, <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/">OGL v3</a>'
+                    url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+                    subdomains="abcd"
+                    maxZoom={20} // This technically should be 6, but once the ratelimiting starts this can take over
                     minZoom={2}
                     noWrap
                 />
             );
     }
 
+    // OpenStreetMap standard tiles: the default, and the fallback when a
+    // Thunderforest style is chosen without an API key.
     return (
         <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors; &copy; <a href="https://carto.com/attributions">CARTO</a>; Powered by Esri and Turf.js; Borough boundaries &copy; <a href="https://data.london.gov.uk/dataset/statistical-gis-boundary-files-london">GLA</a>; river data: <a href="https://www.ordnancesurvey.co.uk/products/os-open-rivers">OS Open Rivers</a>; elevation data: OS Terrain 50; contains OS data &copy; Crown copyright and database right, <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/">OGL v3</a>'
-            url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
-            subdomains="abcd"
-            maxZoom={20} // This technically should be 6, but once the ratelimiting starts this can take over
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors; Powered by Esri and Turf.js; Borough boundaries &copy; <a href="https://data.london.gov.uk/dataset/statistical-gis-boundary-files-london">GLA</a>; river data: <a href="https://www.ordnancesurvey.co.uk/products/os-open-rivers">OS Open Rivers</a>; elevation data: OS Terrain 50; contains OS data &copy; Crown copyright and database right, <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/">OGL v3</a>'
+            url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+            maxZoom={19}
             minZoom={2}
             noWrap
         />
