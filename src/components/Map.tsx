@@ -333,9 +333,10 @@ export const Map = ({ className }: { className?: string }) => {
             boundary.playAreaBoundaryGeoJSON = true;
             boundary.addTo(map);
 
-            // Hiding-zone filtering downstream stays on the strict area; the
-            // allowance is a display aid, not a change to which zones survive.
-            questionFinishedMapData.set(strictMask);
+            // Hiding-zone filtering uses the relaxed area so a zone the hider
+            // could have reached by moving isn't dropped. When there's no
+            // allowance, eliminationMask is the strict mask.
+            questionFinishedMapData.set(eliminationMask);
 
             if (autoZoom.get() && focus) {
                 // Frame the relaxed area so the allowance band isn't cropped.
