@@ -23,6 +23,7 @@ import {
     displayHidingZones,
     displayHidingZonesStyle,
     hiderMode,
+    hiderStaticByDefault,
     hidingRadius,
     hidingRadiusUnits,
     isLoading,
@@ -92,6 +93,7 @@ export const ZoneSidebar = () => {
     const $hiderMode = useStore(hiderMode);
     const $showHiderRadius = useStore(showHiderRadius);
     const $showMovementAllowance = useStore(showMovementAllowance);
+    const $hiderStaticByDefault = useStore(hiderStaticByDefault);
     const $isLoading = useStore(isLoading);
     const map = useStore(leafletMapContext);
     const stations = useStore(trainStations);
@@ -483,6 +485,31 @@ export const ZoneSidebar = () => {
                                         , since their position when they
                                         answered and their final spot both sit
                                         inside one zone.
+                                    </p>
+                                </div>
+                            </SidebarMenuItem>
+                            <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
+                                <div className="flex w-full flex-col gap-1">
+                                    <label className="flex w-full min-h-11 items-center justify-between gap-2 cursor-pointer">
+                                        <span className="font-semibold font-poppins">
+                                            Hider is static for new questions?
+                                        </span>
+                                        <Checkbox
+                                            checked={$hiderStaticByDefault}
+                                            onCheckedChange={(checked) =>
+                                                hiderStaticByDefault.set(
+                                                    !!checked,
+                                                )
+                                            }
+                                            disabled={$isLoading}
+                                        />
+                                    </label>
+                                    <p className="text-xs text-slate-400">
+                                        New and pasted questions, and answers
+                                        the hider generates, are treated as
+                                        exact with no movement allowance (e.g.
+                                        in the end game). You can still change
+                                        each question from its menu.
                                     </p>
                                 </div>
                             </SidebarMenuItem>

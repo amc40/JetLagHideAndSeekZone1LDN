@@ -7,6 +7,7 @@ import {
     debugLocationOverride,
     deviceLocation,
     hiderMode,
+    hiderStaticByDefault,
     hidingRadius,
     hidingRadiusUnits,
     isLoading,
@@ -155,12 +156,17 @@ export const PasteQuestionButton = () => {
                     // include one at all.
                     const validated = questionSchema.parse(parsed);
 
+                    // Pasted questions that don't say whether the hider was
+                    // static follow the global default.
+                    validated.data.hiderStatic ??= hiderStaticByDefault.get();
+
                     // If hider mode is on, answer the pasted question
                     // immediately and lock it so it doesn't get
                     // accidentally edited or re-answered later.
                     if (isHider) {
                         await hiderifyQuestion(validated, answerLocation);
                         validated.data.drag = false;
+                        validated.data.hiderStatic = hiderStaticByDefault.get();
                     }
 
                     // If this is a re-shared copy of a question already on
