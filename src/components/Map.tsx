@@ -59,6 +59,7 @@ import {
 } from "@/maps/api";
 import { loadGrid as loadElevationGrid } from "@/maps/geo-utils";
 
+import { BoroughBoundariesOverlay } from "./BoroughBoundariesOverlay";
 import { DraggableMarkers } from "./DraggableMarkers";
 import { ElevationOverlay } from "./ElevationOverlay";
 import { MapOverlayMarkers } from "./MapOverlayMarkers";
@@ -477,6 +478,7 @@ export const Map = ({ className }: { className?: string }) => {
             >
                 {getTileLayer($baseTileLayer, $thunderforestApiKey)}
                 <ElevationOverlay />
+                <BoroughBoundariesOverlay />
                 <TransitStopMarkers />
                 <MapOverlayMarkers />
                 <DraggableMarkers />
