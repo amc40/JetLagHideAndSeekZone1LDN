@@ -108,6 +108,11 @@ export const ZoneSidebar = () => {
     const [stationSearch, setStationSearch] = useState<string>("");
     const setStations = trainStations.set;
     const sidebarRef = useRef<HTMLDivElement>(null);
+    const searchRef = useRef<HTMLDivElement>(null);
+    // While searching, the results list reserves a full panel of height so the
+    // scroll position can't clamp (and drag the search box down the screen)
+    // as the matches narrow.
+    const [searchListMinHeight, setSearchListMinHeight] = useState(0);
     const isMobile = useIsMobile();
     const { openMobile, setOpenMobile } = useStore(SidebarContext);
 
@@ -612,15 +617,46 @@ export const ZoneSidebar = () => {
                                     shouldFilter
                                     className="overflow-visible"
                                 >
-                                    <div className="sticky top-0 z-10 bg-popover">
+                                    <div
+                                        ref={searchRef}
+                                        className="sticky top-0 z-10 bg-popover"
+                                    >
                                         <CommandInput
+                                            onFocus={() => {
+                                                const scroller =
+                                                    sidebarRef.current;
+                                                const search =
+                                                    searchRef.current;
+                                                if (!scroller || !search)
+                                                    return;
+                                                setSearchListMinHeight(
+                                                    scroller.clientHeight -
+                                                        search.offsetHeight,
+                                                );
+                                                // Park the search box at the top
+                                                // of the panel, results below.
+                                                scroller.scrollTop +=
+                                                    search.getBoundingClientRect()
+                                                        .top -
+                                                    scroller.getBoundingClientRect()
+                                                        .top;
+                                            }}
+                                            onBlur={() => {
+                                                if (!stationSearch)
+                                                    setSearchListMinHeight(0);
+                                            }}
                                             placeholder="Search for a hiding zone..."
                                             value={stationSearch}
                                             onValueChange={setStationSearch}
                                             disabled={$isLoading}
                                         />
                                     </div>
-                                    <CommandList className="max-h-full">
+                                    <CommandList
+                                        className="max-h-full"
+                                        style={{
+                                            minHeight: searchListMinHeight,
+                                        }}
+                                    >
                                         <CommandEmpty>
                                             No hiding zones found.
                                         </CommandEmpty>

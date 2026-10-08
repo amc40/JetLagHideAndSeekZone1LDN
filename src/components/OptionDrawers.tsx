@@ -271,13 +271,15 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
             )}
             <Drawer open={$isOptionsOpen} onOpenChange={optionsDrawerOpen.set}>
                 <DrawerContent>
-                    <div className="flex flex-col items-center gap-4 mb-4">
+                    {/* min-h-0/flex-1 so this follows the height vaul sets
+                        while the on-screen keyboard is open. */}
+                    <div className="flex min-h-0 flex-1 flex-col items-center gap-4 mb-4">
                         <DrawerHeader>
                             <DrawerTitle className="text-4xl font-semibold font-poppins">
                                 Options
                             </DrawerTitle>
                         </DrawerHeader>
-                        <div className="overflow-y-scroll max-h-[65vh] flex flex-col items-center gap-4 max-w-[1000px] px-4 sm:px-12">
+                        <div className="min-h-0 overflow-y-scroll max-h-[65vh] flex flex-col items-center gap-4 max-w-[1000px] px-4 sm:px-12">
                             <h3 className="text-lg font-semibold font-poppins self-start">
                                 Playing
                             </h3>
