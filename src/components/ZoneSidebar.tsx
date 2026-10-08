@@ -3,10 +3,16 @@ import * as turf from "@turf/turf";
 import type { Feature, FeatureCollection } from "geojson";
 import * as L from "leaflet";
 import _ from "lodash";
-import { SidebarCloseIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 
+import {
+    Drawer,
+    DrawerContent,
+    DrawerDescription,
+    DrawerHeader,
+    DrawerTitle,
+} from "@/components/ui/drawer";
 import {
     Sidebar,
     SidebarContent,
@@ -16,6 +22,7 @@ import {
     SidebarMenu,
     SidebarMenuItem,
 } from "@/components/ui/sidebar-r";
+import { useIsMobile } from "@/hooks/use-mobile";
 import {
     animateMapMovements,
     autoZoom,
@@ -102,6 +109,8 @@ export const ZoneSidebar = () => {
     const isStationSearchActive = stationSearch.trim().length > 0;
     const setStations = trainStations.set;
     const sidebarRef = useRef<HTMLDivElement>(null);
+    const isMobile = useIsMobile();
+    const { openMobile, setOpenMobile } = useStore(SidebarContext);
 
     const removeHidingZones = () => {
         if (!map) return;
@@ -375,25 +384,8 @@ export const ZoneSidebar = () => {
         stations,
     ]);
 
-    return (
-        <Sidebar
-            side="right"
-            title="Hiding Zone"
-            description="View and configure the computed hiding zone and train stations."
-        >
-            <div className="flex items-center justify-between">
-                <h2 className="ml-4 mt-4 font-poppins text-2xl">Hiding Zone</h2>
-                <button
-                    type="button"
-                    aria-label="Close Hiding Zone panel"
-                    className="p-2 mr-1 visible md:hidden cursor-pointer"
-                    onClick={() => {
-                        SidebarContext.get().setOpenMobile(false);
-                    }}
-                >
-                    <SidebarCloseIcon className="scale-x-[-1]" />
-                </button>
-            </div>
+    const content = (
+        <>
             <SidebarContent ref={sidebarRef}>
                 <ScrollToTop element={sidebarRef} minHeight={500} />
                 <SidebarGroup>
@@ -722,6 +714,40 @@ export const ZoneSidebar = () => {
                     </SidebarGroupContent>
                 </SidebarGroup>
             </SidebarContent>
+        </>
+    );
+
+    // On phones this is a bottom drawer, like Options and Map Layers; on
+    // desktop it stays a docked right-hand sidebar.
+    if (isMobile) {
+        return (
+            <Drawer open={openMobile} onOpenChange={setOpenMobile}>
+                <DrawerContent>
+                    <DrawerHeader>
+                        <DrawerTitle className="text-2xl font-semibold font-poppins">
+                            Hiding Zone
+                        </DrawerTitle>
+                        <DrawerDescription className="sr-only">
+                            View and configure the computed hiding zone and
+                            train stations.
+                        </DrawerDescription>
+                    </DrawerHeader>
+                    <div className="flex max-h-[65vh] flex-col pb-4">
+                        {content}
+                    </div>
+                </DrawerContent>
+            </Drawer>
+        );
+    }
+
+    return (
+        <Sidebar
+            side="right"
+            title="Hiding Zone"
+            description="View and configure the computed hiding zone and train stations."
+        >
+            <h2 className="ml-4 mt-4 font-poppins text-2xl">Hiding Zone</h2>
+            {content}
         </Sidebar>
     );
 };

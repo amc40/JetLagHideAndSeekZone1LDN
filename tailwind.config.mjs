@@ -1,5 +1,10 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+    future: {
+        // Only apply hover: styles on devices that can really hover, so taps on
+        // touchscreens do not leave rows stuck in a hover state.
+        hoverOnlyWhenSupported: true,
+    },
     darkMode: ["class"],
     content: ["./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}"],
     theme: {
