@@ -81,11 +81,10 @@ import { UnitSelect } from "./UnitSelect";
 const SLOW_STATION_COUNT_THRESHOLD = 150;
 
 const DISPLAY_STYLE_OPTIONS: {
-    value: "no-display" | "stations" | "zones" | "no-overlap";
+    value: "no-display" | "zones" | "no-overlap";
     label: string;
 }[] = [
     { value: "no-display", label: "No Display" },
-    { value: "stations", label: "All Stations" },
     { value: "zones", label: "All Zones" },
     { value: "no-overlap", label: "No Overlap" },
 ];
@@ -806,9 +805,6 @@ function styleStations(
 
         case "no-overlap":
             return safeUnion(turf.featureCollection(circles));
-
-        case "stations":
-            return turf.featureCollection(circles.map((c) => c.properties));
 
         default:
             return turf.featureCollection(circles);
