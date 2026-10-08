@@ -644,7 +644,13 @@ export const ZoneSidebar = () => {
                                                     <CommandItem
                                                         key={id}
                                                         data-station-id={id}
-                                                        className="flex items-center justify-between gap-2"
+                                                        className={cn(
+                                                            "flex items-center justify-between gap-2",
+                                                            // cmdk always marks the first row as selected, which
+                                                            // reads as a stuck hover; only highlight real hover
+                                                            // or keyboard focus.
+                                                            "data-[selected=true]:bg-transparent hover:bg-accent focus-visible:bg-accent",
+                                                        )}
                                                         onSelect={() => {
                                                             if (!map) return;
                                                             setHidingZoneModeStationID(
