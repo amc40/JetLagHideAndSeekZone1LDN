@@ -15,6 +15,7 @@ import {
 } from "@/components/MoreActionsMenu";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { useDebounce } from "@/hooks/useDebounce";
 import { allowGooglePlusCodes, isLoading } from "@/lib/context";
 import { cn } from "@/lib/utils";
@@ -127,6 +128,19 @@ export const loadCuratedStations = (): Promise<CuratedStation[]> => {
     return curatedStationsPromise;
 };
 
+const getScrollParent = (el: HTMLElement | null): HTMLElement | null => {
+    for (let node = el?.parentElement; node; node = node.parentElement) {
+        const { overflowY } = getComputedStyle(node);
+        if (
+            (overflowY === "auto" || overflowY === "scroll") &&
+            node.scrollHeight > node.clientHeight
+        ) {
+            return node;
+        }
+    }
+    return null;
+};
+
 const LatLngEditForm = ({
     latitude,
     longitude,
@@ -148,6 +162,13 @@ const LatLngEditForm = ({
     const [error, setError] = useState(false);
     const $allowGooglePlusCodes = useStore(allowGooglePlusCodes);
     const googlePlusCodesRef = useRef<HTMLInputElement>(null);
+    const isMobile = useIsMobile();
+    const searchRef = useRef<HTMLDivElement>(null);
+    // On phones the on-screen keyboard covers the bottom of the panel, and the
+    // results render below the search box. So on focus we park the box at the
+    // top of the scroll area and reserve a panel of list height so narrowing
+    // results can't clamp the scroll and make the box jump down the screen.
+    const [listMinHeight, setListMinHeight] = useState(0);
 
     useEffect(() => {
         if (debouncedValue === "") {
@@ -200,8 +221,24 @@ const LatLngEditForm = ({
 
     return (
         <>
-            <Command shouldFilter={false}>
+            <Command shouldFilter={false} ref={searchRef}>
                 <CommandInput
+                    onFocus={() => {
+                        if (!isMobile) return;
+                        const search = searchRef.current;
+                        const scroller = getScrollParent(search);
+                        if (!search || !scroller) return;
+                        setListMinHeight(scroller.clientHeight);
+                        // Wait a frame so the reserved height is laid out.
+                        requestAnimationFrame(() => {
+                            scroller.scrollTop +=
+                                search.getBoundingClientRect().top -
+                                scroller.getBoundingClientRect().top;
+                        });
+                    }}
+                    onBlur={() => {
+                        if (!inputValue) setListMinHeight(0);
+                    }}
                     placeholder={
                         stationsOnly
                             ? "Search for a station..."
@@ -210,7 +247,7 @@ const LatLngEditForm = ({
                     onKeyUp={(x) => setInputValue(x.currentTarget.value)}
                     disabled={disabled}
                 />
-                <CommandList>
+                <CommandList style={{ minHeight: listMinHeight }}>
                     <CommandEmpty>
                         {loading
                             ? "Loading..."

@@ -106,9 +106,13 @@ export const ZoneSidebar = () => {
     const [hidingZoneModeStationID, setHidingZoneModeStationID] =
         useState<string>("");
     const [stationSearch, setStationSearch] = useState<string>("");
-    const isStationSearchActive = stationSearch.trim().length > 0;
     const setStations = trainStations.set;
     const sidebarRef = useRef<HTMLDivElement>(null);
+    const searchRef = useRef<HTMLDivElement>(null);
+    // While searching, the results list reserves a full panel of height so the
+    // scroll position can't clamp (and drag the search box down the screen)
+    // as the matches narrow.
+    const [searchListMinHeight, setSearchListMinHeight] = useState(0);
     const isMobile = useIsMobile();
     const { openMobile, setOpenMobile } = useStore(SidebarContext);
 
@@ -610,20 +614,49 @@ export const ZoneSidebar = () => {
                                 )}
                             {$displayHidingZones && (
                                 <Command
-                                    key={
-                                        isStationSearchActive
-                                            ? "station-search-active"
-                                            : "station-search-idle"
-                                    }
-                                    shouldFilter={isStationSearchActive}
+                                    shouldFilter
+                                    className="overflow-visible"
                                 >
-                                    <CommandInput
-                                        placeholder="Search for a hiding zone..."
-                                        value={stationSearch}
-                                        onValueChange={setStationSearch}
-                                        disabled={$isLoading}
-                                    />
-                                    <CommandList className="max-h-full">
+                                    <div
+                                        ref={searchRef}
+                                        className="sticky top-0 z-10 bg-popover"
+                                    >
+                                        <CommandInput
+                                            onFocus={() => {
+                                                const scroller =
+                                                    sidebarRef.current;
+                                                const search =
+                                                    searchRef.current;
+                                                if (!scroller || !search)
+                                                    return;
+                                                setSearchListMinHeight(
+                                                    scroller.clientHeight -
+                                                        search.offsetHeight,
+                                                );
+                                                // Park the search box at the top
+                                                // of the panel, results below.
+                                                scroller.scrollTop +=
+                                                    search.getBoundingClientRect()
+                                                        .top -
+                                                    scroller.getBoundingClientRect()
+                                                        .top;
+                                            }}
+                                            onBlur={() => {
+                                                if (!stationSearch)
+                                                    setSearchListMinHeight(0);
+                                            }}
+                                            placeholder="Search for a hiding zone..."
+                                            value={stationSearch}
+                                            onValueChange={setStationSearch}
+                                            disabled={$isLoading}
+                                        />
+                                    </div>
+                                    <CommandList
+                                        className="max-h-full"
+                                        style={{
+                                            minHeight: searchListMinHeight,
+                                        }}
+                                    >
                                         <CommandEmpty>
                                             No hiding zones found.
                                         </CommandEmpty>
@@ -643,6 +676,8 @@ export const ZoneSidebar = () => {
                                                 return (
                                                     <CommandItem
                                                         key={id}
+                                                        // Match on the name only, not the "Disable" label.
+                                                        value={label}
                                                         data-station-id={id}
                                                         className={cn(
                                                             "flex items-center justify-between gap-2",
@@ -728,7 +763,10 @@ export const ZoneSidebar = () => {
     if (isMobile) {
         return (
             <Drawer open={openMobile} onOpenChange={setOpenMobile}>
-                <DrawerContent>
+                {/* Vaul overrides this height while the on-screen keyboard is
+                    open, so the scroll area below must follow it (flex-1)
+                    rather than sizing itself from the viewport. */}
+                <DrawerContent className="h-[80dvh]">
                     <DrawerHeader>
                         <DrawerTitle className="text-2xl font-semibold font-poppins">
                             Hiding Zone
@@ -738,7 +776,7 @@ export const ZoneSidebar = () => {
                             train stations.
                         </DrawerDescription>
                     </DrawerHeader>
-                    <div className="flex max-h-[65vh] flex-col pb-4">
+                    <div className="flex min-h-0 flex-1 flex-col pb-4">
                         {content}
                     </div>
                 </DrawerContent>
