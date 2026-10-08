@@ -1,5 +1,12 @@
 import { useStore } from "@nanostores/react";
-import { EyeIcon, EyeOffIcon, LockIcon, UnlockIcon } from "lucide-react";
+import {
+    EyeIcon,
+    EyeOffIcon,
+    LockIcon,
+    MapPinIcon,
+    MoveIcon,
+    UnlockIcon,
+} from "lucide-react";
 import { useRef, useState } from "react";
 import { VscChevronDown, VscShare, VscTrash } from "react-icons/vsc";
 import { toast } from "react-toastify";
@@ -50,6 +57,8 @@ export const QuestionCard = ({
     hidden,
     setLocked,
     setHidden,
+    hiderStatic,
+    setHiderStatic,
     setCollapsed,
 }: {
     children: React.ReactNode;
@@ -62,6 +71,8 @@ export const QuestionCard = ({
     hidden?: boolean;
     setLocked?: (locked: boolean) => void;
     setHidden?: (hidden: boolean) => void;
+    hiderStatic?: boolean;
+    setHiderStatic?: (hiderStatic: boolean) => void;
     setCollapsed?: (collapsed: boolean) => void;
 }) => {
     const [isCollapsed, setIsCollapsed] = useState(collapsed ?? false);
@@ -197,6 +208,25 @@ export const QuestionCard = ({
                                 >
                                     {hidden ? "Show question" : "Hide question"}
                                 </MoreActionsMenuItem>
+                                {setHiderStatic && (
+                                    <MoreActionsMenuItem
+                                        icon={
+                                            hiderStatic ? (
+                                                <MapPinIcon className="size-4" />
+                                            ) : (
+                                                <MoveIcon className="size-4" />
+                                            )
+                                        }
+                                        onClick={() =>
+                                            setHiderStatic(!hiderStatic)
+                                        }
+                                        disabled={$isLoading}
+                                    >
+                                        {hiderStatic
+                                            ? "Hider was static (exact answer)"
+                                            : "Hider may have moved"}
+                                    </MoreActionsMenuItem>
+                                )}
                                 <Dialog>
                                     <DialogTrigger asChild>
                                         <Button
