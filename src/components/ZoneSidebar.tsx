@@ -492,7 +492,7 @@ export const ZoneSidebar = () => {
                                 <div className="flex w-full flex-col gap-1">
                                     <label className="flex w-full min-h-11 items-center justify-between gap-2 cursor-pointer">
                                         <span className="font-semibold font-poppins">
-                                            Hider is static for new questions?
+                                            Is end game?
                                         </span>
                                         <Checkbox
                                             checked={$hiderStaticByDefault}
@@ -505,10 +505,10 @@ export const ZoneSidebar = () => {
                                         />
                                     </label>
                                     <p className="text-xs text-slate-400">
-                                        New and pasted questions, and answers
-                                        the hider generates, are treated as
-                                        exact with no movement allowance (e.g.
-                                        in the end game). You can still change
+                                        The hider is static, so new and pasted
+                                        questions, and answers the hider
+                                        generates, are treated as exact with no
+                                        movement allowance. You can still change
                                         each question from its menu.
                                     </p>
                                 </div>
