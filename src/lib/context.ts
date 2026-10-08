@@ -121,15 +121,17 @@ export const displayHidingZonesOptions = persistentAtom<string[]>(
         decode: JSON.parse,
     },
 );
-export const displayHidingZonesStyle = persistentAtom<
-    "zones" | "no-overlap" | "no-display"
->("displayHidingZonesStyle", "zones", {
-    encode: (value) => value,
-    // "stations" (markers only) was removed as it duplicated the transit stop
-    // overlay; fall back to the default for anyone who had it saved.
-    decode: (stored) =>
-        stored === "no-overlap" || stored === "no-display" ? stored : "zones",
-});
+export const displayHidingZonesStyle = persistentAtom<"zones" | "no-overlap">(
+    "displayHidingZonesStyle",
+    "zones",
+    {
+        encode: (value) => value,
+        // "stations" (markers only) and "no-display" were removed (the former
+        // duplicated the transit stop overlay, the latter the "Display hiding
+        // zones?" toggle); fall back to the default for anyone who had them saved.
+        decode: (stored) => (stored === "no-overlap" ? stored : "zones"),
+    },
+);
 export const questionFinishedMapData = atom<any>(null);
 
 export const trainStations = atom<StationCircle[]>([]);
