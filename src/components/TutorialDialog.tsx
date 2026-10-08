@@ -435,8 +435,7 @@ const tutorialSteps: TutorialStep[] = [
                 <br />• Personal API keys
             </>
         ),
-        targetSelector: '[data-tutorial-id="share-questions-button"]',
-        position: "top",
+        position: "center",
     },
     {
         title: "Hider Mode: Automated Question Answering",

@@ -240,19 +240,6 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                     )}
                 >
                     <Button
-                        className="shadow-md"
-                        onClick={() =>
-                            shareHidingZone(
-                                $hidingZone,
-                                $alwaysUsePastebin,
-                                $pastebinApiKey,
-                            )
-                        }
-                        data-tutorial-id="share-questions-button"
-                    >
-                        Share
-                    </Button>
-                    <Button
                         className="w-24 shadow-md"
                         onClick={() => {
                             showTutorial.set(true);
@@ -681,6 +668,27 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                     />
                                 </SidebarMenu>
                             )}
+
+                            <Separator className="bg-slate-300 w-[280px]" />
+                            <h3 className="text-lg font-semibold font-poppins self-start">
+                                Recover
+                            </h3>
+                            <p className="text-sm text-muted-foreground self-start -mt-2">
+                                Share the whole game state as a link, so you can
+                                quickly restore it if it gets lost.
+                            </p>
+                            <Button
+                                onClick={() =>
+                                    shareHidingZone(
+                                        $hidingZone,
+                                        $alwaysUsePastebin,
+                                        $pastebinApiKey,
+                                    )
+                                }
+                                data-tutorial-id="share-questions-button"
+                            >
+                                Share Whole State
+                            </Button>
 
                             <Separator className="bg-slate-300 w-[280px]" />
                             <h3 className="text-lg font-semibold font-poppins self-start">
