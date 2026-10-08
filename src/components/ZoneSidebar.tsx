@@ -106,7 +106,6 @@ export const ZoneSidebar = () => {
     const [hidingZoneModeStationID, setHidingZoneModeStationID] =
         useState<string>("");
     const [stationSearch, setStationSearch] = useState<string>("");
-    const isStationSearchActive = stationSearch.trim().length > 0;
     const setStations = trainStations.set;
     const sidebarRef = useRef<HTMLDivElement>(null);
     const isMobile = useIsMobile();
@@ -610,19 +609,17 @@ export const ZoneSidebar = () => {
                                 )}
                             {$displayHidingZones && (
                                 <Command
-                                    key={
-                                        isStationSearchActive
-                                            ? "station-search-active"
-                                            : "station-search-idle"
-                                    }
-                                    shouldFilter={isStationSearchActive}
+                                    shouldFilter
+                                    className="overflow-visible"
                                 >
-                                    <CommandInput
-                                        placeholder="Search for a hiding zone..."
-                                        value={stationSearch}
-                                        onValueChange={setStationSearch}
-                                        disabled={$isLoading}
-                                    />
+                                    <div className="sticky top-0 z-10 bg-popover">
+                                        <CommandInput
+                                            placeholder="Search for a hiding zone..."
+                                            value={stationSearch}
+                                            onValueChange={setStationSearch}
+                                            disabled={$isLoading}
+                                        />
+                                    </div>
                                     <CommandList className="max-h-full">
                                         <CommandEmpty>
                                             No hiding zones found.
@@ -643,6 +640,8 @@ export const ZoneSidebar = () => {
                                                 return (
                                                     <CommandItem
                                                         key={id}
+                                                        // Match on the name only, not the "Disable" label.
+                                                        value={label}
                                                         data-station-id={id}
                                                         className={cn(
                                                             "flex items-center justify-between gap-2",
@@ -728,7 +727,10 @@ export const ZoneSidebar = () => {
     if (isMobile) {
         return (
             <Drawer open={openMobile} onOpenChange={setOpenMobile}>
-                <DrawerContent>
+                {/* Vaul overrides this height while the on-screen keyboard is
+                    open, so the scroll area below must follow it (flex-1)
+                    rather than sizing itself from the viewport. */}
+                <DrawerContent className="h-[80dvh]">
                     <DrawerHeader>
                         <DrawerTitle className="text-2xl font-semibold font-poppins">
                             Hiding Zone
@@ -738,7 +740,7 @@ export const ZoneSidebar = () => {
                             train stations.
                         </DrawerDescription>
                     </DrawerHeader>
-                    <div className="flex max-h-[65vh] flex-col pb-4">
+                    <div className="flex min-h-0 flex-1 flex-col pb-4">
                         {content}
                     </div>
                 </DrawerContent>
