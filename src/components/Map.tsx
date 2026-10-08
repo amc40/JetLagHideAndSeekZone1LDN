@@ -373,7 +373,7 @@ export const Map = ({ className }: { className?: string }) => {
                 ref={leafletMapContext.set}
                 // @ts-expect-error Typing doesn't update from react-contextmenu
                 contextmenu={true}
-                contextmenuWidth={170}
+                contextmenuWidth={260}
                 contextmenuItems={[
                     {
                         text: "Add Radius",
