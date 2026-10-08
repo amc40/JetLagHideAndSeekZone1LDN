@@ -69,6 +69,50 @@ main:not(.fullscreen) .leaflet-top .leaflet-control {
     margin-top: 60px !important;
 }
 
+/* Long-press UX on touch devices: a long press on the map (which opens the
+   context menu) or on fixed chrome (MobileActionBar, attribution) must not
+   start a native text selection, show the iOS callout, or flash the
+   browser's blue tap highlight over the whole map. Inputs keep selection.
+   Kept outside of @layer base for the same reason as the rules above. */
+.leaflet-container,
+.leaflet-container *,
+.leaflet-contextmenu,
+.leaflet-contextmenu *,
+button,
+[role="button"] {
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.leaflet-container input,
+.leaflet-container textarea {
+    -webkit-user-select: text;
+    user-select: text;
+}
+
+/* Long-press context menu: leaflet-contextmenu's defaults (12px text, 20px
+   rows) are mouse-sized. Enlarge to comfortable ~52px finger-sized rows. */
+.leaflet-contextmenu {
+    border-radius: 12px !important;
+    padding: 6px 0 !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45) !important;
+}
+
+.leaflet-contextmenu a.leaflet-contextmenu-item {
+    font-size: 18px !important;
+    font-weight: 500;
+    line-height: 28px !important;
+    padding: 12px 20px !important;
+    min-height: 52px;
+    box-sizing: border-box;
+}
+
+.leaflet-contextmenu a.leaflet-contextmenu-item:active {
+    background-color: #e5e7eb;
+}
+
 @layer base {
     html {
         @apply text-slate-50;
