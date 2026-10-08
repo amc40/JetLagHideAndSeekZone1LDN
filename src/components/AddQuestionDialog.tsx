@@ -9,8 +9,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import { SidebarContext, SidebarMenuButton } from "@/components/ui/sidebar-l";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { SidebarMenuButton } from "@/components/ui/sidebar-l";
 import { addQuestion, isLoading, leafletMapContext } from "@/lib/context";
 
 export const AddQuestionDialog = ({
@@ -20,12 +19,8 @@ export const AddQuestionDialog = ({
 }) => {
     const $isLoading = useStore(isLoading);
     const [open, setOpen] = React.useState(false);
-    const isMobile = useIsMobile();
 
-    const closeAll = () => {
-        setOpen(false);
-        if (isMobile) SidebarContext.get().setOpenMobile(false);
-    };
+    const closeAll = () => setOpen(false);
 
     const runAddRadius = () => {
         const map = leafletMapContext.get();
