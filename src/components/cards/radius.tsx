@@ -58,6 +58,10 @@ export const RadiusQuestionComponent = ({
             setLocked={(locked) => questionModified((data.drag = !locked))}
             hidden={data.hidden}
             setHidden={(hidden) => questionModified((data.hidden = hidden))}
+            hiderStatic={data.hiderStatic}
+            setHiderStatic={(hiderStatic) =>
+                questionModified((data.hiderStatic = hiderStatic))
+            }
         >
             <SidebarMenuItem>
                 <div className={cn(MENU_ITEM_CLASSNAME, "gap-2 flex flex-row")}>

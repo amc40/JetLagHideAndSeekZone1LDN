@@ -34,6 +34,7 @@ import {
     displayHidingZonesOptions,
     followMe,
     hiderMode,
+    hiderStaticByDefault,
     hidingRadius,
     hidingRadiusUnits,
     hidingZone,
@@ -87,6 +88,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
     const $animateMapMovements = useStore(animateMapMovements);
     const $autoZoom = useStore(autoZoom);
     const $hiderMode = useStore(hiderMode);
+    const $hiderStaticByDefault = useStore(hiderStaticByDefault);
     const $autoSave = useStore(autoSave);
     const $hidingZone = useStore(hidingZone);
     const $planningMode = useStore(planningModeEnabled);
@@ -375,6 +377,23 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                     )}
                                 </SidebarMenu>
                             )}
+                            <label className="flex w-full min-h-11 flex-row items-center justify-between gap-2 cursor-pointer">
+                                <span className="text-base font-medium">
+                                    Is end game?
+                                </span>
+                                <Checkbox
+                                    checked={$hiderStaticByDefault}
+                                    onCheckedChange={(checked) =>
+                                        hiderStaticByDefault.set(!!checked)
+                                    }
+                                />
+                            </label>
+                            <p className="text-sm text-muted-foreground self-start -mt-2">
+                                The hider is static, so new and pasted
+                                questions, and answers the hider generates, are
+                                treated as exact with no movement allowance. You
+                                can still change each question from its menu.
+                            </p>
                             <label className="flex w-full min-h-11 flex-row items-center justify-between gap-2 cursor-pointer">
                                 <span className="text-base font-medium">
                                     Enable planning mode?

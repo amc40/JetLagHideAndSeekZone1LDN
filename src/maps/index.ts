@@ -106,7 +106,8 @@ const asFeatureCollection = (data: any) =>
 
 /**
  * The area that survives the questions once the hider is allowed to have moved
- * up to `allowance` between answering any one of them and now.
+ * up to `allowance` between answering any one of them and now (except for
+ * questions flagged `hiderStatic`, which are applied exactly).
  *
  * Each question's allowed region is computed against the untouched play area
  * and dilated *before* being intersected with the others. Dilating every region
@@ -137,11 +138,14 @@ export async function applyQuestionsToMapGeoDataWithAllowance(
         const allowed = await adjustMapGeoDataForQuestion(question, playArea);
         if (!allowed) continue;
 
-        const dilated = await arcBuffer(
-            asFeatureCollection(allowed),
-            allowance,
-            allowanceUnit,
-        );
+        // A static hider's answer is definitive, so it isn't loosened.
+        const dilated = question.data.hiderStatic
+            ? asFeatureCollection(allowed)
+            : await arcBuffer(
+                  asFeatureCollection(allowed),
+                  allowance,
+                  allowanceUnit,
+              );
 
         const intersection = modifyMapData(relaxed, dilated, true);
         if (!intersection) return null;

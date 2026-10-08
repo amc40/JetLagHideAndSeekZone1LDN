@@ -78,6 +78,8 @@ const thermometerQuestionSchema = z
         drag: z.boolean().default(true),
         collapsed: z.boolean().default(false),
         hidden: z.boolean().default(false),
+        /** The hider was stationary when answering, so no movement allowance applies */
+        hiderStatic: z.boolean().optional(),
     })
     .transform((question) => {
         if (question.colorA === question.colorB) {
@@ -101,6 +103,8 @@ const ordinaryBaseQuestionSchema = z.object({
     color: iconColorSchema.default(randomColor),
     collapsed: z.boolean().default(false),
     hidden: z.boolean().default(false),
+    /** The hider was stationary when answering, so no movement allowance applies */
+    hiderStatic: z.boolean().optional(),
 });
 
 const getDefaultUnit = () => {

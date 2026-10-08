@@ -79,6 +79,10 @@ export const ThermometerQuestionComponent = ({
             setLocked={(locked) => questionModified((data.drag = !locked))}
             hidden={data.hidden}
             setHidden={(hidden) => questionModified((data.hidden = hidden))}
+            hiderStatic={data.hiderStatic}
+            setHiderStatic={(hiderStatic) =>
+                questionModified((data.hiderStatic = hiderStatic))
+            }
         >
             <LatitudeLongitude
                 latitude={data.latA}
