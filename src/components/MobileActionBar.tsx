@@ -2,7 +2,7 @@ import { useStore } from "@nanostores/react";
 import { useState } from "react";
 import { LiaThumbtackSolid } from "react-icons/lia";
 import { TbMessage2Question } from "react-icons/tb";
-import { VscEllipsis, VscShare } from "react-icons/vsc";
+import { VscEllipsis } from "react-icons/vsc";
 
 import {
     Drawer,
@@ -13,14 +13,10 @@ import {
 } from "@/components/ui/drawer";
 import { useIsMobile } from "@/hooks/use-mobile";
 import {
-    alwaysUsePastebin,
-    hidingZone,
     mapLayersDrawerOpen,
     optionsDrawerOpen,
-    pastebinApiKey,
     showTutorial,
 } from "@/lib/context";
-import { shareHidingZone } from "@/lib/shareHidingZone";
 import { cn } from "@/lib/utils";
 
 import { SidebarContext as SidebarContextL } from "./ui/sidebar-l";
@@ -30,7 +26,7 @@ const barButtonClassName =
     "flex flex-1 flex-col items-center justify-center gap-0.5 min-h-[3rem] py-1.5 text-black active:bg-black/5 rounded-md";
 
 // Owns the bottom edge of the screen on phones: the two actions a player
-// uses constantly (Questions, Zones) plus Share get thumb-reachable, labeled,
+// uses constantly (Questions, Zones) get thumb-reachable, labeled,
 // ≥48px targets; everything else (Tutorial, Options) sits behind "More" so it
 // stops competing with them for the same prime real estate.
 export const MobileActionBar = () => {
@@ -39,9 +35,6 @@ export const MobileActionBar = () => {
         useStore(SidebarContextL);
     const { toggleSidebar: toggleZones, openMobile: zonesOpen } =
         useStore(SidebarContextR);
-    const $hidingZone = useStore(hidingZone);
-    const $alwaysUsePastebin = useStore(alwaysUsePastebin);
-    const $pastebinApiKey = useStore(pastebinApiKey);
     const [isMoreOpen, setMoreOpen] = useState(false);
 
     // Both sidebars are full-screen sheets on mobile, so keeping the bar
@@ -75,25 +68,6 @@ export const MobileActionBar = () => {
             >
                 <LiaThumbtackSolid className="text-2xl" />
                 <span className="text-[11px] font-medium">Zones</span>
-            </button>
-            <button
-                type="button"
-                className={cn(
-                    barButtonClassName,
-                    "bg-blue-600 text-white active:bg-blue-700 my-1",
-                )}
-                onClick={() =>
-                    shareHidingZone(
-                        $hidingZone,
-                        $alwaysUsePastebin,
-                        $pastebinApiKey,
-                    )
-                }
-                aria-label="Share hiding zone"
-                data-tutorial-id="share-questions-button"
-            >
-                <VscShare className="text-2xl" />
-                <span className="text-[11px] font-medium">Share</span>
             </button>
             <Drawer open={isMoreOpen} onOpenChange={setMoreOpen}>
                 <DrawerTrigger asChild>
