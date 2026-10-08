@@ -11,6 +11,7 @@ import {
     baseTileLayer,
     mapLayersDrawerOpen,
     mapOverlays,
+    showBoroughBoundaries,
     showElevationOverlay,
     showTransitStops,
     thunderforestApiKey,
@@ -31,6 +32,7 @@ const MapLayersSettings = () => {
     const $showTransitStops = useStore(showTransitStops);
     const $mapOverlays = useStore(mapOverlays);
     const $showElevationOverlay = useStore(showElevationOverlay);
+    const $showBoroughBoundaries = useStore(showBoroughBoundaries);
 
     return (
         <>
@@ -91,6 +93,18 @@ const MapLayersSettings = () => {
                     checked={$showElevationOverlay}
                     onCheckedChange={() =>
                         showElevationOverlay.set(!$showElevationOverlay)
+                    }
+                />
+            </label>
+            <Separator className="bg-slate-300" />
+            <label className="flex flex-row min-h-11 items-center justify-between gap-2 cursor-pointer">
+                <span className="text-base font-medium">
+                    Show borough boundaries?
+                </span>
+                <Checkbox
+                    checked={$showBoroughBoundaries}
+                    onCheckedChange={() =>
+                        showBoroughBoundaries.set(!$showBoroughBoundaries)
                     }
                 />
             </label>

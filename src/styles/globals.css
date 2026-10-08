@@ -205,3 +205,20 @@ main:not(.fullscreen) .leaflet-top .leaflet-control {
 [data-tutorial-active="true"] [role="dialog"] {
     position: fixed !important;
 }
+
+.leaflet-tooltip.borough-label {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    color: #5b21b6;
+    font-size: 11px;
+    font-weight: 600;
+    text-shadow:
+        0 0 3px #fff,
+        0 0 3px #fff;
+    pointer-events: none;
+}
+
+.leaflet-tooltip.borough-label::before {
+    display: none;
+}

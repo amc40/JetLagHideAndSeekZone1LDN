@@ -356,6 +356,15 @@ export const mapOverlays = persistentAtom<string[]>("mapOverlays", [], {
     decode: JSON.parse,
 });
 
+export const showBoroughBoundaries = persistentAtom<boolean>(
+    "showBoroughBoundaries",
+    false,
+    {
+        encode: JSON.stringify,
+        decode: JSON.parse,
+    },
+);
+
 export const showElevationOverlay = persistentAtom<boolean>(
     "showElevationOverlay",
     false,
