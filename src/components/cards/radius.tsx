@@ -69,7 +69,7 @@ export const RadiusQuestionComponent = ({
                         type="number"
                         className="rounded-md p-2 w-16"
                         value={data.radius}
-                        disabled={!data.drag}
+                        disabled={!data.drag || $isLoading}
                         onChange={(e) =>
                             questionModified(
                                 (data.radius = parseFloat(e.target.value)),
@@ -98,7 +98,7 @@ export const RadiusQuestionComponent = ({
                     }
                     questionModified();
                 }}
-                disabled={!data.drag}
+                disabled={!data.drag || $isLoading}
             />
             <div className="flex gap-2 items-center p-2">
                 <Label

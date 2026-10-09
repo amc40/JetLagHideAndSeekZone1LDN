@@ -161,7 +161,7 @@ export const MatchingQuestionComponent = ({
                     }
                     questionModified();
                 }}
-                disabled={!data.drag}
+                disabled={!data.drag || $isLoading}
             />
             <div
                 className={cn(

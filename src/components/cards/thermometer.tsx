@@ -94,7 +94,7 @@ export const ThermometerQuestionComponent = ({
                     if (lng !== null) data.lngA = lng;
                     questionModified();
                 }}
-                disabled={!data.drag}
+                disabled={!data.drag || $isLoading}
             />
 
             <LatitudeLongitude
@@ -107,7 +107,7 @@ export const ThermometerQuestionComponent = ({
                     if (lng !== null) data.lngB = lng;
                     questionModified();
                 }}
-                disabled={!data.drag}
+                disabled={!data.drag || $isLoading}
             />
 
             {distanceValue !== null && (
