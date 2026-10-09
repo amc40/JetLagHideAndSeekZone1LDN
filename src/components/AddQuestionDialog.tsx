@@ -10,7 +10,12 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 import { SidebarMenuButton } from "@/components/ui/sidebar-l";
-import { addQuestion, isLoading, leafletMapContext } from "@/lib/context";
+import {
+    addQuestion,
+    deviceLocation,
+    isLoading,
+    leafletMapContext,
+} from "@/lib/context";
 
 export const AddQuestionDialog = ({
     children,
@@ -22,10 +27,19 @@ export const AddQuestionDialog = ({
 
     const closeAll = () => setOpen(false);
 
-    const runAddRadius = () => {
+    // New questions start at the seeker's own position when it is known
+    // (Follow Me GPS or a debug override), otherwise at the map centre.
+    const startPoint = () => {
         const map = leafletMapContext.get();
-        if (!map) return false;
-        const center = map.getCenter();
+        if (!map) return null;
+        const device = deviceLocation.get();
+        if (device) return { lat: device.latitude, lng: device.longitude };
+        return map.getCenter();
+    };
+
+    const runAddRadius = () => {
+        const center = startPoint();
+        if (!center) return false;
         addQuestion({
             id: "radius",
             data: { lat: center.lat, lng: center.lng },
@@ -34,9 +48,8 @@ export const AddQuestionDialog = ({
     };
 
     const runAddThermometer = () => {
-        const map = leafletMapContext.get();
-        if (!map) return false;
-        const center = map.getCenter();
+        const center = startPoint();
+        if (!center) return false;
         const destination = turf.destination([center.lng, center.lat], 1, 90, {
             units: "kilometers",
         });
@@ -55,9 +68,8 @@ export const AddQuestionDialog = ({
     };
 
     const runAddMatching = () => {
-        const map = leafletMapContext.get();
-        if (!map) return false;
-        const center = map.getCenter();
+        const center = startPoint();
+        if (!center) return false;
         addQuestion({
             id: "matching",
             data: { lat: center.lat, lng: center.lng },
@@ -66,9 +78,8 @@ export const AddQuestionDialog = ({
     };
 
     const runAddMeasuring = () => {
-        const map = leafletMapContext.get();
-        if (!map) return false;
-        const center = map.getCenter();
+        const center = startPoint();
+        if (!center) return false;
         addQuestion({
             id: "measuring",
             data: { lat: center.lat, lng: center.lng },
