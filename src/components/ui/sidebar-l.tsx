@@ -211,38 +211,6 @@ const Sidebar = React.forwardRef<
         );
         openMobile = useTutorialStep(openMobile, SIDEBAR_TUTORIAL_STEPS);
 
-        const [activeSnap, setActiveSnap] = React.useState<
-            number | string | null
-        >(SIDEBAR_MOBILE_SNAP_POINTS[0]);
-        // Back to the half-height snap each time the drawer is reopened.
-        React.useEffect(() => {
-            if (openMobile) setActiveSnap(SIDEBAR_MOBILE_SNAP_POINTS[0]);
-        }, [openMobile]);
-
-        // vaul's own keyboard handling (repositionInputs) misplaces drawers
-        // that use snap points, so it is disabled and the drawer is instead
-        // fitted to the visual viewport here while the keyboard is up.
-        const [keyboard, setKeyboard] = React.useState<{
-            inset: number;
-            height: number;
-        } | null>(null);
-        React.useEffect(() => {
-            const vv = window.visualViewport;
-            if (!openMobile || !vv) return;
-            const update = () => {
-                const inset = window.innerHeight - vv.height - vv.offsetTop;
-                setKeyboard(inset > 80 ? { inset, height: vv.height } : null);
-            };
-            update();
-            vv.addEventListener("resize", update);
-            vv.addEventListener("scroll", update);
-            return () => {
-                vv.removeEventListener("resize", update);
-                vv.removeEventListener("scroll", update);
-                setKeyboard(null);
-            };
-        }, [openMobile]);
-
         if (collapsible === "none") {
             return (
                 <div
@@ -264,9 +232,6 @@ const Sidebar = React.forwardRef<
                     open={openMobile}
                     onOpenChange={setOpenMobile}
                     snapPoints={SIDEBAR_MOBILE_SNAP_POINTS}
-                    activeSnapPoint={activeSnap}
-                    setActiveSnapPoint={setActiveSnap}
-                    repositionInputs={false}
                 >
                     <DrawerPrimitive.Portal
                         container={
@@ -281,26 +246,10 @@ const Sidebar = React.forwardRef<
                         <DrawerPrimitive.Content
                             data-sidebar="sidebar"
                             data-mobile="true"
-                            // The on-screen keyboard would cover most of a
-                            // half-height drawer and vaul then jumps it around,
-                            // so expand to full height when a field is focused.
-                            onFocusCapture={(e) => {
-                                const t = e.target as HTMLElement;
-                                if (
-                                    t.matches(
-                                        "input, textarea, [contenteditable]",
-                                    )
-                                )
-                                    setActiveSnap(1);
-                            }}
                             className="fixed inset-x-0 bottom-0 z-[1035] flex h-full max-h-[97%] flex-col rounded-t-[10px] border bg-sidebar p-0 text-sidebar-foreground outline-none"
                             style={
                                 {
                                     "--sidebar-width": SIDEBAR_WIDTH_MOBILE,
-                                    ...(keyboard && {
-                                        bottom: keyboard.inset,
-                                        height: keyboard.height * 0.97,
-                                    }),
                                 } as React.CSSProperties
                             }
                         >
