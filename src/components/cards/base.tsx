@@ -12,6 +12,7 @@ import { VscChevronDown, VscShare, VscTrash } from "react-icons/vsc";
 import { toast } from "react-toastify";
 
 import {
+    MORE_ACTIONS_ITEM_CLASS,
     MoreActionsMenu,
     MoreActionsMenuItem,
 } from "@/components/MoreActionsMenu";
@@ -118,11 +119,11 @@ export const QuestionCard = ({
                         )}
                     >
                         <SidebarMenu>{children}</SidebarMenu>
-                        <div className="flex gap-2 pt-2 px-2 justify-center">
+                        <div className="flex flex-wrap gap-2 pt-3 px-2 justify-center">
                             {locked !== undefined && (
                                 <Button
                                     variant="outline"
-                                    size="icon"
+                                    className="h-11 gap-2 px-4"
                                     onClick={() => setLocked!(!locked)}
                                     disabled={$isLoading}
                                     title={
@@ -137,13 +138,14 @@ export const QuestionCard = ({
                                     }
                                 >
                                     {locked ? <LockIcon /> : <UnlockIcon />}
+                                    {locked ? "Locked" : "Lock"}
                                 </Button>
                             )}
                             {typeof navigator !== "undefined" &&
                                 "share" in navigator && (
                                     <Button
                                         variant="outline"
-                                        size="icon"
+                                        className="h-11 gap-2 px-4"
                                         disabled={$isLoading}
                                         title="Share question"
                                         aria-label="Share question"
@@ -189,11 +191,13 @@ export const QuestionCard = ({
                                         }}
                                     >
                                         <VscShare className="size-4" />
+                                        Share
                                     </Button>
                                 )}
                             <MoreActionsMenu
                                 disabled={$isLoading}
                                 label="More question actions"
+                                triggerText="More"
                             >
                                 <MoreActionsMenuItem
                                     icon={
@@ -223,7 +227,7 @@ export const QuestionCard = ({
                                         disabled={$isLoading}
                                     >
                                         {hiderStatic
-                                            ? "Hider was static (exact answer)"
+                                            ? "Hider stayed put (exact answer)"
                                             : "Hider may have moved"}
                                     </MoreActionsMenuItem>
                                 )}
@@ -231,7 +235,7 @@ export const QuestionCard = ({
                                     <DialogTrigger asChild>
                                         <Button
                                             variant="ghost"
-                                            className="w-full justify-start gap-2 px-2"
+                                            className={MORE_ACTIONS_ITEM_CLASS}
                                         >
                                             <VscShare className="size-4" />
                                             Share question JSON
@@ -345,7 +349,10 @@ export const QuestionCard = ({
                                         <Button
                                             variant="ghost"
                                             disabled={$isLoading}
-                                            className="w-full justify-start gap-2 px-2 text-red-600 hover:text-red-600 hover:bg-destructive/10 dark:text-red-400 dark:hover:text-red-400"
+                                            className={cn(
+                                                MORE_ACTIONS_ITEM_CLASS,
+                                                "text-red-600 hover:text-red-600 hover:bg-destructive/10 dark:text-red-400 dark:hover:text-red-400",
+                                            )}
                                         >
                                             <VscTrash className="size-4" />
                                             Delete question
