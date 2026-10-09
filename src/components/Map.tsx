@@ -339,7 +339,12 @@ export const Map = ({ className }: { className?: string }) => {
             // allowance, eliminationMask is the strict mask.
             questionFinishedMapData.set(eliminationMask);
 
-            if (autoZoom.get() && focus) {
+            // Don't yank the map away while the user is mid-edit in a text
+            // field (it also steals focus/keyboard on mobile).
+            const editingField = (
+                document.activeElement as HTMLElement | null
+            )?.matches?.("input, textarea, [contenteditable]");
+            if (autoZoom.get() && focus && !editingField) {
                 // Frame the relaxed area so the allowance band isn't cropped.
                 const bbox = turf.bbox(relaxedGeoData as any);
                 const bounds = [

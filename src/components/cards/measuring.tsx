@@ -155,7 +155,7 @@ export const MeasuringQuestionComponent = ({
                     }
                     questionModified();
                 }}
-                disabled={!data.drag || $isLoading}
+                disabled={!data.drag}
             />
             <div className="flex gap-2 items-center p-2">
                 <Label
