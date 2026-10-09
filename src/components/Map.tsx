@@ -6,7 +6,7 @@ import { useStore } from "@nanostores/react";
 import * as turf from "@turf/turf";
 import type { FeatureCollection, MultiPolygon, Polygon } from "geojson";
 import * as L from "leaflet";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { MapContainer, ScaleControl, TileLayer } from "react-leaflet";
 import { toast } from "react-toastify";
 
@@ -142,6 +142,8 @@ const getTileLayer = (tileLayer: string, thunderforestApiKey: string) => {
         />
     );
 };
+
+const QUESTION_REFRESH_DEBOUNCE_MS = 2000;
 
 export const Map = ({ className }: { className?: string }) => {
     const $mapGeoLocation = useStore(mapGeoLocation);
@@ -488,10 +490,18 @@ export const Map = ({ className }: { className?: string }) => {
         [map, $baseTileLayer, $thunderforestApiKey],
     );
 
+    // Recalculating is expensive and moves the map, so after the initial load
+    // wait for edits (e.g. typing a radius) to settle before re-running.
+    const hasRefreshedRef = useRef(false);
     useEffect(() => {
         if (!map) return;
 
-        refreshQuestions(true);
+        const delay = hasRefreshedRef.current
+            ? QUESTION_REFRESH_DEBOUNCE_MS
+            : 0;
+        hasRefreshedRef.current = true;
+        const timeoutId = setTimeout(() => refreshQuestions(true), delay);
+        return () => clearTimeout(timeoutId);
     }, [$questions, map, $hiderMode]);
 
     useEffect(() => {
