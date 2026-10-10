@@ -170,12 +170,12 @@ export const MeasuringQuestionComponent = ({
                     className="grow"
                     type="single"
                     value={data.hiderCloser ? "closer" : "further"}
-                    onValueChange={(value: "closer" | "further") =>
-                        questionModified(
-                            (data.hiderCloser = value === "closer"),
-                        )
-                    }
-                    disabled={!!$hiderMode || !data.drag || $isLoading}
+                    onValueChange={(value: "closer" | "further") => {
+                        data.hiderCloser = value === "closer";
+                        if ($hiderMode) data.drag = false; // keep hider mode from overwriting a manual answer
+                        questionModified();
+                    }}
+                    disabled={!data.drag || $isLoading}
                 >
                     <ToggleGroupItem value="further">
                         Hider Further

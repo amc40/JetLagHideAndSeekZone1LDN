@@ -194,6 +194,7 @@ export const MatchingQuestionComponent = ({
                         onValueChange={(
                             value: "shorter" | "same" | "longer" | "different",
                         ) => {
+                            if ($hiderMode) data.drag = false; // keep hider mode from overwriting a manual answer
                             if (value === "shorter" || value === "longer") {
                                 questionModified(
                                     (data.lengthComparison = value),
@@ -207,7 +208,7 @@ export const MatchingQuestionComponent = ({
                                 questionModified((data.same = false));
                             }
                         }}
-                        disabled={!!$hiderMode || !data.drag || $isLoading}
+                        disabled={!data.drag || $isLoading}
                     >
                         <ToggleGroupItem value="shorter">
                             Shorter
@@ -221,13 +222,14 @@ export const MatchingQuestionComponent = ({
                         type="single"
                         value={data.same ? "same" : "different"}
                         onValueChange={(value) => {
+                            if ($hiderMode) data.drag = false; // keep hider mode from overwriting a manual answer
                             if (value === "same") {
                                 questionModified((data.same = true));
                             } else if (value === "different") {
                                 questionModified((data.same = false));
                             }
                         }}
-                        disabled={!!$hiderMode || !data.drag || $isLoading}
+                        disabled={!data.drag || $isLoading}
                     >
                         <ToggleGroupItem value="different">
                             Different

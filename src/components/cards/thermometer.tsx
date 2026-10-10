@@ -132,10 +132,12 @@ export const ThermometerQuestionComponent = ({
                     className="grow"
                     type="single"
                     value={data.warmer ? "warmer" : "colder"}
-                    onValueChange={(value: "warmer" | "colder") =>
-                        questionModified((data.warmer = value === "warmer"))
-                    }
-                    disabled={!!$hiderMode || !data.drag || $isLoading}
+                    onValueChange={(value: "warmer" | "colder") => {
+                        data.warmer = value === "warmer";
+                        if ($hiderMode) data.drag = false; // keep hider mode from overwriting a manual answer
+                        questionModified();
+                    }}
+                    disabled={!data.drag || $isLoading}
                 >
                     <ToggleGroupItem color="red" value="colder">
                         Colder

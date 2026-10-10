@@ -113,10 +113,12 @@ export const RadiusQuestionComponent = ({
                     className="grow"
                     type="single"
                     value={data.within ? "inside" : "outside"}
-                    onValueChange={(value: "inside" | "outside") =>
-                        questionModified((data.within = value === "inside"))
-                    }
-                    disabled={!!$hiderMode || !data.drag || $isLoading}
+                    onValueChange={(value: "inside" | "outside") => {
+                        data.within = value === "inside";
+                        if ($hiderMode) data.drag = false; // keep hider mode from overwriting a manual answer
+                        questionModified();
+                    }}
+                    disabled={!data.drag || $isLoading}
                 >
                     <ToggleGroupItem value="outside">Outside</ToggleGroupItem>
                     <ToggleGroupItem value="inside">Inside</ToggleGroupItem>
