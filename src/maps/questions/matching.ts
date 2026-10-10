@@ -288,6 +288,27 @@ export const hiderifyMatching = async (
         return question;
     }
 
+    if (question.type === "thames") {
+        // Compare sides directly rather than via the clipped play area: a
+        // hider whose fix lies outside the zone (common with real GPS) would
+        // otherwise count as "eliminated" whatever side they're really on,
+        // always flipping the default answer.
+        const boundary = await determineMatchingBoundary(question);
+        if (boundary === false) return question;
+
+        const hiderNorth = turf.booleanPointInPolygon(
+            turf.point([$hiderMode.longitude, $hiderMode.latitude]),
+            boundary,
+        );
+        const markerNorth = turf.booleanPointInPolygon(
+            turf.point([question.lng, question.lat]),
+            boundary,
+        );
+
+        question.same = hiderNorth === markerNorth;
+        return question;
+    }
+
     const $mapGeoJSON = mapGeoJSON.get();
     if ($mapGeoJSON === null) return question;
 
