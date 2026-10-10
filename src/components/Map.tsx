@@ -189,10 +189,18 @@ export const Map = ({ className }: { className?: string }) => {
         }
     }, []);
 
+    // A refresh requested while another is running (e.g. a pasted answer
+    // landing mid-refresh) is remembered and re-run once loading finishes,
+    // rather than dropped - otherwise the map keeps showing the old answer.
+    const pendingRefreshRef = useMemo(() => ({ current: false }), []);
+
     const refreshQuestions = async (focus: boolean = false) => {
         if (!map) return;
 
-        if ($isLoading) return;
+        if ($isLoading) {
+            pendingRefreshRef.current = true;
+            return;
+        }
 
         isLoading.set(true);
 
@@ -498,6 +506,13 @@ export const Map = ({ className }: { className?: string }) => {
 
         refreshQuestions(true);
     }, [$questions, map, $hiderMode]);
+
+    useEffect(() => {
+        if (!map || $isLoading || !pendingRefreshRef.current) return;
+
+        pendingRefreshRef.current = false;
+        refreshQuestions(false);
+    }, [$isLoading]);
 
     useEffect(() => {
         const intervalId = setInterval(async () => {
