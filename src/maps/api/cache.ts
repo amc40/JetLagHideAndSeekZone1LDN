@@ -9,6 +9,22 @@ const determinePermanentCache = _.memoize(() =>
     caches.open(CacheType.PERMANENT_CACHE),
 );
 
+// Overpass results are keyed by the full query (including polygon
+// coordinates), so every polygon edit mints new, potentially multi-MB entries.
+// Keep only the most recent ones; the permanent cache is bounded by
+// `pruneStaleCaches` instead.
+const MAX_ENTRIES: Partial<Record<CacheType, number>> = {
+    [CacheType.CACHE]: 150,
+    [CacheType.ZONE_CACHE]: 100,
+};
+
+// Caches created by earlier versions of the service worker config. They held
+// opaque tile responses that browsers account for at inflated sizes.
+const LEGACY_CACHE_NAMES = [
+    "google-fonts-stylesheets",
+    "google-fonts-webfonts",
+];
+
 const inFlightFetches = new Map<string, Promise<Response>>();
 
 // `cacheFetch` below caches responses keyed only by URL, with no expiry -
@@ -65,6 +81,7 @@ export const cacheFetch = async (
             const response = await fetch(url);
             if (response.ok) {
                 await cache.put(url, response.clone());
+                await trimCache(cache, MAX_ENTRIES[cacheType]);
             } else {
                 await cache.delete(url);
             }
@@ -89,6 +106,45 @@ export const cacheFetch = async (
         console.log(e); // Probably a caches not supported error
 
         return fetch(url);
+    }
+};
+
+// `Cache.keys()` returns entries in insertion order, so the oldest go first.
+const trimCache = async (cache: Cache, maxEntries?: number) => {
+    if (!maxEntries) return;
+
+    const keys = await cache.keys();
+    await Promise.all(
+        keys
+            .slice(0, Math.max(0, keys.length - maxEntries))
+            .map((key) => cache.delete(key)),
+    );
+};
+
+/**
+ * Removes cache entries that can never be read again: bundled data files from
+ * previous deploys (their `?v=` hash no longer matches) and caches left behind
+ * by older service worker configs. Safe to call on every startup.
+ */
+export const pruneStaleCaches = async () => {
+    try {
+        const permanent = await determineCache(CacheType.PERMANENT_CACHE);
+        const versions = new Set(
+            Object.values(import.meta.env.DATA_FILE_VERSIONS ?? {}),
+        );
+
+        for (const request of await permanent.keys()) {
+            const version = new URL(request.url).searchParams.get("v");
+            if (version && !versions.has(version)) {
+                await permanent.delete(request);
+            }
+        }
+
+        for (const name of LEGACY_CACHE_NAMES) {
+            await caches.delete(name);
+        }
+    } catch (e) {
+        console.log(e); // Probably a caches not supported error
     }
 };
 

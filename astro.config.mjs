@@ -105,17 +105,24 @@ const additionalManifestEntries = [
  * @param {RegExp} urlPattern
  * @param {string} cacheName
  */
-const tileHostCaching = (urlPattern, cacheName) => ({
+// Only status 200 is cached (never 0 / opaque): browsers pad opaque
+// responses' reported quota (Chrome by ~7MB each) and can't tell us their real
+// size. The map's TileLayers set crossOrigin="anonymous", and all of these
+// hosts send `Access-Control-Allow-Origin: *`, so tiles arrive as normal
+// (CORS) responses. Entry caps are deliberately modest - this is a convenience
+// cache for the area being played, not an offline map download.
+const tileHostCaching = (urlPattern, cacheName, maxEntries = 500) => ({
     urlPattern,
     handler: /** @type {"CacheFirst"} */ ("CacheFirst"),
     options: {
         cacheName,
         expiration: {
-            maxEntries: 2000,
-            maxAgeSeconds: 60 * 60 * 24 * 30,
+            maxEntries,
+            maxAgeSeconds: 60 * 60 * 24 * 14,
+            purgeOnQuotaError: true,
         },
         cacheableResponse: {
-            statuses: [0, 200],
+            statuses: [200],
         },
     },
 });
@@ -181,12 +188,9 @@ export default defineConfig({
                         "thunderforest-tiles",
                     ),
                     tileHostCaching(
-                        /^https:\/\/fonts\.googleapis\.com\//,
-                        "google-fonts-stylesheets",
-                    ),
-                    tileHostCaching(
-                        /^https:\/\/fonts\.gstatic\.com\//,
-                        "google-fonts-webfonts",
+                        /^https:\/\/fonts\.(googleapis|gstatic)\.com\//,
+                        "google-fonts",
+                        50,
                     ),
                 ],
             },
