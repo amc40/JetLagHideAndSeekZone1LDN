@@ -9,15 +9,6 @@ const determinePermanentCache = _.memoize(() =>
     caches.open(CacheType.PERMANENT_CACHE),
 );
 
-// Overpass results are keyed by the full query (including polygon
-// coordinates), so every polygon edit mints new, potentially multi-MB entries.
-// Keep only the most recent ones; the permanent cache is bounded by
-// `pruneStaleCaches` instead.
-const MAX_ENTRIES: Partial<Record<CacheType, number>> = {
-    [CacheType.CACHE]: 150,
-    [CacheType.ZONE_CACHE]: 100,
-};
-
 // Caches created by earlier versions of the service worker config. They held
 // opaque tile responses that browsers account for at inflated sizes.
 const LEGACY_CACHE_NAMES = [
@@ -81,7 +72,6 @@ export const cacheFetch = async (
             const response = await fetch(url);
             if (response.ok) {
                 await cache.put(url, response.clone());
-                await trimCache(cache, MAX_ENTRIES[cacheType]);
             } else {
                 await cache.delete(url);
             }
@@ -107,18 +97,6 @@ export const cacheFetch = async (
 
         return fetch(url);
     }
-};
-
-// `Cache.keys()` returns entries in insertion order, so the oldest go first.
-const trimCache = async (cache: Cache, maxEntries?: number) => {
-    if (!maxEntries) return;
-
-    const keys = await cache.keys();
-    await Promise.all(
-        keys
-            .slice(0, Math.max(0, keys.length - maxEntries))
-            .map((key) => cache.delete(key)),
-    );
 };
 
 /**

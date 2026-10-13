@@ -6,7 +6,7 @@ import { useStore } from "@nanostores/react";
 import * as turf from "@turf/turf";
 import type { FeatureCollection, MultiPolygon, Polygon } from "geojson";
 import * as L from "leaflet";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo } from "react";
 import { MapContainer, ScaleControl, TileLayer } from "react-leaflet";
 import { toast } from "react-toastify";
 
@@ -43,7 +43,6 @@ import {
 } from "@/maps";
 import { hiderifyQuestion } from "@/maps";
 import {
-    CacheType,
     clearCache,
     fetchCoastline,
     fetchCuratedAquariums,
@@ -198,19 +197,6 @@ export const Map = ({ className }: { className?: string }) => {
             );
         }
     }, []);
-
-    // Zone queries embed the playing area in their cache key, so once the
-    // area changes the old entries (often several MB each) can never be hit
-    // again. Skip the first run so the cache stays warm across reloads.
-    const $polyGeoJSON = useStore(polyGeoJSON);
-    const zoneKey = useRef<string | null>(null);
-    useEffect(() => {
-        const key = JSON.stringify([$mapGeoLocation, $polyGeoJSON]);
-        if (zoneKey.current !== null && zoneKey.current !== key) {
-            clearCache(CacheType.ZONE_CACHE);
-        }
-        zoneKey.current = key;
-    }, [$mapGeoLocation, $polyGeoJSON]);
 
     const refreshQuestions = async (focus: boolean = false) => {
         if (!map) return;
