@@ -105,13 +105,59 @@ const additionalManifestEntries = [
  * @param {RegExp} urlPattern
  * @param {string} cacheName
  */
+// Only cache map tiles that overlap the play area. Panning elsewhere still
+// loads tiles from the network, but they aren't stored, so they can't use up
+// the cache entry cap and push out the tiles needed offline. Workbox stringifies
+// this function into the service worker, so it must be self-contained (hence
+// the bounds are inlined below rather than a shared constant).
+const playAreaTilesOnly = {
+    /** @param {{ request: Request, response: Response }} args */
+    cacheWillUpdate: async ({ request, response }) => {
+        const match = /\/(\d{1,2})\/(\d+)\/(\d+)(?:@2x)?\.png/.exec(
+            request.url,
+        );
+        if (!match) return response;
+        // The play area is fixed at TfL Zone 1 (TFL_ZONE_1_POLYGON in
+        // src/lib/map-presets.ts): [west, south, east, north] of that polygon
+        // plus a ~3km margin so tiles just past the edge are still cached.
+        // Update this if the polygon changes.
+        const [west, south, east, north] = /** @type {number[]} */ ([
+            -0.2377, 51.441, -0.0204, 51.573,
+        ]);
+        const [z, x, y] = [
+            Number(match[1]),
+            Number(match[2]),
+            Number(match[3]),
+        ];
+        const n = 2 ** z;
+        const lon = (/** @type {number} */ tx) => (tx / n) * 360 - 180;
+        const lat = (/** @type {number} */ ty) =>
+            (Math.atan(Math.sinh(Math.PI * (1 - (2 * ty) / n))) * 180) /
+            Math.PI;
+        const overlaps =
+            lon(x) <= east &&
+            lon(x + 1) >= west &&
+            lat(y + 1) <= north &&
+            lat(y) >= south;
+        return overlaps ? response : null;
+    },
+};
+
 // Only status 200 is cached (never 0 / opaque): browsers pad opaque
 // responses' reported quota (Chrome by ~7MB each) and can't tell us their real
 // size. The map's TileLayers set crossOrigin="anonymous", and all of these
 // hosts send `Access-Control-Allow-Origin: *`, so tiles arrive as normal
-// (CORS) responses. Entry caps are deliberately modest - this is a convenience
-// cache for the area being played, not an offline map download.
-const tileHostCaching = (urlPattern, cacheName, maxEntries = 500) => ({
+// (CORS) responses.
+/**
+ * @param {RegExp} urlPattern
+ * @param {string} cacheName
+ * @param {{ maxEntries?: number, tilesOnly?: boolean }} [options]
+ */
+const tileHostCaching = (
+    urlPattern,
+    cacheName,
+    { maxEntries = 2000, tilesOnly = true } = {},
+) => ({
     urlPattern,
     handler: /** @type {"CacheFirst"} */ ("CacheFirst"),
     options: {
@@ -124,6 +170,7 @@ const tileHostCaching = (urlPattern, cacheName, maxEntries = 500) => ({
         cacheableResponse: {
             statuses: [200],
         },
+        ...(tilesOnly ? { plugins: [playAreaTilesOnly] } : {}),
     },
 });
 
@@ -190,7 +237,7 @@ export default defineConfig({
                     tileHostCaching(
                         /^https:\/\/fonts\.(googleapis|gstatic)\.com\//,
                         "google-fonts",
-                        50,
+                        { maxEntries: 50, tilesOnly: false },
                     ),
                 ],
             },
