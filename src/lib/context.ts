@@ -53,12 +53,6 @@ export const permanentOverlay = persistentAtom<FeatureCollection | null>(
 export const mapGeoJSON = atom<FeatureCollection<
     Polygon | MultiPolygon
 > | null>(null);
-export const polyGeoJSON = persistentAtom<FeatureCollection<
-    Polygon | MultiPolygon
-> | null>("polyGeoJSON", TFL_ZONE_1_POLYGON, {
-    encode: JSON.stringify,
-    decode: JSON.parse,
-});
 
 export const questions = persistentAtom<Questions>("questions", [], {
     encode: JSON.stringify,
@@ -220,7 +214,6 @@ export const hidingZone = computed(
     [
         questions,
         mapGeoJSON,
-        polyGeoJSON,
         disabledStations,
         hidingRadius,
         hidingRadiusUnits,
@@ -230,7 +223,6 @@ export const hidingZone = computed(
     (
         q,
         geo,
-        poly,
         disabledStations,
         radius,
         hidingRadiusUnits,
@@ -238,7 +230,7 @@ export const hidingZone = computed(
         $permanentOverlay,
     ) => {
         return {
-            ...(geo ?? poly ?? TFL_ZONE_1_POLYGON),
+            ...(geo ?? TFL_ZONE_1_POLYGON),
             questions: q,
             disabledStations: disabledStations,
             hidingRadius: radius,

@@ -10,12 +10,7 @@ import type {
 import _ from "lodash";
 import { toast } from "react-toastify";
 
-import {
-    hiderMode,
-    mapGeoJSON,
-    mapGeoLocation,
-    polyGeoJSON,
-} from "@/lib/context";
+import { hiderMode, mapGeoJSON } from "@/lib/context";
 import {
     fetchCuratedCinemas,
     fetchCuratedConsulates,
@@ -183,9 +178,6 @@ export const determineMatchingBoundary = _.memoize(
             type: question.type,
             lat: question.lat,
             lng: question.lng,
-            entirety: polyGeoJSON.get()
-                ? polyGeoJSON.get()
-                : mapGeoLocation.get(),
         }),
 );
 

@@ -12,7 +12,6 @@ import {
     hidingRadiusUnits,
     isLoading,
     mapGeoJSON,
-    polyGeoJSON,
     questionModified,
     questions,
 } from "@/lib/context";
@@ -45,7 +44,7 @@ const warnIfOutsideSelectedZone = (location: Location) => {
     }
 
     // Outside the wider selected play area entirely.
-    const zone = mapGeoJSON.get() ?? polyGeoJSON.get() ?? TFL_ZONE_1_POLYGON;
+    const zone = mapGeoJSON.get() ?? TFL_ZONE_1_POLYGON;
 
     try {
         const inZone = turf.booleanPointInPolygon(
