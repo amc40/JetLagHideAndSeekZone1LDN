@@ -15,6 +15,7 @@ import {
     animateMapMovements,
     autoZoom,
     baseTileLayer,
+    cartoApiKey,
     debugLocationOverride,
     followMe,
     followMeLocation,
@@ -65,33 +66,39 @@ import { ElevationOverlay } from "./ElevationOverlay";
 import { MapOverlayMarkers } from "./MapOverlayMarkers";
 import { TransitStopMarkers } from "./TransitStopMarkers";
 
-const getTileLayer = (tileLayer: string, thunderforestApiKey: string) => {
+const getTileLayer = (
+    tileLayer: string,
+    thunderforestApiKey: string,
+    cartoApiKey: string,
+) => {
     switch (tileLayer) {
         case "light":
-            return (
-                <TileLayer
-                    crossOrigin="anonymous"
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors; &copy; <a href="https://carto.com/attributions">CARTO</a>; Powered by Esri and Turf.js; Borough boundaries &copy; <a href="https://data.london.gov.uk/dataset/statistical-gis-boundary-files-london">GLA</a>; river data: <a href="https://www.ordnancesurvey.co.uk/products/os-open-rivers">OS Open Rivers</a>; elevation data: OS Terrain 50; contains OS data &copy; Crown copyright and database right, <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/">OGL v3</a>'
-                    url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
-                    subdomains="abcd"
-                    maxZoom={20} // This technically should be 6, but once the ratelimiting starts this can take over
-                    minZoom={2}
-                    noWrap
-                />
-            );
+            if (cartoApiKey)
+                return (
+                    <TileLayer
+                        crossOrigin="anonymous"
+                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors; &copy; <a href="https://carto.com/attributions">CARTO</a>; Powered by Esri and Turf.js; Borough boundaries &copy; <a href="https://data.london.gov.uk/dataset/statistical-gis-boundary-files-london">GLA</a>; river data: <a href="https://www.ordnancesurvey.co.uk/products/os-open-rivers">OS Open Rivers</a>; elevation data: OS Terrain 50; contains OS data &copy; Crown copyright and database right, <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/">OGL v3</a>'
+                        url={`https://basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png?key=${cartoApiKey}`}
+                        maxZoom={20} // This technically should be 6, but once the ratelimiting starts this can take over
+                        minZoom={2}
+                        noWrap
+                    />
+                );
+            break;
 
         case "dark":
-            return (
-                <TileLayer
-                    crossOrigin="anonymous"
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors; &copy; <a href="https://carto.com/attributions">CARTO</a>; Powered by Esri and Turf.js; Borough boundaries &copy; <a href="https://data.london.gov.uk/dataset/statistical-gis-boundary-files-london">GLA</a>; river data: <a href="https://www.ordnancesurvey.co.uk/products/os-open-rivers">OS Open Rivers</a>; elevation data: OS Terrain 50; contains OS data &copy; Crown copyright and database right, <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/">OGL v3</a>'
-                    url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-                    subdomains="abcd"
-                    maxZoom={20} // This technically should be 6, but once the ratelimiting starts this can take over
-                    minZoom={2}
-                    noWrap
-                />
-            );
+            if (cartoApiKey)
+                return (
+                    <TileLayer
+                        crossOrigin="anonymous"
+                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors; &copy; <a href="https://carto.com/attributions">CARTO</a>; Powered by Esri and Turf.js; Borough boundaries &copy; <a href="https://data.london.gov.uk/dataset/statistical-gis-boundary-files-london">GLA</a>; river data: <a href="https://www.ordnancesurvey.co.uk/products/os-open-rivers">OS Open Rivers</a>; elevation data: OS Terrain 50; contains OS data &copy; Crown copyright and database right, <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/">OGL v3</a>'
+                        url={`https://basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png?key=${cartoApiKey}`}
+                        maxZoom={20} // This technically should be 6, but once the ratelimiting starts this can take over
+                        minZoom={2}
+                        noWrap
+                    />
+                );
+            break;
 
         case "transport":
             if (thunderforestApiKey)
@@ -122,21 +129,22 @@ const getTileLayer = (tileLayer: string, thunderforestApiKey: string) => {
             break;
 
         case "voyager":
-            return (
-                <TileLayer
-                    crossOrigin="anonymous"
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors; &copy; <a href="https://carto.com/attributions">CARTO</a>; Powered by Esri and Turf.js; Borough boundaries &copy; <a href="https://data.london.gov.uk/dataset/statistical-gis-boundary-files-london">GLA</a>; river data: <a href="https://www.ordnancesurvey.co.uk/products/os-open-rivers">OS Open Rivers</a>; elevation data: OS Terrain 50; contains OS data &copy; Crown copyright and database right, <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/">OGL v3</a>'
-                    url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
-                    subdomains="abcd"
-                    maxZoom={20} // This technically should be 6, but once the ratelimiting starts this can take over
-                    minZoom={2}
-                    noWrap
-                />
-            );
+            if (cartoApiKey)
+                return (
+                    <TileLayer
+                        crossOrigin="anonymous"
+                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors; &copy; <a href="https://carto.com/attributions">CARTO</a>; Powered by Esri and Turf.js; Borough boundaries &copy; <a href="https://data.london.gov.uk/dataset/statistical-gis-boundary-files-london">GLA</a>; river data: <a href="https://www.ordnancesurvey.co.uk/products/os-open-rivers">OS Open Rivers</a>; elevation data: OS Terrain 50; contains OS data &copy; Crown copyright and database right, <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/">OGL v3</a>'
+                        url={`https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png?key=${cartoApiKey}`}
+                        maxZoom={20} // This technically should be 6, but once the ratelimiting starts this can take over
+                        minZoom={2}
+                        noWrap
+                    />
+                );
+            break;
     }
 
     // OpenStreetMap standard tiles: the default, and the fallback when a
-    // Thunderforest style is chosen without an API key.
+    // CARTO/Thunderforest style is chosen without an API key.
     return (
         <TileLayer
             crossOrigin="anonymous"
@@ -154,6 +162,7 @@ export const Map = ({ className }: { className?: string }) => {
     const $questions = useStore(questions);
     const $baseTileLayer = useStore(baseTileLayer);
     const $thunderforestApiKey = useStore(thunderforestApiKey);
+    const $cartoApiKey = useStore(cartoApiKey);
     const $hiderMode = useStore(hiderMode);
     const $isLoading = useStore(isLoading);
     const $followMe = useStore(followMe);
@@ -488,7 +497,11 @@ export const Map = ({ className }: { className?: string }) => {
                     },
                 ]}
             >
-                {getTileLayer($baseTileLayer, $thunderforestApiKey)}
+                {getTileLayer(
+                    $baseTileLayer,
+                    $thunderforestApiKey,
+                    $cartoApiKey,
+                )}
                 <ElevationOverlay />
                 <BoroughBoundariesOverlay />
                 <TransitStopMarkers />
@@ -497,7 +510,7 @@ export const Map = ({ className }: { className?: string }) => {
                 <ScaleControl position="bottomleft" />
             </MapContainer>
         ),
-        [map, $baseTileLayer, $thunderforestApiKey],
+        [map, $baseTileLayer, $thunderforestApiKey, $cartoApiKey],
     );
 
     useEffect(() => {

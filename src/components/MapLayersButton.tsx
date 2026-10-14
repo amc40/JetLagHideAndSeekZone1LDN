@@ -9,6 +9,7 @@ import {
 import { useIsMobile } from "@/hooks/use-mobile";
 import {
     baseTileLayer,
+    cartoApiKey,
     mapLayersDrawerOpen,
     mapOverlays,
     showBoroughBoundaries,
@@ -28,6 +29,7 @@ import { Separator } from "./ui/separator";
 
 const MapLayersSettings = () => {
     const $baseTileLayer = useStore(baseTileLayer);
+    const $cartoApiKey = useStore(cartoApiKey);
     const $thunderforestApiKey = useStore(thunderforestApiKey);
     const $showTransitStops = useStore(showTransitStops);
     const $mapOverlays = useStore(mapOverlays);
@@ -50,6 +52,29 @@ const MapLayersSettings = () => {
                 value={$baseTileLayer}
                 onValueChange={(v) => baseTileLayer.set(v as any)}
             />
+            <div className="flex flex-col gap-2">
+                <Label>CARTO API Key</Label>
+                <Input
+                    type="text"
+                    value={$cartoApiKey}
+                    id="cartoApiKey"
+                    onChange={(e) => cartoApiKey.set(e.target.value)}
+                    placeholder="Enter your CARTO API key"
+                />
+                <p className="text-xs text-gray-500">
+                    Needed for CARTO map styles (falls back to OpenStreetMap
+                    without one). Request a key{" "}
+                    <a
+                        href="https://www.carto.com/basemaps/apikey/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-500 cursor-pointer"
+                    >
+                        here.
+                    </a>{" "}
+                    It&apos;s free for personal use.
+                </p>
+            </div>
             <div className="flex flex-col gap-2">
                 <Label>Thunderforest API Key</Label>
                 <Input
