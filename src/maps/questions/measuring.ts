@@ -2,13 +2,7 @@ import * as turf from "@turf/turf";
 import _ from "lodash";
 import { toast } from "react-toastify";
 
-import {
-    hiderMode,
-    mapGeoJSON,
-    mapGeoLocation,
-    polyGeoJSON,
-    trainStations,
-} from "@/lib/context";
+import { hiderMode, mapGeoJSON, trainStations } from "@/lib/context";
 import {
     fetchCuratedAquariums,
     fetchCuratedCinemas,
@@ -153,9 +147,6 @@ const bufferedDeterminer = _.memoize(
             type: question.type,
             lat: question.lat,
             lng: question.lng,
-            entirety: polyGeoJSON.get()
-                ? polyGeoJSON.get()
-                : mapGeoLocation.get(),
         }),
 );
 

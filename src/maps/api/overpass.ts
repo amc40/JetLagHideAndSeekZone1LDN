@@ -1,7 +1,6 @@
 import * as turf from "@turf/turf";
 import { toast } from "react-toastify";
 
-import { polyGeoJSON } from "@/lib/context";
 import { TFL_ZONE_1_POLYGON } from "@/lib/map-presets";
 
 import { cacheFetch, determineCache, versionedPublicUrl } from "./cache";
@@ -200,9 +199,8 @@ export const findPlacesInZone = async (
     outType: "center" | "geom" = "center",
     timeoutDuration: number = 0,
 ) => {
-    const $polyGeoJSON = polyGeoJSON.get() ?? TFL_ZONE_1_POLYGON;
     const coords = turf
-        .getCoords($polyGeoJSON.features)
+        .getCoords(TFL_ZONE_1_POLYGON.features)
         .flatMap((polygon) => polygon.geometry.coordinates)
         .flat()
         .map((coord) => [coord[1], coord[0]].join(" "))

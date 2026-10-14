@@ -27,8 +27,7 @@ All application state is managed via **nanostores**. Persistent atoms (using `@n
 
 - `questions` — array of all added questions, persisted and decoded via Zod schema
 - `mapGeoLocation` — the selected OSM region (default: London)
-- `mapGeoJSON` — the current computed map boundary (polygon clipped by questions)
-- `polyGeoJSON` — optional custom drawn polygon overriding the OSM boundary
+- `mapGeoJSON` — the current computed map boundary (the fixed `TFL_ZONE_1_POLYGON` clipped by questions; the play area is not user-changeable)
 - `hiderMode` — when set to a lat/lng, auto-computes question answers for that location
 - `hidingZone` — a computed atom aggregating all state for zone display
 - `planningModeEnabled` — shows question boundary outlines without applying them

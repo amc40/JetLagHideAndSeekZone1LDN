@@ -46,7 +46,6 @@ import {
     pastebinApiKey,
     permanentOverlay,
     planningModeEnabled,
-    polyGeoJSON,
     questions,
     save,
     showTutorial,
@@ -187,17 +186,15 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                 return;
             }
 
-            if (geojson.questions) {
-                questions.set(questionsSchema.parse(geojson.questions));
-                delete geojson.questions;
-
-                mapGeoJSON.set(geojson);
-                polyGeoJSON.set(geojson);
-            } else {
-                questions.set([]);
-                mapGeoJSON.set(geojson);
-                polyGeoJSON.set(geojson);
-            }
+            // The play area is fixed at Zone 1, so the shared geometry is
+            // ignored; the map recomputes the remaining area from the
+            // questions.
+            questions.set(
+                geojson.questions
+                    ? questionsSchema.parse(geojson.questions)
+                    : [],
+            );
+            mapGeoJSON.set(null);
 
             if (
                 geojson.disabledStations !== null &&

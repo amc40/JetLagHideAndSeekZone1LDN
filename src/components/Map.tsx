@@ -27,7 +27,6 @@ import {
     movementAllowance,
     permanentOverlay,
     planningModeEnabled,
-    polyGeoJSON,
     questionFinishedMapData,
     questions,
     thunderforestApiKey,
@@ -204,9 +203,8 @@ export const Map = ({ className }: { className?: string }) => {
             let mapGeoData = mapGeoJSON.get();
 
             if (!mapGeoData) {
-                const polyGeoData = polyGeoJSON.get() ?? TFL_ZONE_1_POLYGON;
-                mapGeoData = polyGeoData;
-                mapGeoJSON.set(polyGeoData);
+                mapGeoData = TFL_ZONE_1_POLYGON;
+                mapGeoJSON.set(TFL_ZONE_1_POLYGON);
             }
 
             if ($hiderMode !== false) {
