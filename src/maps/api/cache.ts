@@ -9,6 +9,13 @@ const determinePermanentCache = _.memoize(() =>
     caches.open(CacheType.PERMANENT_CACHE),
 );
 
+// Caches created by earlier versions of the service worker config. They held
+// opaque tile responses that browsers account for at inflated sizes.
+const LEGACY_CACHE_NAMES = [
+    "google-fonts-stylesheets",
+    "google-fonts-webfonts",
+];
+
 const inFlightFetches = new Map<string, Promise<Response>>();
 
 // `cacheFetch` below caches responses keyed only by URL, with no expiry -
@@ -89,6 +96,33 @@ export const cacheFetch = async (
         console.log(e); // Probably a caches not supported error
 
         return fetch(url);
+    }
+};
+
+/**
+ * Removes cache entries that can never be read again: bundled data files from
+ * previous deploys (their `?v=` hash no longer matches) and caches left behind
+ * by older service worker configs. Safe to call on every startup.
+ */
+export const pruneStaleCaches = async () => {
+    try {
+        const permanent = await determineCache(CacheType.PERMANENT_CACHE);
+        const versions = new Set(
+            Object.values(import.meta.env.DATA_FILE_VERSIONS ?? {}),
+        );
+
+        for (const request of await permanent.keys()) {
+            const version = new URL(request.url).searchParams.get("v");
+            if (version && !versions.has(version)) {
+                await permanent.delete(request);
+            }
+        }
+
+        for (const name of LEGACY_CACHE_NAMES) {
+            await caches.delete(name);
+        }
+    } catch (e) {
+        console.log(e); // Probably a caches not supported error
     }
 };
 

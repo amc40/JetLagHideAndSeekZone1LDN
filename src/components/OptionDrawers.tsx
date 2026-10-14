@@ -66,6 +66,7 @@ import { CacheType, clearCache } from "@/maps/api";
 import { questionsSchema } from "@/maps/schema";
 
 import { LatitudeLongitude, loadCuratedStations } from "./LatLngPicker";
+import { StorageUsage } from "./StorageUsage";
 import { Button } from "./ui/button";
 import { Checkbox } from "./ui/checkbox";
 import { Input } from "./ui/input";
@@ -680,6 +681,8 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                     />
                                 </SidebarMenu>
                             )}
+
+                            <StorageUsage />
 
                             <Separator className="bg-slate-300 w-[280px]" />
                             <h3 className="text-lg font-semibold font-poppins self-start">

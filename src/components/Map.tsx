@@ -55,6 +55,7 @@ import {
     fetchCuratedStations,
     fetchLondonBoroughs,
     fetchThamesLine,
+    pruneStaleCaches,
 } from "@/maps/api";
 import { loadGrid as loadElevationGrid } from "@/maps/geo-utils";
 
@@ -69,6 +70,7 @@ const getTileLayer = (tileLayer: string, thunderforestApiKey: string) => {
         case "light":
             return (
                 <TileLayer
+                    crossOrigin="anonymous"
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors; &copy; <a href="https://carto.com/attributions">CARTO</a>; Powered by Esri and Turf.js; Borough boundaries &copy; <a href="https://data.london.gov.uk/dataset/statistical-gis-boundary-files-london">GLA</a>; river data: <a href="https://www.ordnancesurvey.co.uk/products/os-open-rivers">OS Open Rivers</a>; elevation data: OS Terrain 50; contains OS data &copy; Crown copyright and database right, <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/">OGL v3</a>'
                     url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
                     subdomains="abcd"
@@ -81,6 +83,7 @@ const getTileLayer = (tileLayer: string, thunderforestApiKey: string) => {
         case "dark":
             return (
                 <TileLayer
+                    crossOrigin="anonymous"
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors; &copy; <a href="https://carto.com/attributions">CARTO</a>; Powered by Esri and Turf.js; Borough boundaries &copy; <a href="https://data.london.gov.uk/dataset/statistical-gis-boundary-files-london">GLA</a>; river data: <a href="https://www.ordnancesurvey.co.uk/products/os-open-rivers">OS Open Rivers</a>; elevation data: OS Terrain 50; contains OS data &copy; Crown copyright and database right, <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/">OGL v3</a>'
                     url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
                     subdomains="abcd"
@@ -94,6 +97,7 @@ const getTileLayer = (tileLayer: string, thunderforestApiKey: string) => {
             if (thunderforestApiKey)
                 return (
                     <TileLayer
+                        crossOrigin="anonymous"
                         url={`https://tile.thunderforest.com/transport/{z}/{x}/{y}.png?apikey=${thunderforestApiKey}`}
                         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors; &copy; <a href="http://www.thunderforest.com/">Thunderforest</a>; Powered by Esri and Turf.js; Borough boundaries &copy; <a href="https://data.london.gov.uk/dataset/statistical-gis-boundary-files-london">GLA</a>; river data: <a href="https://www.ordnancesurvey.co.uk/products/os-open-rivers">OS Open Rivers</a>; elevation data: OS Terrain 50; contains OS data &copy; Crown copyright and database right, <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/">OGL v3</a>'
                         maxZoom={22}
@@ -107,6 +111,7 @@ const getTileLayer = (tileLayer: string, thunderforestApiKey: string) => {
             if (thunderforestApiKey)
                 return (
                     <TileLayer
+                        crossOrigin="anonymous"
                         url={`https://tile.thunderforest.com/neighbourhood/{z}/{x}/{y}.png?apikey=${thunderforestApiKey}`}
                         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors; &copy; <a href="http://www.thunderforest.com/">Thunderforest</a>; Powered by Esri and Turf.js; Borough boundaries &copy; <a href="https://data.london.gov.uk/dataset/statistical-gis-boundary-files-london">GLA</a>; river data: <a href="https://www.ordnancesurvey.co.uk/products/os-open-rivers">OS Open Rivers</a>; elevation data: OS Terrain 50; contains OS data &copy; Crown copyright and database right, <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/">OGL v3</a>'
                         maxZoom={22}
@@ -119,6 +124,7 @@ const getTileLayer = (tileLayer: string, thunderforestApiKey: string) => {
         case "voyager":
             return (
                 <TileLayer
+                    crossOrigin="anonymous"
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors; &copy; <a href="https://carto.com/attributions">CARTO</a>; Powered by Esri and Turf.js; Borough boundaries &copy; <a href="https://data.london.gov.uk/dataset/statistical-gis-boundary-files-london">GLA</a>; river data: <a href="https://www.ordnancesurvey.co.uk/products/os-open-rivers">OS Open Rivers</a>; elevation data: OS Terrain 50; contains OS data &copy; Crown copyright and database right, <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/">OGL v3</a>'
                     url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
                     subdomains="abcd"
@@ -133,6 +139,7 @@ const getTileLayer = (tileLayer: string, thunderforestApiKey: string) => {
     // Thunderforest style is chosen without an API key.
     return (
         <TileLayer
+            crossOrigin="anonymous"
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors; Powered by Esri and Turf.js; Borough boundaries &copy; <a href="https://data.london.gov.uk/dataset/statistical-gis-boundary-files-london">GLA</a>; river data: <a href="https://www.ordnancesurvey.co.uk/products/os-open-rivers">OS Open Rivers</a>; elevation data: OS Terrain 50; contains OS data &copy; Crown copyright and database right, <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/">OGL v3</a>'
             url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
             maxZoom={19}
@@ -167,6 +174,8 @@ export const Map = ({ className }: { className?: string }) => {
     // they're all available offline immediately, rather than only once a
     // question/overlay that happens to need that particular dataset is used.
     useEffect(() => {
+        pruneStaleCaches();
+
         for (const fetcher of [
             fetchCoastline,
             fetchLondonBoroughs,
