@@ -94,7 +94,13 @@ export type ServerMessage =
     | { t: "pong"; now: number }
     | { t: "push-test"; sent: number; error?: string }
     | { t: "ended" }
-    | { t: "error"; code: ErrorCode; message: string };
+    | {
+          t: "error";
+          code: ErrorCode;
+          message: string;
+          /** Set when the error is the rejection of a specific `send`. */
+          id?: string;
+      };
 
 // --- Game codes -----------------------------------------------------------
 

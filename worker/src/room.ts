@@ -547,18 +547,38 @@ export class GameRoomCore {
                 session,
                 "forbidden",
                 `A ${role} cannot send "${message.kind}"`,
+                undefined,
+                message.id,
             );
         }
         if (!MESSAGE_ID_PATTERN.test(message.id)) {
-            return fail(session, "bad-request", "Bad message id");
+            return fail(
+                session,
+                "bad-request",
+                "Bad message id",
+                undefined,
+                message.id,
+            );
         }
         if (
             new TextEncoder().encode(message.payload).length > MAX_PAYLOAD_BYTES
         ) {
-            return fail(session, "too-large", "Message too large");
+            return fail(
+                session,
+                "too-large",
+                "Message too large",
+                undefined,
+                message.id,
+            );
         }
         if (this.isRateLimited(deviceId)) {
-            return fail(session, "rate-limited", "Slow down");
+            return fail(
+                session,
+                "rate-limited",
+                "Slow down",
+                undefined,
+                message.id,
+            );
         }
 
         // At-least-once from the client: a retry of something already stored
@@ -647,9 +667,10 @@ const fail = (
     code: ErrorCode,
     message: string,
     closeCode?: number,
+    id?: string,
 ): Outcome => ({
     session,
-    reply: [{ t: "error", code, message }],
+    reply: [{ t: "error", code, message, ...(id ? { id } : {}) }],
     broadcast: [],
     ...(closeCode !== undefined
         ? { close: { code: closeCode, reason: code } }

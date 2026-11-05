@@ -221,6 +221,7 @@ describe("sending", () => {
         expect(seekerAnswers.reply[0]).toMatchObject({
             t: "error",
             code: "forbidden",
+            id: "message-id-1",
         });
         expect(seekerAnswers.broadcast).toEqual([]);
 
