@@ -1,113 +1,15 @@
 import { useStore } from "@nanostores/react";
-import * as turf from "@turf/turf";
 import { toast } from "react-toastify";
 
 import { SidebarMenuButton } from "@/components/ui/sidebar-l";
+import { hiderMode, hiderStaticByDefault, isLoading } from "@/lib/context";
 import {
-    debugLocationOverride,
-    deviceLocation,
-    hiderMode,
-    hiderStaticByDefault,
-    hidingRadius,
-    hidingRadiusUnits,
-    isLoading,
-    mapGeoJSON,
-    questionModified,
-    questions,
-} from "@/lib/context";
-import { TFL_ZONE_1_POLYGON } from "@/lib/map-presets";
-import { findMatchingQuestionIndex } from "@/lib/questionIdentity";
+    answerQuestionAsHider,
+    getHiderAnswerLocation,
+} from "@/lib/hiderAnswer";
+import { mergeIncomingQuestion } from "@/lib/mergeQuestion";
 import { parseJsonLenient } from "@/lib/utils";
-import { hiderifyQuestion } from "@/maps";
-import { safeUnion } from "@/maps/geo-utils";
 import { questionSchema } from "@/maps/schema";
-
-type Location = { latitude: number; longitude: number };
-
-const warnIfOutsideSelectedZone = (location: Location) => {
-    const $hiderMode = hiderMode.get();
-
-    // Outside the hider's declared hiding radius around their station,
-    // even if still within the wider play area.
-    if ($hiderMode !== false) {
-        const distance = turf.distance(
-            turf.point([location.longitude, location.latitude]),
-            turf.point([$hiderMode.longitude, $hiderMode.latitude]),
-            { units: hidingRadiusUnits.get() },
-        );
-        if (distance > hidingRadius.get()) {
-            toast.warning(
-                "Your location is outside your hiding radius from your station",
-            );
-            return;
-        }
-    }
-
-    // Outside the wider selected play area entirely.
-    const zone = mapGeoJSON.get() ?? TFL_ZONE_1_POLYGON;
-
-    try {
-        const inZone = turf.booleanPointInPolygon(
-            turf.point([location.longitude, location.latitude]),
-            safeUnion(zone),
-        );
-        if (!inZone) {
-            toast.warning("Your location is outside the selected hiding zone");
-        }
-    } catch {
-        // If the zone geometry can't be checked, don't block answering.
-    }
-};
-
-// The location a pasted question should be answered from as the hider.
-// This never touches hiderMode — the hider's station pin stays fixed;
-// only this one answer is computed from wherever the hider actually is.
-// Prefers a debug location override, then an already-live Follow Me
-// position; otherwise does a one-off GPS fetch. Falls back to the saved
-// station location on failure/denial.
-const getHiderAnswerLocation = async (): Promise<Location | undefined> => {
-    const $deviceLocation = deviceLocation.get();
-    if ($deviceLocation !== null) {
-        if (debugLocationOverride.get() !== false) {
-            toast.info("Answering from your debug location", {
-                autoClose: 1500,
-            });
-        }
-        warnIfOutsideSelectedZone($deviceLocation);
-        return $deviceLocation;
-    }
-
-    if (!navigator || !navigator.geolocation) {
-        toast.error("Geolocation not supported — using saved hider location");
-        return undefined;
-    }
-
-    try {
-        const position = await toast.promise(
-            new Promise<GeolocationPosition>((resolve, reject) => {
-                navigator.geolocation.getCurrentPosition(resolve, reject, {
-                    enableHighAccuracy: true,
-                    maximumAge: 0,
-                });
-            }),
-            {
-                pending: "Fetching your location",
-                success: "Location shared",
-                error: "Could not fetch location — using saved hider location",
-            },
-            { autoClose: 500 },
-        );
-
-        const location = {
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-        };
-        warnIfOutsideSelectedZone(location);
-        return location;
-    } catch {
-        return undefined;
-    }
-};
 
 export const PasteQuestionButton = () => {
     const $isLoading = useStore(isLoading);
@@ -163,38 +65,14 @@ export const PasteQuestionButton = () => {
                     // immediately and lock it so it doesn't get
                     // accidentally edited or re-answered later.
                     if (isHider) {
-                        await hiderifyQuestion(validated, answerLocation);
-                        validated.data.drag = false;
-                        validated.data.hiderStatic = hiderStaticByDefault.get();
+                        await answerQuestionAsHider(validated, answerLocation);
                     }
 
                     // If this is a re-shared copy of a question already on
                     // the map (e.g. the hider's answer coming back for a
-                    // question we sent unanswered), update that question in
-                    // place instead of adding a duplicate.
-                    const $questions = questions.get();
-                    const existingIndex = findMatchingQuestionIndex(
-                        $questions,
-                        validated,
-                    );
-
-                    if (existingIndex === -1) {
-                        questionModified($questions.push(validated));
-                        return "added" as const;
-                    }
-
-                    // An unlocked (still-being-answered) paste is a stale or
-                    // in-progress copy - never let it clobber whatever we
-                    // already have for this question, locked or not. Only a
-                    // locked incoming copy (a settled answer) takes
-                    // precedence over the existing entry.
-                    if (validated.data.drag) {
-                        return "skipped" as const;
-                    }
-
-                    $questions[existingIndex] = validated;
-                    questionModified(existingIndex);
-                    return "updated" as const;
+                    // question we sent unanswered), it updates that question
+                    // in place instead of adding a duplicate.
+                    return mergeIncomingQuestion(validated);
                 })(),
                 {
                     pending: "Adding question from clipboard",
