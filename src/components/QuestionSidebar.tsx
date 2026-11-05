@@ -32,6 +32,7 @@ import {
 } from "@/lib/context";
 
 import { AddQuestionDialog } from "./AddQuestionDialog";
+import { OnlineGameButton } from "./OnlineGameButton";
 import { PasteQuestionButton } from "./PasteQuestionButton";
 import {
     MatchingQuestionComponent,
@@ -54,6 +55,7 @@ export const QuestionSidebar = () => {
             <div className="flex items-center justify-between">
                 <h2 className="ml-4 mt-4 font-poppins text-2xl">Questions</h2>
                 <div className="flex items-center gap-1 mr-1">
+                    <OnlineGameButton />
                     {$questions.length > 0 && (
                         <AlertDialog>
                             <AlertDialogTrigger asChild>

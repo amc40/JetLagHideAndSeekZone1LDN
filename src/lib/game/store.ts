@@ -157,3 +157,17 @@ export const pushTestResult = atom<{
     error?: string;
     at: number;
 } | null>(null);
+
+/** Opens the Online game drawer (from the Questions panel or the mobile More menu). */
+export const onlineGameDrawerOpen = atom<boolean>(false);
+
+/**
+ * Hold a screen wake lock while a game is open. Phones can't track location or
+ * keep sockets alive with the screen off, so this is how a seeker keeps the
+ * app working through the final approach (at some battery cost).
+ */
+export const keepScreenOn = persistentAtom<boolean>(
+    "gameKeepScreenOn",
+    false,
+    json(false),
+);

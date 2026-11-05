@@ -20,6 +20,7 @@ import {
     pastebinApiKey,
     showTutorial,
 } from "@/lib/context";
+import { onlineGameDrawerOpen } from "@/lib/game/store";
 import { shareHidingZone } from "@/lib/shareHidingZone";
 import { cn } from "@/lib/utils";
 
@@ -143,6 +144,16 @@ export const MobileActionBar = () => {
                             }}
                         >
                             Map Layers
+                        </button>
+                        <button
+                            type="button"
+                            className="h-12 rounded-md border-2 border-black border-opacity-30 text-base font-medium"
+                            onClick={() => {
+                                setMoreOpen(false);
+                                onlineGameDrawerOpen.set(true);
+                            }}
+                        >
+                            Online game
                         </button>
                     </div>
                 </DrawerContent>

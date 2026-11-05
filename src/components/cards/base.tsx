@@ -15,6 +15,7 @@ import {
     MoreActionsMenu,
     MoreActionsMenuItem,
 } from "@/components/MoreActionsMenu";
+import { OnlineQuestionActions } from "@/components/OnlineQuestionActions";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -118,6 +119,7 @@ export const QuestionCard = ({
                         )}
                     >
                         <SidebarMenu>{children}</SidebarMenu>
+                        <OnlineQuestionActions questionKey={questionKey} />
                         <div className="flex gap-2 pt-2 px-2 justify-center">
                             {locked !== undefined && (
                                 <Button

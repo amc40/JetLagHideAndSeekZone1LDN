@@ -12,6 +12,8 @@ import { OptionDrawers } from "@/components/OptionDrawers";
 import { DesktopSidebarTriggers } from "@/components/DesktopSidebarTriggers";
 import { MobileActionBar } from "@/components/MobileActionBar";
 import { TutorialDialog } from "@/components/TutorialDialog";
+import { OnlineGameController } from "@/components/OnlineGameController";
+import { OnlineGameDrawer } from "@/components/OnlineGameDrawer";
 ---
 
 <Layout className="bg-jetlag">
@@ -60,6 +62,8 @@ import { TutorialDialog } from "@/components/TutorialDialog";
             </main>
             <ZoneSidebar client:only />
             <TutorialDialog client:only />
+            <OnlineGameController client:only />
+            <OnlineGameDrawer client:only />
         </SidebarProviderR>
     </SidebarProviderL>
 </Layout>

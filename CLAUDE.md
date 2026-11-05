@@ -101,3 +101,15 @@ When `hiderMode` is set (lat/lng), the app calls `hiderifyQuestion()` for each q
 - `followMeLocation` — the live fix from Follow Me's GPS watch, otherwise `null`.
 
 `PasteQuestionButton` answers from `deviceLocation` when it's non-null, falls back to a one-off `getCurrentPosition()`, and finally to the `hiderMode` station.
+
+### Online game (server-mediated play)
+
+An optional mode that replaces copy/paste with a relay Worker (`worker/`, Cloudflare Durable Object). Full design, privacy rules, deploy steps and what is/isn't verified: `docs/online-game.md`. The invariants that keep the paste fallback lossless:
+
+- **The server is a mailbox, not the database.** `questions` (in `context.ts`) stays the source of truth in exactly the paste JSON. Online sync state (`questionSync`, `outbox`, session) lives separately in `src/lib/game/store.ts`; never add server-specific fields to a question.
+- **Commit locally first, then queue.** Every action (`askQuestion`, `answerQuestion` in `src/lib/game/sync.ts`) updates local state before it is queued; every incoming message goes through `mergeIncomingQuestion()` (`src/lib/mergeQuestion.ts`), the same idempotent path the paste button uses. Keep it that way.
+- **An unlocked (`drag`) question is a draft/unanswered; locked is settled.** The server's message `kind` (`ask` vs `answer`), not the payload, decides which. Hider answers go through `answerQuestionAsHider()` (`src/lib/hiderAnswer.ts`); with no location and no hider station it must refuse, because `hiderify*` otherwise silently keeps the default answer.
+- **`src/lib/game/protocol.ts` is shared with the Worker and must stay import-free.** The room rules are in `worker/src/room.ts`, independent of Cloudflare, and are unit-tested from the root (`tests/gameRoom.test.ts`); `worker/src/index.ts` is a thin shell. Server payloads are opaque, so new question types need no Worker change.
+- **Privacy:** the server must never persist live positions or log request bodies (`observability` is off in `worker/wrangler.jsonc`). The hider's station/zone is never sent to a seeker.
+- `worker/` has its own `package.json` and lockfile (`pnpm install --ignore-workspace` there) and is excluded from the root `tsconfig.json`; it has its own `pnpm typecheck`.
+- Web Push is hand-rolled on WebCrypto (`worker/src/webpush.ts`) and verified against the `web-push` library in `tests/webPush.test.ts`; the service worker handler is `public/push-sw.js`, pulled into the Workbox SW with `importScripts` in `astro.config.mjs`.
