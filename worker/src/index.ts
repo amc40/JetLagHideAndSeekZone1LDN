@@ -273,7 +273,10 @@ export class GameRoom extends DurableObject<Env> {
             sent: result.ok ? 1 : 0,
             ...(result.ok
                 ? {}
-                : { error: `Push service said ${result.status}` }),
+                : {
+                      error:
+                          result.error ?? `Push service said ${result.status}`,
+                  }),
         });
     }
 }

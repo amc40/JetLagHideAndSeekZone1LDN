@@ -219,6 +219,8 @@ export default defineConfig({
                 theme_color: "#1F2F3F",
             },
             workbox: {
+                // Web Push handlers for the online game (public/push-sw.js).
+                importScripts: ["push-sw.js"],
                 maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
                 additionalManifestEntries,
                 runtimeCaching: [
