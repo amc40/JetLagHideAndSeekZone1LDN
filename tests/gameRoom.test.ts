@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, test } from "vitest";
 
 import {
+    type ClientMessage,
     DEFAULT_GAME_TTL_MS,
     formatGameCode,
     GAME_CODE_ALPHABET,
@@ -12,7 +13,6 @@ import {
 } from "../src/lib/game/protocol";
 import { generateGameCode, generateHiderKey } from "../worker/src/ids";
 import {
-    type ClientMessage,
     GameRoomCore,
     isAllowedPushEndpoint,
     type Outcome,

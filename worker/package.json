@@ -1,0 +1,18 @@
+{
+    "name": "jetlag-game-relay",
+    "private": true,
+    "type": "module",
+    "description": "Per-game mailbox/relay Worker for the Jet Lag Hide and Seek map (see ../docs/online-game.md)",
+    "scripts": {
+        "dev": "wrangler dev",
+        "deploy": "wrangler deploy",
+        "typecheck": "tsc --noEmit -p .",
+        "generate:vapid": "node scripts/generate-vapid-keys.mjs",
+        "e2e": "node scripts/e2e.mjs"
+    },
+    "devDependencies": {
+        "@cloudflare/workers-types": "^5.20261104.1",
+        "typescript": "^5.7.3",
+        "wrangler": "^4.158.0"
+    }
+}

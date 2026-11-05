@@ -1,0 +1,30 @@
+{
+    "$schema": "node_modules/wrangler/config-schema.json",
+    "name": "jetlag-game-relay",
+    "main": "src/index.ts",
+    "compatibility_date": "2025-09-01",
+
+    "durable_objects": {
+        "bindings": [{ "name": "GAME", "class_name": "GameRoom" }],
+    },
+    // SQLite-backed Durable Objects (available on the free plan).
+    "migrations": [{ "tag": "v1", "new_sqlite_classes": ["GameRoom"] }],
+
+    "vars": {
+        // Origins allowed to call the API from a browser (comma separated).
+        "ALLOWED_ORIGINS": "https://amc40.github.io,http://localhost:4321,http://127.0.0.1:4321",
+        // Identifies this server to push services; Apple requires one. An https
+        // URL or a mailto: address. Override if you fork the app.
+        "VAPID_SUBJECT": "https://amc40.github.io/JetLagHideAndSeekZone1LDN/",
+    },
+
+    // Privacy: no request/console logs are collected, so nothing that passes
+    // through (question coordinates included) is retained outside the game's
+    // own storage. Keep these off.
+    "observability": { "enabled": false },
+    "logpush": false,
+
+    // Secrets (set with `wrangler secret put`, or in .dev.vars locally):
+    //   VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY  (pnpm generate:vapid)
+    //   CREATE_PASSPHRASE                    (optional; required to create games)
+}
